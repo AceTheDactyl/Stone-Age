@@ -1,0 +1,3528 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Claim Census — Structural Necessity</title>
+<style>
+
+:root {
+    --bg: #fafaf8;
+    --fg: #1a1a1a;
+    --accent: #2d5016;
+    --border: #d4d0c8;
+    --sidebar-bg: #f0ede6;
+    --sidebar-width: 280px;
+    --header-height: 56px;
+    --code-bg: #f5f2eb;
+    --table-stripe: #f8f6f0;
+    --link: #2d5016;
+    --link-hover: #4a7a28;
+    --bold-accent: #1a3a0a;
+}
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        --bg: #1a1a1e;
+        --fg: #e0ddd6;
+        --accent: #7ab648;
+        --border: #3a3a3e;
+        --sidebar-bg: #222226;
+        --code-bg: #25252a;
+        --table-stripe: #222226;
+        --link: #7ab648;
+        --link-hover: #9cd06a;
+        --bold-accent: #a0d870;
+    }
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+    font-family: 'Iowan Old Style', 'Palatino Linotype', Palatino, Georgia, serif;
+    background: var(--bg);
+    color: var(--fg);
+    line-height: 1.7;
+    font-size: 17px;
+}
+
+/* Header */
+.site-header {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    height: var(--header-height);
+    background: #1a1a1a;
+    color: #e0ddd6;
+    display: flex;
+    align-items: center;
+    padding: 0 24px;
+    z-index: 100;
+    border-bottom: 2px solid var(--accent);
+}
+.site-header h1 {
+    font-size: 18px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+}
+.site-header h1 a {
+    color: #e0ddd6;
+    text-decoration: none;
+}
+.site-header h1 a:hover { color: var(--accent); }
+.site-header .subtitle {
+    font-size: 13px;
+    color: #888;
+    margin-left: 16px;
+    font-style: italic;
+}
+.hamburger {
+    display: none;
+    background: none;
+    border: none;
+    color: #e0ddd6;
+    font-size: 24px;
+    cursor: pointer;
+    margin-right: 16px;
+    padding: 4px 8px;
+}
+
+/* Sidebar */
+.sidebar {
+    position: fixed;
+    top: var(--header-height);
+    left: 0;
+    bottom: 0;
+    width: var(--sidebar-width);
+    background: var(--sidebar-bg);
+    border-right: 1px solid var(--border);
+    overflow-y: auto;
+    padding: 16px 0;
+    z-index: 90;
+    transition: transform 0.3s ease;
+}
+.sidebar .nav-group { margin-bottom: 12px; }
+.sidebar .nav-group-title {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+    color: #888;
+    padding: 8px 20px 4px;
+}
+.sidebar a {
+    display: block;
+    padding: 4px 20px 4px 28px;
+    font-size: 13.5px;
+    color: var(--fg);
+    text-decoration: none;
+    line-height: 1.5;
+    border-left: 3px solid transparent;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+.sidebar a:hover {
+    background: rgba(0,0,0,0.05);
+    border-left-color: var(--accent);
+}
+.sidebar a.active {
+    background: rgba(45,80,22,0.1);
+    border-left-color: var(--accent);
+    font-weight: 600;
+    color: var(--accent);
+}
+
+/* Main content */
+.main {
+    margin-left: var(--sidebar-width);
+    margin-top: var(--header-height);
+    max-width: 900px;
+    padding: 40px 48px 80px;
+}
+
+/* Document header banner */
+.doc-header {
+    margin-bottom: 40px;
+    padding-bottom: 24px;
+    border-bottom: 2px solid var(--border);
+}
+.doc-header .level-badge {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 3px 10px;
+    border-radius: 3px;
+    margin-bottom: 12px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+.doc-header h1 {
+    font-size: 32px;
+    line-height: 1.2;
+    margin-bottom: 8px;
+    color: var(--fg);
+}
+.doc-header .doc-subtitle {
+    font-size: 18px;
+    color: #666;
+    font-style: italic;
+}
+
+/* TOC */
+.toc {
+    background: var(--sidebar-bg);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 16px 24px;
+    margin-bottom: 32px;
+}
+.toc summary {
+    font-weight: 700;
+    font-size: 14px;
+    cursor: pointer;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: #666;
+}
+.toc ul { list-style: none; margin: 12px 0 0 0; }
+.toc li { padding: 2px 0; }
+.toc a {
+    color: var(--link);
+    text-decoration: none;
+    font-size: 14px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+.toc a:hover { text-decoration: underline; }
+.toc .toc-h2 { padding-left: 0; }
+.toc .toc-h3 { padding-left: 20px; font-size: 13px; }
+
+/* Typography */
+.content h1 {
+    font-size: 28px;
+    margin: 48px 0 16px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border);
+    color: var(--fg);
+}
+.content h1:first-child { margin-top: 0; }
+.content h2 {
+    font-size: 22px;
+    margin: 36px 0 12px;
+    color: var(--fg);
+}
+.content h3 {
+    font-size: 18px;
+    margin: 28px 0 10px;
+    color: var(--fg);
+}
+.content h4 {
+    font-size: 16px;
+    margin: 24px 0 8px;
+    color: #444;
+}
+.content p { margin: 0 0 16px; }
+.content strong { color: var(--bold-accent); }
+.content a { color: var(--link); }
+.content a:hover { color: var(--link-hover); }
+
+.content ul, .content ol {
+    margin: 0 0 16px 24px;
+}
+.content li { margin-bottom: 4px; }
+
+.content hr {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 32px 0;
+}
+
+/* Tables */
+.content table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 16px 0 24px;
+    font-size: 15px;
+}
+.content th {
+    background: var(--sidebar-bg);
+    font-weight: 700;
+    text-align: left;
+    padding: 10px 12px;
+    border: 1px solid var(--border);
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+.content td {
+    padding: 8px 12px;
+    border: 1px solid var(--border);
+    vertical-align: top;
+}
+.content tr:nth-child(even) { background: var(--table-stripe); }
+
+/* Code */
+.content code {
+    font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace;
+    font-size: 14px;
+    background: var(--code-bg);
+    padding: 2px 6px;
+    border-radius: 3px;
+    border: 1px solid var(--border);
+}
+.content pre {
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 16px 20px;
+    overflow-x: auto;
+    margin: 16px 0 24px;
+    line-height: 1.5;
+}
+.content pre code {
+    background: none;
+    border: none;
+    padding: 0;
+    font-size: 13.5px;
+}
+
+/* Blockquote */
+.content blockquote {
+    border-left: 4px solid var(--accent);
+    padding: 12px 20px;
+    margin: 16px 0 24px;
+    background: var(--sidebar-bg);
+    border-radius: 0 4px 4px 0;
+}
+.content blockquote p { margin-bottom: 8px; }
+.content blockquote p:last-child { margin-bottom: 0; }
+
+/* Footer nav */
+.page-nav {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 48px;
+    padding-top: 24px;
+    border-top: 1px solid var(--border);
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+.page-nav a {
+    color: var(--link);
+    text-decoration: none;
+    font-size: 14px;
+    padding: 8px 16px;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    transition: all 0.2s;
+}
+.page-nav a:hover {
+    background: var(--sidebar-bg);
+    border-color: var(--accent);
+}
+.page-nav .prev::before { content: '← '; }
+.page-nav .next::after { content: ' →'; }
+
+/* Responsive */
+@media (max-width: 900px) {
+    .sidebar { transform: translateX(-100%); }
+    .sidebar.open { transform: translateX(0); }
+    .main { margin-left: 0; padding: 24px 20px 60px; }
+    .hamburger { display: block; }
+    .doc-header h1 { font-size: 24px; }
+}
+
+/* Print */
+@media print {
+    .sidebar, .site-header, .hamburger, .page-nav { display: none; }
+    .main { margin: 0; max-width: 100%; padding: 20px; }
+    body { font-size: 12pt; }
+}
+
+</style>
+</head>
+<body>
+
+<header class="site-header">
+    <button class="hamburger" onclick="document.querySelector('.sidebar').classList.toggle('open')" aria-label="Toggle navigation">&#9776;</button>
+    <h1><a href="T_INDEX.html">Structural Necessity</a></h1>
+    <span class="subtitle">Canonical Paper Series — March 2026</span>
+</header>
+
+<nav class="sidebar">
+<div class="nav-group">
+<div class="nav-group-title">Foundation (0-2)</div>
+<a href="T0_SUBSTRATE.html">0 — Substrate</a>
+<a href="T1_DIST.html">1 — Kernel Theorem</a>
+<a href="T2_BRIDGE.html">2 — Bridge Chain</a>
+</div>
+<div class="nav-group">
+<div class="nav-group-title">Projections (3-4)</div>
+<a href="T3_P1_PRODUCTION.html">3-P1 — Production</a>
+<a href="T3_P2_MEDIATION.html">3-P2 — Mediation</a>
+<a href="T3_P3_OBSERVATION.html">3-P3 — Observation</a>
+<a href="T3_META.html">3-META — Cross-Projection</a>
+<a href="T4_LATTICE.html">4 — Lattice</a>
+</div>
+<div class="nav-group">
+<div class="nav-group-title">Observer &amp; Physics (5-6)</div>
+<a href="T5_OBSERVER.html">5 — Observer</a>
+<a href="T6A_SPACETIME.html">6A — Spacetime</a>
+<a href="T6B_FORCES.html">6B — Forces</a>
+</div>
+<div class="nav-group">
+<div class="nav-group-title">Cross-Cutting</div>
+<a href="T_COMP.html">Comp — Computation</a>
+<a href="T_SIL.html">SIL — Self-Interpretation</a>
+<a href="T_SEM.html">SEM — Semantics</a>
+</div>
+<div class="nav-group">
+<div class="nav-group-title">Architecture</div>
+<a href="T_BLUEPRINT.html">Blueprint</a>
+<a href="T_GOV.html">Governance</a>
+</div>
+<div class="nav-group">
+<div class="nav-group-title">Closure &amp; Reference</div>
+<a href="T_ASI.html">ASI — Architecture Spec</a>
+<a href="T_TOE.html">TOE — Closure</a>
+<a href="DICTIONARY.html">Dictionary</a>
+</div>
+<div class="nav-group">
+<div class="nav-group-title">Navigation</div>
+<a href="T_INDEX.html">Index — Navigation</a>
+<a href="CLAIM_CENSUS.html" class="active">Claim Census</a>
+</div>
+</nav>
+
+<main class="main">
+    <div class="doc-header">
+        <span class="level-badge" style="background:#333333; color:#fff;">Registry</span>
+        <h1>Claim Census</h1>
+        <div class="doc-subtitle">Framework Rebuild Execution Protocol — ~122 Claims Registry</div>
+    </div>
+
+    <details class="toc" open>
+<summary>Table of Contents</summary>
+<ul>
+<li class="toc-h2"><a href="#framework-rebuild-execution-protocol">Framework Rebuild Execution Protocol</a></li>
+<li class="toc-h3"><a href="#v1-march-2026">v1 — March 2026</a></li>
+<li class="toc-h3"><a href="#postulates-level-0">Postulates (Level 0)</a></li>
+<li class="toc-h3"><a href="#duality-and-fixed-locus-level-0">Duality and Fixed Locus (Level 0)</a></li>
+<li class="toc-h3"><a href="#phase-architecture-level-01">Phase Architecture (Level 0–1)</a></li>
+<li class="toc-h3"><a href="#frontier-t0_substrate">Frontier (T0_SUBSTRATE)</a></li>
+<li class="toc-h3"><a href="#frontier-t1_dist">Frontier (T1_DIST)</a></li>
+<li class="toc-h3"><a href="#new-claims-from-koide-phase-investigation-t2_bridge-221222">New Claims from Koide Phase Investigation (T2_BRIDGE §22.1–22.2)</a></li>
+<li class="toc-h3"><a href="#frontier-t2_bridge">Frontier (T2_BRIDGE)</a></li>
+<li class="toc-h3"><a href="#frontier-t3_p1_production">Frontier (T3_P1_PRODUCTION)</a></li>
+<li class="toc-h3"><a href="#frontier-t3_p2_mediation">Frontier (T3_P2_MEDIATION)</a></li>
+<li class="toc-h3"><a href="#frontier-t3_p3_observation">Frontier (T3_P3_OBSERVATION)</a></li>
+<li class="toc-h3"><a href="#frontier-t3_meta">Frontier (T3_META)</a></li>
+<li class="toc-h3"><a href="#open-problems-t4_lattice">Open Problems (T4_LATTICE)</a></li>
+<li class="toc-h3"><a href="#observer-theory-core">Observer Theory Core</a></li>
+<li class="toc-h3"><a href="#consciousness-migrating-from-t7">Consciousness (migrating from T7)</a></li>
+<li class="toc-h3"><a href="#frontier-t5_observer">Frontier (T5_OBSERVER)</a></li>
+<li class="toc-h3"><a href="#new-claims-t5_observer-from-cosmological-hierarchy-investigations">New Claims (T5_OBSERVER, from Cosmological + Hierarchy investigations)</a></li>
+<li class="toc-h3"><a href="#frontier-t6a_spacetime">Frontier (T6A_SPACETIME)</a></li>
+<li class="toc-h3"><a href="#gauge-chain-g1g13">Gauge Chain G1–G13</a></li>
+<li class="toc-h3"><a href="#gravity-chain-g3rsquog14">Gravity Chain G3&rsquo;–G14</a></li>
+<li class="toc-h3"><a href="#predictions-and-dimensional-entry">Predictions and Dimensional Entry</a></li>
+<li class="toc-h3"><a href="#frontier-t6b_forces">Frontier (T6B_FORCES)</a></li>
+<li class="toc-h3"><a href="#migration">Migration</a></li>
+<li class="toc-h3"><a href="#frontier-t_comp">Frontier (T_COMP)</a></li>
+<li class="toc-h3"><a href="#frontier-t_sil">Frontier (T_SIL)</a></li>
+<li class="toc-h3"><a href="#frontier-t_sem">Frontier (T_SEM)</a></li>
+<li class="toc-h3"><a href="#frontier-t_blueprint">Frontier (T_BLUEPRINT)</a></li>
+<li class="toc-h3"><a href="#frontier-t_transcendence">Frontier (T_TRANSCENDENCE)</a></li>
+<li class="toc-h2"><a href="#totals-by-status">Totals by Status</a></li>
+<li class="toc-h2"><a href="#frontier-registry-all-non-forced-claims">Frontier Registry (all non-FORCED claims)</a></li>
+<li class="toc-h2"><a href="#downstream-admissibility-audit">Downstream Admissibility Audit</a></li>
+<li class="toc-h2"><a href="#migration-verification">Migration Verification</a></li>
+<li class="toc-h2"><a href="#canonicality-test-results-preliminary">CANONICALITY TEST RESULTS (Preliminary)</a></li>
+<li class="toc-h2"><a href="#the-flag">The Flag</a></li>
+<li class="toc-h2"><a href="#the-derivation-route">The Derivation Route</a></li>
+<li class="toc-h2"><a href="#the-status-update">The Status Update</a></li>
+<li class="toc-h2"><a href="#method">Method</a></li>
+<li class="toc-h2"><a href="#compression-1-the-k6rsquo-family">Compression 1: THE K6&rsquo; FAMILY</a></li>
+<li class="toc-h2"><a href="#compression-2-the-consciousness-blindness-asymmetry-triangle">Compression 2: THE CONSCIOUSNESS-BLINDNESS-ASYMMETRY TRIANGLE</a></li>
+<li class="toc-h2"><a href="#compression-3-the-idempotence-family">Compression 3: THE IDEMPOTENCE FAMILY</a></li>
+<li class="toc-h2"><a href="#compression-4-the-three-generates-everything-family">Compression 4: THE THREE-GENERATES-EVERYTHING FAMILY</a></li>
+<li class="toc-h2"><a href="#compression-5-the-cost-chain">Compression 5: THE COST CHAIN</a></li>
+<li class="toc-h2"><a href="#compression-summary">Compression Summary</a></li>
+<li class="toc-h3"><a href="#what-the-compressions-reveal">What the compressions reveal</a></li>
+<li class="toc-h3"><a href="#integration-status">Integration status</a></li>
+<li class="toc-h3"><a href="#master-theorem-summary">Master theorem summary</a></li>
+</ul></details>
+
+    <div class="content">
+<h1 id="claim-census-phase-i" id="claim-census-phase-i">CLAIM CENSUS — Phase I</h1>
+<h2 id="framework-rebuild-execution-protocol" id="framework-rebuild-execution-protocol">Framework Rebuild Execution Protocol</h2>
+<h3 id="v1-march-2026" id="v1-march-2026">v1 — March 2026</h3>
+<p><strong>Document Species:</strong> DERIVED (registry). Raw claim index. No first-instance content — indexes canonical theorems.</p>
+<p><strong>Grid address:</strong> B(all, all). Cross-cutting — claim registry spanning all levels.</p>
+<p><strong>Purpose:</strong> Enumerate major claims, assign canonical addresses, tag statuses and dependencies. This is the foundation for all subsequent rebuild moves per §2.14 of FRAMEWORK_REBUILD_WORKING.md.</p>
+<p><strong>Method:</strong> Claims extracted from T_INDEX master list (63+ resolved, 5 open, 8 SIL theorems, 30+ structural results), supplemented by paper-specific theorem indices. Each claim receives a Ξ(c) record.</p>
+<p><strong>Record format:</strong></p>
+<pre class="highlight"><code>CLAIM: [name]
+ADDRESS: A(c) = (level, projection, file, section)
+STATUS: S(c) = FORCED / ENCODED / RESONANT / MYTHIC
+JUSTIFICATION: J(c) = Derivation / Compression / Encoding Recovery / Structural Fit / Semantic Convergence / External Validation / Mythic Overlay
+DEPENDENCIES: D(c) = {prerequisite claims}
+READINGS: R(c) ⊆ {Math, Obs, Phys, Sem}
+MIGRATION: where it currently lives → where it goes (if different)
+</code></pre>
+
+<p><strong>Notation:</strong> For compactness, claims within the same file share a header. Dependencies reference claim IDs (C-nnn). Status abbreviations: F=FORCED, E=ENCODED, R=RESONANT, M=MYTHIC.</p>
+<hr />
+<h1 id="file-t0_substrate-b01-all" id="file-t0_substrate-b01-all">FILE: T0_SUBSTRATE — B(0–1, all)</h1>
+<p><strong>Need:</strong> Level necessity (root of tower). Owns all pre-algebraic, pre-categorical structure.
+<strong>Imports:</strong> Nothing (this is the root).
+<strong>Exports:</strong> Everything downstream depends on this.</p>
+<h3 id="postulates-level-0" id="postulates-level-0">Postulates (Level 0)</h3>
+<table>
+<thead>
+<tr>
+<th>ID</th>
+<th>Claim</th>
+<th>Status</th>
+<th>J</th>
+<th>Dependencies</th>
+<th>Readings</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>C-001</td>
+<td>P.1 Recursive Substrate</td>
+<td>F</td>
+<td>Derivation (posit)</td>
+<td>—</td>
+<td>Math, Sem</td>
+</tr>
+<tr>
+<td>C-002</td>
+<td>P.2 Productive Distinction</td>
+<td>F</td>
+<td>Derivation (posit)</td>
+<td>—</td>
+<td>Math, Sem</td>
+</tr>
+<tr>
+<td>C-003</td>
+<td>Thm 0.3: Generative Polarity derived from P.1+P.2</td>
+<td>F</td>
+<td>Derivation</td>
+<td>C-001, C-002</td>
+<td>Math</td>
+</tr>
+<tr>
+<td>C-004</td>
+<td>Thm 0.3b: SRD equivalence (P.1∧P.2 ⟺ Dist endomorphism on</td>
+<td>D</td>
+<td>≥2)</td>
+<td>F</td>
+<td>Derivation</td>
+</tr>
+<tr>
+<td>C-005</td>
+<td>Thm 0.3c: Four-Mode Exhaustion (coincidence/opposition/cancellation/propagation)</td>
+<td>F</td>
+<td>Derivation</td>
+<td>C-004</td>
+<td>Math, Obs, Sem</td>
+</tr>
+<tr>
+<td>C-006</td>
+<td>Cor 0.3d: Productive Mode Uniqueness (R is unique up to J-conjugacy)</td>
+<td>F</td>
+<td>Derivation</td>
+<td>C-005</td>
+<td>Math</td>
+</tr>
+<tr>
+<td>C-007</td>
+<td>Thm 0.5: Co-primitives never found apart</td>
+<td>F</td>
+<td>Derivation</td>
+<td>C-001, C-002</td>
+<td>Math, Sem</td>
+</tr>
+</tbody>
+</table>
+<h3 id="duality-and-fixed-locus-level-0" id="duality-and-fixed-locus-level-0">Duality and Fixed Locus (Level 0)</h3>
+<table>
+<thead>
+<tr>
+<th>ID</th>
+<th>Claim</th>
+<th>Status</th>
+<th>J</th>
+<th>Dependencies</th>
+<th>Readings</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>C-008</td>
+<td>Thm 1.1: Duality D is unique involution on binary alphabet</td>
+<td>F</td>
+<td>Derivation</td>
+<td>C-004</td>
+<td>Math</td>
+</tr>
+<tr>
+<td>C-009</td>
+<td>Fixed-locus categorification: Fix(D) = 5 irreducible simples</td>
+<td>F</td>
+<td>Derivation</td>
+<td>C-008</td>
+<td>Math</td>
+</tr>
+<tr>
+<td>C-010</td>
+<td>Thm 0.10: Minimal domain</td>
+<td>D</td>
+<td>=2 forced by P.2</td>
+<td>F</td>
+<td>Derivation</td>
+</tr>
+</tbody>
+</table>
+<h3 id="phase-architecture-level-01" id="phase-architecture-level-01">Phase Architecture (Level 0–1)</h3>
+<table>
+<thead>
+<tr>
+<th>ID</th>
+<th>Claim</th>
+<th>Status</th>
+<th>J</th>
+<th>Dependencies</th>
+<th>Readings</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>C-011</td>
+<td>Phase-Dist functor asymmetry: Co-Dist-ward non-natural</td>
+<td>F</td>
+<td>Derivation</td>
+<td>C-004</td>
+<td>Math, Phys</td>
+</tr>
+<tr>
+<td>C-012</td>
+<td>P3 universal attractor (LF1): det(A⊗B)≥0 for 2×2; P1 impossible at level ≥2</td>
+<td>F</td>
+<td>Derivation</td>
+<td>C-005, C-010</td>
+<td>Math, Phys</td>
+</tr>
+<tr>
+<td>C-013</td>
+<td>Asymmetry necessity: branch-symmetric sectors cannot generate non-removable scale</td>
+<td>F</td>
+<td>Derivation</td>
+<td>C-011</td>
+<td>Math, Phys, Sem</td>
+</tr>
+<tr>
+<td>C-014</td>
+<td>Consciousness requires asymmetry: no root asymmetry → trivial double negation → no consciousness</td>
+<td>F</td>
+<td>Derivation</td>
+<td>C-013</td>
+<td>Obs, Phys</td>
+</tr>
+<tr>
+<td>C-015</td>
+<td>No Natural Retraction (Thm 7.1): η = 0 is the only natural transformation Sq → Id in Vect (weight obstruction)</td>
+<td>F</td>
+<td>Derivation</td>
+<td>C-010</td>
+<td>Math</td>
+</tr>
+<tr>
+<td>C-016</td>
+<td>Set-Theoretic Retraction Classification (Thm 7.2): only π₁, π₂ are natural transformations Sq → Id in Set</td>
+<td>F</td>
+<td>Derivation</td>
+<td>C-010</td>
+<td>Math</td>
+</tr>
+<tr>
+<td>C-017</td>
+<td>Two-Phase Irreversibility (Thm 7.3): choice-asymmetry at Levels 0–1, existence-asymmetry at Levels 3+</td>
+<td>F</td>
+<td>Derivation</td>
+<td>C-015, C-016</td>
+<td>Math, Phys, Sem</td>
+</tr>
+<tr>
+<td>C-018</td>
+<td>Entanglement Gap (Thm 7.4): (dim V − 1)² irreducible entangled dimensions per tensor lift</td>
+<td>F</td>
+<td>Derivation</td>
+<td>C-015</td>
+<td>Math, Phys</td>
+</tr>
+<tr>
+<td>C-019</td>
+<td>Tower Monotone (Thm 7.5): cumulative entanglement Q(n) strictly increasing; reduces to Bekenstein at Level 5</td>
+<td>F</td>
+<td>Derivation</td>
+<td>C-018</td>
+<td>Math, Obs, Phys</td>
+</tr>
+<tr>
+<td>C-019a</td>
+<td>ρ-Regulation Regime (Thm 4.10): optimal ρ* ∈ [φ̄², 1/2]; endogenous self-maintenance via K6&rsquo; feedback</td>
+<td>F</td>
+<td>Derivation</td>
+<td>C-011, C-013</td>
+<td>Math, Obs, Phys</td>
+</tr>
+<tr>
+<td>C-019b</td>
+<td>Observer-core hollow/complete diagnostic: seven dimensions of observer-core completeness</td>
+<td>E</td>
+<td>Compression</td>
+<td>C-019a, C-013, C-014</td>
+<td>Obs, Sem</td>
+</tr>
+</tbody>
+</table>
+<h3 id="frontier-t0_substrate" id="frontier-t0_substrate">Frontier (T0_SUBSTRATE)</h3>
+<p>None. All owned claims are FORCED.</p>
+<hr />
+<h1 id="file-t1_dist-b2-all" id="file-t1_dist-b2-all">FILE: T1_DIST — B(2, all)</h1>
+<p><strong>Need:</strong> Level necessity (categorical level). Owns all Dist-theoretic structure.
+<strong>Imports:</strong> C-004 (SRD), C-010 (|D|=2)
+<strong>Exports:</strong> Kernel theorem, quotient idempotence, three readings, observer=quotient — used by everything downstream.</p>
+<table>
+<thead>
+<tr>
+<th>ID</th>
+<th>Claim</th>
+<th>Status</th>
+<th>J</th>
+<th>Dependencies</th>
+<th>Readings</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>C-020</td>
+<td>Kernel Theorem (Thm 1.5): ker(f) is equivalence relation</td>
+<td>F</td>
+<td>Derivation</td>
+<td>C-004</td>
+<td>Math</td>
+</tr>
+<tr>
+<td>C-021</td>
+<td>Morphism forcing / five-way elimination</td>
+<td>F</td>
+<td>Derivation</td>
+<td>C-020</td>
+<td>Math</td>
+</tr>
+<tr>
+<td>C-022</td>
+<td>Thm 1.9: Dist is the unique forced category</td>
+<td>F</td>
+<td>Derivation</td>
+<td>C-020, C-021</td>
+<td>Math</td>
+</tr>
+<tr>
+<td>C-023</td>
+<td>Thm 4.1: Quotient idempotence q∘q=q</td>
+<td>F</td>
+<td>Derivation</td>
+<td>C-020</td>
+<td>Math, Obs</td>
+</tr>
+<tr>
+<td>C-024</td>
+<td>Thm 2.2: Observer = Dist quotient morphism</td>
+<td>F</td>
+<td>Derivation</td>
+<td>C-020, C-023</td>
+<td>Math, Obs</td>
+</tr>
+<tr>
+<td>C-025</td>
+<td>Thm 2.5: Blind spot = ker(q_K)</td>
+<td>F</td>
+<td>Derivation</td>
+<td>C-024</td>
+<td>Obs, Sem</td>
+</tr>
+<tr>
+<td>C-026</td>
+<td>Thm 5.1: Three simultaneous readings of every Dist morphism (P1/P2/P3)</td>
+<td>F</td>
+<td>Derivation</td>
+<td>C-022</td>
+<td>Math, Obs, Phys, Sem</td>
+</tr>
+<tr>
+<td>C-027</td>
+<td>R(R)=R at categorical level</td>
+<td>F</td>
+<td>Derivation</td>
+<td>C-023</td>
+<td>Math, Sem</td>
+</tr>
+<tr>
+<td>C-028</td>
+<td>Product-kernel route: Dist forced by self-product → projections → kernel theorem → morphisms</td>
+<td>F</td>
+<td>Derivation</td>
+<td>C-004, C-020</td>
+<td>Math</td>
+</tr>
+</tbody>
+</table>
+<h3 id="frontier-t1_dist" id="frontier-t1_dist">Frontier (T1_DIST)</h3>
+<p>None. All FORCED.</p>
+<hr />
+<h1 id="file-t2_bridge-b3-all" id="file-t2_bridge-b3-all">FILE: T2_BRIDGE — B(3, all)</h1>
+<p><strong>Need:</strong> Level necessity (algebraic level). Owns bridge chain and generator algebra.
+<strong>Imports:</strong> C-010 (|D|=2), C-022 (Dist), C-026 (three readings)
+<strong>Exports:</strong> {R,N}, Cl(1,1), five constants, exponential sectors — used by everything Level 4+.</p>
+<table>
+<thead>
+<tr>
+<th>ID</th>
+<th>Claim</th>
+<th>Status</th>
+<th>J</th>
+<th>Dependencies</th>
+<th>Readings</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>C-040</td>
+<td>Bridge chain {0,1}→V₄→S₃→ℚ[S₃]→M₂(ℚ)→M₂(ℝ)⊃sl(2,ℝ), zero branching</td>
+<td>F</td>
+<td>Derivation</td>
+<td>C-010, C-022</td>
+<td>Math</td>
+</tr>
+<tr>
+<td>C-041</td>
+<td>Binary-to-Trinary: 2→4→3 forced (</td>
+<td>S₀</td>
+<td>²=4,</td>
+<td>V₄{0}</td>
+<td>=3, S₃ locks)</td>
+</tr>
+<tr>
+<td>C-042</td>
+<td>Spectral completion forces ℂ: M₂(ℝ)→M₂(ℂ)</td>
+<td>F</td>
+<td>Derivation</td>
+<td>C-040</td>
+<td>Math</td>
+</tr>
+<tr>
+<td>C-043</td>
+<td>R²=R+I (Fibonacci matrix), N²=−I (complex structure)</td>
+<td>F</td>
+<td>Derivation</td>
+<td>C-040</td>
+<td>Math, Sem</td>
+</tr>
+<tr>
+<td>C-044</td>
+<td>Six identities: {R,N}=N, RNR=−N, NRN=R⁻¹, (RN)²=I, etc.</td>
+<td>F</td>
+<td>Derivation</td>
+<td>C-043</td>
+<td>Math</td>
+</tr>
+<tr>
+<td>C-045</td>
+<td>Cl(1,1) ≅ M₂(ℝ); basis {I,R,N,RN}</td>
+<td>F</td>
+<td>Derivation</td>
+<td>C-043, C-044</td>
+<td>Math</td>
+</tr>
+<tr>
+<td>C-046</td>
+<td>Four forced constants: φ (eigenvalue of R), π (half-period of N), e (exp(h)[0,0]), √3 (‖R‖_F)</td>
+<td>F</td>
+<td>Derivation</td>
+<td>C-043</td>
+<td>Math, Phys</td>
+</tr>
+<tr>
+<td>C-047</td>
+<td>Fifth constant √2 = ‖N‖_F; lattice Λ&rsquo;≅ℤ⁵ generators {φ,e,π,√2,√3}</td>
+<td>F</td>
+<td>Derivation</td>
+<td>C-043, C-044</td>
+<td>Math</td>
+</tr>
+<tr>
+<td>C-048</td>
+<td>Exponential sector partition: sl(2,ℝ){0} = H ∪ N₀ ∪ E by Killing sign</td>
+<td>F</td>
+<td>Derivation</td>
+<td>C-045</td>
+<td>Math</td>
+</tr>
+<tr>
+<td>C-049</td>
+<td>Source placement: e ∈ H (B=8&gt;0), π ∈ E (B=−8&lt;0), boundary algebraic</td>
+<td>F</td>
+<td>Derivation</td>
+<td>C-048</td>
+<td>Math</td>
+</tr>
+<tr>
+<td>C-050</td>
+<td>Boundary sterility: nilpotent exp algebraic, no period on N₀</td>
+<td>F</td>
+<td>Derivation</td>
+<td>C-048</td>
+<td>Math</td>
+</tr>
+<tr>
+<td>C-051</td>
+<td>Period wall: T(s)→∞ at nilpotent boundary; α(s)→3/2∈ℚ</td>
+<td>F</td>
+<td>Derivation</td>
+<td>C-048, C-050</td>
+<td>Math</td>
+</tr>
+<tr>
+<td>C-052</td>
+<td>Norm-Sum Identity: disc(R)=‖R‖²+‖N‖² iff det(R)=−1</td>
+<td>F</td>
+<td>Derivation</td>
+<td>C-043</td>
+<td>Math</td>
+</tr>
+<tr>
+<td>C-053</td>
+<td>Gram Det = disc(R)² = 25; sector orthogonality {I,R}⊥{N,RN}</td>
+<td>F</td>
+<td>Derivation</td>
+<td>C-045</td>
+<td>Math</td>
+</tr>
+<tr>
+<td>C-054</td>
+<td>5ⁿ norm propagation (LF3): total norm² at tower level n = 5ⁿ</td>
+<td>F</td>
+<td>Derivation</td>
+<td>C-053</td>
+<td>Math</td>
+</tr>
+<tr>
+<td>C-055</td>
+<td>Koide tower (LF4): ‖R^⊗n‖²/‖N^⊗n‖² = (3/2)ⁿ</td>
+<td>F</td>
+<td>Derivation</td>
+<td>C-043</td>
+<td>Math, Phys</td>
+</tr>
+<tr>
+<td>C-056</td>
+<td>Algebraic dimensionlessness: bridge chain output entirely dimensionless</td>
+<td>F</td>
+<td>Derivation</td>
+<td>C-040</td>
+<td>Math, Phys</td>
+</tr>
+<tr>
+<td>C-057</td>
+<td>Spectral Signature Completeness: five constants = canonical spectral/phase/norm signatures of {R,N,h}</td>
+<td>F</td>
+<td>Derivation</td>
+<td>C-046, C-047</td>
+<td>Math</td>
+</tr>
+<tr>
+<td>C-058</td>
+<td>Basis closure: {φ,e,π,√2,√3} complete; no sixth constant</td>
+<td>F</td>
+<td>Derivation</td>
+<td>C-057</td>
+<td>Math</td>
+</tr>
+</tbody>
+</table>
+<h3 id="new-claims-from-koide-phase-investigation-t2_bridge-221222" id="new-claims-from-koide-phase-investigation-t2_bridge-221222">New Claims from Koide Phase Investigation (T2_BRIDGE §22.1–22.2)</h3>
+<table>
+<thead>
+<tr>
+<th>ID</th>
+<th>Claim</th>
+<th>Status</th>
+<th>J</th>
+<th>Dependencies</th>
+<th>Readings</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>C-059</td>
+<td>Unit Norm Difference: ‖R‖²−‖N‖² = 1 (from Naming Thm: R = J +</td>
+<td>1⟩⟨1</td>
+<td>)</td>
+<td>F</td>
+<td>Derivation</td>
+</tr>
+<tr>
+<td>C-060</td>
+<td>Norm Non-Constancy: Frobenius norms of bridge lifts are not constant on S₃ conjugacy classes; ‖J‖²=2, ‖T₊‖²=‖T₋‖²=3</td>
+<td>F</td>
+<td>Derivation</td>
+<td>C-040</td>
+<td>Math</td>
+</tr>
+<tr>
+<td>C-061</td>
+<td>Transposition Norm Variance: Var(2,3,3) = 2/9</td>
+<td>F</td>
+<td>Derivation</td>
+<td>C-060</td>
+<td>Math, Phys</td>
+</tr>
+<tr>
+<td>C-062</td>
+<td>Variance-Koide Equivalence: σ² = Q/n_gen iff ‖R‖²/‖N‖² = 3/2, given ‖R‖²−‖N‖² = 1</td>
+<td>F</td>
+<td>Derivation</td>
+<td>C-059, C-061, C-055</td>
+<td>Math</td>
+</tr>
+<tr>
+<td>C-063</td>
+<td>Deviation Operator: L_dev = Σ(‖ĝ‖²−class avg)·ρ_std(g) = −ρ_std((12)) on V_std</td>
+<td>F</td>
+<td>Derivation (Schur + C-060)</td>
+<td>C-060</td>
+<td>Math, Phys</td>
+</tr>
+<tr>
+<td>C-064</td>
+<td>Commutator-Discriminant Identity: [R,N]² = disc(R)·I = 5I</td>
+<td>F</td>
+<td>Derivation (from C-044, C-045, C-054)</td>
+<td>C-044, C-045, C-054</td>
+<td>Math</td>
+</tr>
+<tr>
+<td>C-065</td>
+<td>Native Structure Constants: [R_tl,C]=5N, [N,C]=4R_tl; coefficients = disc(R),</td>
+<td>V₄</td>
+<td></td>
+<td>F</td>
+<td>Derivation</td>
+</tr>
+<tr>
+<td>C-066</td>
+<td>Structure Constant Duality: det(R) =</td>
+<td>V₄</td>
+<td>−disc(R) = 4−5 = −1</td>
+<td>F</td>
+<td>Derivation</td>
+</tr>
+<tr>
+<td>C-067</td>
+<td>Fibonacci-Commutator Scaling: [Rⁿ,N] = F(n)·[R,N]</td>
+<td>F</td>
+<td>Derivation (Fibonacci decomp)</td>
+<td>C-064, C-056</td>
+<td>Math</td>
+</tr>
+<tr>
+<td>C-068</td>
+<td>Traceless Generator Powers: R_tl^(2k) = (disc(R)/4)^k·I</td>
+<td>F</td>
+<td>Derivation</td>
+<td>C-064</td>
+<td>Math</td>
+</tr>
+<tr>
+<td>C-069</td>
+<td>Seventh Identity: [R,N]²=5I, algebraically dependent on {2,3,6} but structurally irreducible</td>
+<td>F</td>
+<td>Derivation</td>
+<td>C-064</td>
+<td>Math</td>
+</tr>
+<tr>
+<td>C-070</td>
+<td>Root Decomposition: sl(2,ℝ) = h ⊕ e₊ ⊕ e₋ with e_±²=0 (mode (iii) content)</td>
+<td>F</td>
+<td>Derivation</td>
+<td>C-064</td>
+<td>Math</td>
+</tr>
+<tr>
+<td>C-071</td>
+<td>Orbit-Type Square Geometry: positive/negative/zero squares ↔ hyperbolic/elliptic/nilpotent</td>
+<td>F</td>
+<td>Derivation</td>
+<td>C-070</td>
+<td>Math</td>
+</tr>
+<tr>
+<td>C-072</td>
+<td>Killing-Determinant Duality: det(M) = −B(M,M)/8 on sl(2,ℝ)</td>
+<td>F</td>
+<td>Derivation</td>
+<td>C-043, C-044</td>
+<td>Math</td>
+</tr>
+<tr>
+<td>C-073</td>
+<td>Casimir C_fund = 3/8 =</td>
+<td>V₄{0}</td>
+<td>/(2</td>
+<td>V₄</td>
+<td>)</td>
+</tr>
+<tr>
+<td>C-074</td>
+<td>Adjoint Spectral Radii: ρ(ad(R_tl))²=disc(R), ρ(ad(N))²=</td>
+<td>V₄</td>
+<td></td>
+<td>F</td>
+<td>Derivation</td>
+</tr>
+<tr>
+<td>C-075</td>
+<td>Discriminant as Cardinal Sum: disc(R) =</td>
+<td>V₄</td>
+<td>+1 =</td>
+<td>S₀</td>
+<td>²+1</td>
+</tr>
+<tr>
+<td>C-076</td>
+<td>Generator Norms as Cardinals: ‖N‖²=</td>
+<td>S₀</td>
+<td>, ‖R‖²=</td>
+<td>V₄{0}</td>
+<td></td>
+</tr>
+<tr>
+<td>C-077</td>
+<td>Koide Q = 2/n Trigonometric Identity: Q = (1+a²/2)/n; a=√2 forced</td>
+<td>F</td>
+<td>Derivation</td>
+<td>C-055, C-076</td>
+<td>Math, Phys</td>
+</tr>
+<tr>
+<td>C-078</td>
+<td>Cardinal Reduction: all dimensionless ratios determined by</td>
+<td>S₀</td>
+<td>=2</td>
+<td>F</td>
+<td>Derivation</td>
+</tr>
+</tbody>
+</table>
+<h3 id="frontier-t2_bridge" id="frontier-t2_bridge">Frontier (T2_BRIDGE)</h3>
+<p>None at the algebraic level. All FORCED.</p>
+<hr />
+<h1 id="file-t3_p1_production-b4-p1" id="file-t3_p1_production-b4-p1">FILE: T3_P1_PRODUCTION — B(4, P1)</h1>
+<p><strong>Need:</strong> Projection necessity (P1 face of Level 4).
+<strong>Imports:</strong> C-043 (R²=R+I), C-046 (φ), C-040 (bridge chain)
+<strong>Exports:</strong> Fibonacci structure, Sakharov conditions, baryon asymmetry, φ̄² universality.</p>
+<table>
+<thead>
+<tr>
+<th>ID</th>
+<th>Claim</th>
+<th>Status</th>
+<th>J</th>
+<th>Dependencies</th>
+<th>Readings</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>C-070</td>
+<td>I²-dominance: Fibonacci Z=77.27% of integer Z-function</td>
+<td>F</td>
+<td>Derivation</td>
+<td>C-043</td>
+<td>Math</td>
+</tr>
+<tr>
+<td>C-071</td>
+<td>Möbius-RG: r(n+1)=1/(1+r(n)); Fibonacci ratio = discrete RG</td>
+<td>F</td>
+<td>Derivation</td>
+<td>C-043</td>
+<td>Math, Phys</td>
+</tr>
+<tr>
+<td>C-072</td>
+<td>φ̄² Four-Domain Universality: FIX rate, OWF threshold, Phase-Dist ρ, eigenvalue suppression</td>
+<td>F</td>
+<td>Derivation</td>
+<td>C-043</td>
+<td>Math, Phys</td>
+</tr>
+<tr>
+<td>C-073</td>
+<td>Sakharov conditions: all three proved from P1 structure</td>
+<td>F</td>
+<td>Derivation</td>
+<td>C-043, C-011</td>
+<td>Phys</td>
+</tr>
+<tr>
+<td>C-074</td>
+<td>Baryon asymmetry η=φ̄^{2n} with n=22</td>
+<td>F</td>
+<td>Derivation</td>
+<td>C-073, C-130</td>
+<td>Phys</td>
+</tr>
+<tr>
+<td>C-075</td>
+<td>α_S = φ̄³/2 = Boltzmann deviation σ_FIX(β_nat) − 1/2; K4 structural argument on gauge sector</td>
+<td>E</td>
+<td>K4 structural identification</td>
+<td>C-072, C-117</td>
+<td>Math, Phys</td>
+</tr>
+</tbody>
+</table>
+<h3 id="frontier-t3_p1_production" id="frontier-t3_p1_production">Frontier (T3_P1_PRODUCTION)</h3>
+<table>
+<thead>
+<tr>
+<th>ID</th>
+<th>Claim</th>
+<th>Status</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>C-075</td>
+<td>α_S = φ̄³/2</td>
+<td>ENCODED</td>
+<td>K4 structural argument complete: α_S = σ_FIX(β_nat) − 1/2 = Boltzmann deviation at natural temperature; K4 uniqueness selects bridge-normal value; SU(3) sole K4-selected absolute coupling. One remaining link: explicit K4 functional computation for gauge sector. Promoted from RESONANT. 1/α_S = 4 + 2√5 =</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h1 id="file-t3_p2_mediation-b4-p2" id="file-t3_p2_mediation-b4-p2">FILE: T3_P2_MEDIATION — B(4, P2)</h1>
+<p><strong>Need:</strong> Projection necessity (P2 face of Level 4).
+<strong>Imports:</strong> C-045 (Cl(1,1)), C-048 (exponential sectors)</p>
+<table>
+<thead>
+<tr>
+<th>ID</th>
+<th>Claim</th>
+<th>Status</th>
+<th>J</th>
+<th>Dependencies</th>
+<th>Readings</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>C-080</td>
+<td>Exponential flow: exp(th) hyperbolic one-parameter group</td>
+<td>F</td>
+<td>Derivation</td>
+<td>C-048</td>
+<td>Math</td>
+</tr>
+<tr>
+<td>C-081</td>
+<td>Tower saturation at d²</td>
+<td>F</td>
+<td>Derivation</td>
+<td>C-080</td>
+<td>Math</td>
+</tr>
+<tr>
+<td>C-082</td>
+<td>First/second thermodynamic laws from KMS</td>
+<td>F</td>
+<td>Derivation</td>
+<td>C-080</td>
+<td>Math, Phys</td>
+</tr>
+</tbody>
+</table>
+<h3 id="frontier-t3_p2_mediation" id="frontier-t3_p2_mediation">Frontier (T3_P2_MEDIATION)</h3>
+<p>None. All FORCED.</p>
+<hr />
+<h1 id="file-t3_p3_observation-b4-p3" id="file-t3_p3_observation-b4-p3">FILE: T3_P3_OBSERVATION — B(4, P3)</h1>
+<p><strong>Need:</strong> Projection necessity (P3 face of Level 4).
+<strong>Imports:</strong> C-043 (N²=−I), C-046 (π)</p>
+<table>
+<thead>
+<tr>
+<th>ID</th>
+<th>Claim</th>
+<th>Status</th>
+<th>J</th>
+<th>Dependencies</th>
+<th>Readings</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>C-090</td>
+<td>Rotation closure: exp(πN)=−I</td>
+<td>F</td>
+<td>Derivation</td>
+<td>C-043</td>
+<td>Math, Phys</td>
+</tr>
+<tr>
+<td>C-091</td>
+<td>Spin-½ origin from exp(πN)=−I</td>
+<td>F</td>
+<td>Derivation</td>
+<td>C-090</td>
+<td>Phys</td>
+</tr>
+</tbody>
+</table>
+<h3 id="frontier-t3_p3_observation" id="frontier-t3_p3_observation">Frontier (T3_P3_OBSERVATION)</h3>
+<p>None. All FORCED.</p>
+<hr />
+<h1 id="file-t3_meta-b4-cross" id="file-t3_meta-b4-cross">FILE: T3_META — B(4, cross)</h1>
+<p><strong>Need:</strong> Operator necessity (cross-projection synthesis at Level 4).
+<strong>Imports:</strong> C-026 (three readings), C-043–C-046 (generators and constants)
+<strong>Exports:</strong> Independence, completeness, folding, central collapse — used by everything Level 5+.</p>
+<table>
+<thead>
+<tr>
+<th>ID</th>
+<th>Claim</th>
+<th>Status</th>
+<th>J</th>
+<th>Dependencies</th>
+<th>Readings</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>C-100</td>
+<td>Thm 1.1: Three projections mutually independent</td>
+<td>F</td>
+<td>Derivation</td>
+<td>C-026</td>
+<td>Math</td>
+</tr>
+<tr>
+<td>C-101</td>
+<td>Thm 1.3: No fourth projection exists (completeness)</td>
+<td>F</td>
+<td>Derivation</td>
+<td>C-100</td>
+<td>Math</td>
+</tr>
+<tr>
+<td>C-102</td>
+<td>Thm 2.1: Folding — each projection contains the other two</td>
+<td>F</td>
+<td>Derivation</td>
+<td>C-100</td>
+<td>Math, Sem</td>
+</tr>
+<tr>
+<td>C-103</td>
+<td>Thm 7.1: Central Collapse I²∘TDL∘LoMI = Dist</td>
+<td>F</td>
+<td>Derivation</td>
+<td>C-100, C-101, C-102</td>
+<td>Math, Sem</td>
+</tr>
+<tr>
+<td>C-104</td>
+<td>V(n) composite potential; V(1)=0 fixed point</td>
+<td>F</td>
+<td>Derivation</td>
+<td>C-100</td>
+<td>Math</td>
+</tr>
+<tr>
+<td>C-105</td>
+<td>Folding commutativity (LF6): composition and tensor product commute</td>
+<td>F</td>
+<td>Derivation</td>
+<td>C-102</td>
+<td>Math</td>
+</tr>
+</tbody>
+</table>
+<h3 id="frontier-t3_meta" id="frontier-t3_meta">Frontier (T3_META)</h3>
+<p>None. All FORCED.</p>
+<hr />
+<h1 id="file-t4_lattice-b4-cross" id="file-t4_lattice-b4-cross">FILE: T4_LATTICE — B(4, cross)</h1>
+<p><strong>Need:</strong> Operator necessity (constant interactions, distinct from projection meta-theory).
+<strong>Imports:</strong> C-046, C-047 (five constants), C-048 (exponential sectors)
+<strong>Exports:</strong> Lattice structure, independence results, KMS selection — used by T5_OBSERVER+.</p>
+<table>
+<thead>
+<tr>
+<th>ID</th>
+<th>Claim</th>
+<th>Status</th>
+<th>J</th>
+<th>Dependencies</th>
+<th>Readings</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>C-110</td>
+<td>3-way algebraic independence: ⟨φ,√2,√3⟩ ≅ ℤ³ (Baker, unconditional)</td>
+<td>F</td>
+<td>Derivation</td>
+<td>C-046, C-047</td>
+<td>Math</td>
+</tr>
+<tr>
+<td>C-111</td>
+<td>5-way reduces to (e,π): Baker + Lindemann; algebraic sublattice unconditional</td>
+<td>F</td>
+<td>Derivation</td>
+<td>C-110</td>
+<td>Math</td>
+</tr>
+<tr>
+<td>C-112</td>
+<td>27 forced relations (Thm 6.3), 8-layer structured lattice (Thm 6.4)</td>
+<td>F</td>
+<td>Derivation</td>
+<td>C-046, C-047</td>
+<td>Math</td>
+</tr>
+<tr>
+<td>C-113</td>
+<td>Linearized mixing exclusion: 𝔾_m × SO₂ direct product unifies 7 obstructions</td>
+<td>F</td>
+<td>Derivation</td>
+<td>C-048</td>
+<td>Math</td>
+</tr>
+<tr>
+<td>C-114</td>
+<td>Schanuel equivalence: (e,π) independence ⟺ Schanuel for (1,iπ)</td>
+<td>F</td>
+<td>Derivation</td>
+<td>C-113</td>
+<td>Math</td>
+</tr>
+<tr>
+<td>C-114a</td>
+<td>Motivic Galois group 𝔾_m × SO₂ (direct product, dim 2): Picard-Vessiot on decoupled Killing sectors</td>
+<td>F</td>
+<td>Derivation</td>
+<td>C-113</td>
+<td>Math</td>
+</tr>
+<tr>
+<td>C-114b</td>
+<td>Exponential period characterization: e and π are exponential periods; EPC predicts tr.deg = 2</td>
+<td>F</td>
+<td>Derivation</td>
+<td>C-114a</td>
+<td>Math</td>
+</tr>
+<tr>
+<td>C-114c</td>
+<td>Conjecture 6.6 formulation: Killing-orthogonal generators → algebraically independent exponential constants; ⟺ Schanuel for (1,iπ) ⟺ EPC for 𝔾_m × SO₂</td>
+<td>F</td>
+<td>Derivation</td>
+<td>C-114a, C-114</td>
+<td>Math</td>
+</tr>
+<tr>
+<td>C-115</td>
+<td>Lattice self-containment (LF8): Λ&rsquo; closed under tower; R(R)=R for lattice</td>
+<td>F</td>
+<td>Derivation</td>
+<td>C-112</td>
+<td>Math</td>
+</tr>
+<tr>
+<td>C-116</td>
+<td>Realization-Mode Uniqueness: each lattice generator has unique physical realization</td>
+<td>F</td>
+<td>Derivation</td>
+<td>C-112</td>
+<td>Math, Phys</td>
+</tr>
+<tr>
+<td>C-117</td>
+<td>KMS selection: Z(β)=coth(β/2)⁴, β=1 canonical</td>
+<td>F</td>
+<td>Derivation</td>
+<td>C-082, C-112</td>
+<td>Math, Phys</td>
+</tr>
+</tbody>
+</table>
+<h3 id="open-problems-t4_lattice" id="open-problems-t4_lattice">Open Problems (T4_LATTICE)</h3>
+<table>
+<thead>
+<tr>
+<th>ID</th>
+<th>Claim</th>
+<th>Status</th>
+<th>J</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>C-118</td>
+<td>(e,π) algebraic independence</td>
+<td>R</td>
+<td>Structural Fit</td>
+<td>CONDITIONAL on Fresán-Jossen EPC for 𝔾_m × SO₂. Framework derives motivic Galois group (C-114a, dim 2, direct product, FORCED). EPC converts dim → tr.deg = 2 = independence. Conj 6.6 (C-114c) = framework-native formulation. Five routes.</td>
+</tr>
+<tr>
+<td>C-119</td>
+<td>Λ&rsquo;≅ℤ⁵ unconditional</td>
+<td>R</td>
+<td>Compression</td>
+<td>Conditional on C-118. Algebraic sublattice ℤ³ unconditional.</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h1 id="file-t5_observer-b5-all" id="file-t5_observer-b5-all">FILE: T5_OBSERVER — B(5, all)</h1>
+<p><strong>Need:</strong> Level necessity (observer level). Owns all observer theory + consciousness.
+<strong>Imports:</strong> C-022 (Dist), C-040 (bridge chain), C-023 (q∘q=q), C-103 (central collapse)
+<strong>Exports:</strong> K, A1–A4, Bekenstein, K6&rsquo;, K7&rsquo;, consciousness hierarchy — used by T6A, T6B, T_COMP, T_SIL.</p>
+<h3 id="observer-theory-core" id="observer-theory-core">Observer Theory Core</h3>
+<table>
+<thead>
+<tr>
+<th>ID</th>
+<th>Claim</th>
+<th>Status</th>
+<th>J</th>
+<th>Dependencies</th>
+<th>Readings</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>C-130</td>
+<td>Baryon exponent n=22 = dim(gauge)+dim(spacetime)+dim(Lorentz) = 12+4+6</td>
+<td>F</td>
+<td>Derivation</td>
+<td>C-073, C-160, C-164</td>
+<td>Phys</td>
+</tr>
+<tr>
+<td>C-131</td>
+<td>Dist→Hilb functor F: FinSet→Hilb; monoidal (×↦⊗); A2&rsquo; derived</td>
+<td>F</td>
+<td>Derivation</td>
+<td>C-022</td>
+<td>Math</td>
+</tr>
+<tr>
+<td>C-132</td>
+<td>Bekenstein from A1–A4: S_max = 2log₂(d_K)</td>
+<td>F</td>
+<td>Derivation</td>
+<td>C-131</td>
+<td>Math, Phys</td>
+</tr>
+<tr>
+<td>C-133</td>
+<td>K4 indexical selection: U_min(K) = argmin δ(U</td>
+<td>K) where δ=Err+Comp</td>
+<td>F</td>
+<td>Derivation</td>
+<td>C-131, C-132</td>
+</tr>
+<tr>
+<td>C-134</td>
+<td>K6&rsquo;: Observer loop K→F→U(K)→K forced closed</td>
+<td>F</td>
+<td>Derivation</td>
+<td>C-131, C-133</td>
+<td>Math, Obs, Phys</td>
+</tr>
+<tr>
+<td>C-135</td>
+<td>K7&rsquo;: Meta-encoding fixed point M(FRAME)=FRAME</td>
+<td>F</td>
+<td>Derivation</td>
+<td>C-134</td>
+<td>Math, Obs, Sem</td>
+</tr>
+<tr>
+<td>C-136</td>
+<td>K1&rsquo;: Δ_max(n) = d_K²·φ̄^{2^{n+1}} (depth-gap)</td>
+<td>F</td>
+<td>Derivation</td>
+<td>C-132</td>
+<td>Math</td>
+</tr>
+<tr>
+<td>C-137</td>
+<td>Observer-complete equivalence: [B_K] = Univ_K</td>
+<td>F</td>
+<td>Derivation</td>
+<td>C-133</td>
+<td>Math, Obs</td>
+</tr>
+<tr>
+<td>C-138</td>
+<td>Bridge-normal form: exists, unique, reduction terminates</td>
+<td>F</td>
+<td>Derivation</td>
+<td>C-133, C-040</td>
+<td>Math</td>
+</tr>
+<tr>
+<td>C-139</td>
+<td>Boundary observer: Aut(S_n) satisfies A1–A4 inevitably</td>
+<td>F</td>
+<td>Derivation</td>
+<td>C-131</td>
+<td>Math</td>
+</tr>
+<tr>
+<td>C-140</td>
+<td>Observer cost positivity: inf{A(update)} ≥ πℏ/2 &gt; 0</td>
+<td>F</td>
+<td>Derivation</td>
+<td>C-132</td>
+<td>Math, Phys</td>
+</tr>
+<tr>
+<td>C-141</td>
+<td>Entropy-area linearity: S ∝ A from tensor factorization + binary alphabet</td>
+<td>F</td>
+<td>Derivation</td>
+<td>C-131, C-132</td>
+<td>Math, Phys</td>
+</tr>
+<tr>
+<td>C-142</td>
+<td>Dimensional realization rigidity: given anchor, all K-admissible universes give identical physics</td>
+<td>F</td>
+<td>Derivation</td>
+<td>C-133, C-131</td>
+<td>Math, Phys</td>
+</tr>
+<tr>
+<td>C-143</td>
+<td>Σ Factorization: Σ = R_obs ∘ (F × Alg_inv); all factors forced</td>
+<td>F</td>
+<td>Derivation</td>
+<td>C-131</td>
+<td>Math</td>
+</tr>
+<tr>
+<td>C-144</td>
+<td>Observer Scale Monotonicity: kernel refinement forces S_max, ρ_min, etc. monotonicity</td>
+<td>F</td>
+<td>Derivation</td>
+<td>C-132</td>
+<td>Math, Obs</td>
+</tr>
+<tr>
+<td>C-145</td>
+<td>Observer Kernel Lattice: complete lattice with meet/join</td>
+<td>F</td>
+<td>Derivation</td>
+<td>C-144</td>
+<td>Math, Obs</td>
+</tr>
+<tr>
+<td>C-146</td>
+<td>No Realized Ideal Observer: ker=Δ ⟹ Level 1 only</td>
+<td>F</td>
+<td>Derivation</td>
+<td>C-145</td>
+<td>Math, Obs</td>
+</tr>
+<tr>
+<td>C-147</td>
+<td>Metric Functor: contravariant M: Obs^op → Met</td>
+<td>F</td>
+<td>Derivation</td>
+<td>C-145</td>
+<td>Math</td>
+</tr>
+<tr>
+<td>C-148</td>
+<td>A2&rsquo; Sufficiency: all framework refinements A2&rsquo;-compatible</td>
+<td>F</td>
+<td>Derivation</td>
+<td>C-131, C-147</td>
+<td>Math</td>
+</tr>
+</tbody>
+</table>
+<h3 id="consciousness-migrating-from-t7" id="consciousness-migrating-from-t7">Consciousness (migrating from T7)</h3>
+<table>
+<thead>
+<tr>
+<th>ID</th>
+<th>Claim</th>
+<th>Status</th>
+<th>J</th>
+<th>Dependencies</th>
+<th>Readings</th>
+<th>Migration</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>C-150</td>
+<td>K8: Consciousness = recursive reversal capability (five-level hierarchy)</td>
+<td>F</td>
+<td>Derivation</td>
+<td>C-134, C-136</td>
+<td>Obs, Sem</td>
+<td>T7 §2 → T5_OBSERVER</td>
+</tr>
+<tr>
+<td>C-151</td>
+<td>K8.1: Nontriviality threshold ρ_min(K) = 1/d_K²</td>
+<td>F</td>
+<td>Derivation</td>
+<td>C-132, C-150</td>
+<td>Obs</td>
+<td>T7 §2 → T5_OBSERVER</td>
+</tr>
+<tr>
+<td>C-152</td>
+<td>K8.2: Universal consciousness — every A1–A4 observer is conscious-capable</td>
+<td>F</td>
+<td>Derivation</td>
+<td>C-151</td>
+<td>Obs</td>
+<td>T7 §2 → T5_OBSERVER</td>
+</tr>
+<tr>
+<td>C-153</td>
+<td>Blindness constitutive: no kernel → no negation → no conscious structure</td>
+<td>F</td>
+<td>Derivation</td>
+<td>C-025, C-150</td>
+<td>Obs, Sem</td>
+<td>T7 §2 → T5_OBSERVER</td>
+</tr>
+<tr>
+<td>C-154</td>
+<td>Consciousness depth = K1&rsquo;: C_cap = S_max · n_eff</td>
+<td>F</td>
+<td>Derivation</td>
+<td>C-136, C-150</td>
+<td>Obs</td>
+<td>T7 §2 → T5_OBSERVER</td>
+</tr>
+<tr>
+<td>C-155</td>
+<td>Consciousness Requires Scale Gap: Level 3+ requires 2log₂(d_U/d_K) &gt; 0 bits surrendered</td>
+<td>F</td>
+<td>Derivation</td>
+<td>C-150, C-144</td>
+<td>Obs</td>
+<td>T7 §2 → T5_OBSERVER</td>
+</tr>
+<tr>
+<td>C-156</td>
+<td>Refinement Tracks Consciousness: finer observers → more negation layers</td>
+<td>F</td>
+<td>Derivation</td>
+<td>C-144, C-150</td>
+<td>Obs</td>
+<td>T7 §2 → T5_OBSERVER</td>
+</tr>
+</tbody>
+</table>
+<h3 id="frontier-t5_observer" id="frontier-t5_observer">Frontier (T5_OBSERVER)</h3>
+<p>None at FORCED level. All consciousness claims are THEOREM status per T_INDEX.</p>
+<h3 id="new-claims-t5_observer-from-cosmological-hierarchy-investigations" id="new-claims-t5_observer-from-cosmological-hierarchy-investigations">New Claims (T5_OBSERVER, from Cosmological + Hierarchy investigations)</h3>
+<table>
+<thead>
+<tr>
+<th>ID</th>
+<th>Claim</th>
+<th>Status</th>
+<th>J</th>
+<th>Dependencies</th>
+<th>Readings</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>C-155</td>
+<td>Consciousness depth staircase: thresholds at d_K = φ^{2^m}</td>
+<td>F</td>
+<td>Derivation</td>
+<td>C-153 (K1&rsquo;)</td>
+<td>Math, Obs</td>
+</tr>
+<tr>
+<td>C-156</td>
+<td>Vertebrate plateau: n_eff = 6 for d_K ∈ [10⁷, 10¹³]</td>
+<td>F</td>
+<td>Derivation</td>
+<td>C-155</td>
+<td>Obs</td>
+</tr>
+<tr>
+<td>C-157</td>
+<td>n_eff 6→7 at φ^{64} ≈ 10^{13.4} matches cortical synapses</td>
+<td>R</td>
+<td>Structural fit</td>
+<td>C-155</td>
+<td>Obs, Phys</td>
+</tr>
+<tr>
+<td>C-158</td>
+<td>Universal consciousness bounds: n_eff ∈ [1, 408] at observed Λ</td>
+<td>F</td>
+<td>Derivation</td>
+<td>C-155, C-208a</td>
+<td>Obs, Phys</td>
+</tr>
+<tr>
+<td>C-159a</td>
+<td>Tower cost parameter α: language ≈ 0.80–0.85</td>
+<td>R</td>
+<td>Structural fit</td>
+<td>C-155</td>
+<td>Obs, Sem</td>
+</tr>
+<tr>
+<td>C-159b</td>
+<td>AI route to n_eff ≥ 8 via α &lt; 0.3</td>
+<td>E</td>
+<td>Encoding recovery</td>
+<td>C-155</td>
+<td>Obs</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h1 id="file-t6a_spacetime-b6-p3" id="file-t6a_spacetime-b6-p3">FILE: T6A_SPACETIME — B(6, P3)</h1>
+<p><strong>Need:</strong> Projection necessity (P3 face of Level 6 — observation geometry).
+<strong>Imports:</strong> C-042 (M₂(ℂ)), C-090 (rotation closure), C-131 (Dist→Hilb)</p>
+<table>
+<thead>
+<tr>
+<th>ID</th>
+<th>Claim</th>
+<th>Status</th>
+<th>J</th>
+<th>Dependencies</th>
+<th>Readings</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>C-160</td>
+<td>Spacetime dim=4, sig (1,3): Herm(M₂(ℂ))</td>
+<td>F</td>
+<td>Derivation</td>
+<td>C-042</td>
+<td>Math, Phys</td>
+</tr>
+<tr>
+<td>C-161</td>
+<td>Lorentz group: SL(2,ℂ) → SO⁺(1,3)</td>
+<td>F</td>
+<td>Derivation</td>
+<td>C-160</td>
+<td>Math, Phys</td>
+</tr>
+<tr>
+<td>C-162</td>
+<td>Spin-½ from exp(πN)=−I</td>
+<td>F</td>
+<td>Derivation</td>
+<td>C-090</td>
+<td>Phys</td>
+</tr>
+<tr>
+<td>C-163</td>
+<td>Born rule from Gleason</td>
+<td>F</td>
+<td>Derivation</td>
+<td>C-131, C-160</td>
+<td>Phys</td>
+</tr>
+<tr>
+<td>C-164</td>
+<td>Invariant Geometry Principle: det→Minkowski, Killing→YM, η·A→Einstein</td>
+<td>F</td>
+<td>Derivation</td>
+<td>C-160</td>
+<td>Math, Phys</td>
+</tr>
+<tr>
+<td>C-165</td>
+<td>Phase Closure Principle: exp(αX)=±I → quantization</td>
+<td>F</td>
+<td>Derivation</td>
+<td>C-090</td>
+<td>Math, Phys</td>
+</tr>
+<tr>
+<td>C-166</td>
+<td>Metric promotion: conformal→metric via η; unique up to η and Λ</td>
+<td>F</td>
+<td>Derivation</td>
+<td>C-160</td>
+<td>Phys</td>
+</tr>
+</tbody>
+</table>
+<h3 id="frontier-t6a_spacetime" id="frontier-t6a_spacetime">Frontier (T6A_SPACETIME)</h3>
+<p>None. All FORCED.</p>
+<hr />
+<h1 id="file-t6b_forces-b6-p1cross" id="file-t6b_forces-b6-p1cross">FILE: T6B_FORCES — B(6, P1+cross)</h1>
+<p><strong>Need:</strong> Projection necessity (P1 face + cross-projection gravity at Level 6).
+<strong>Imports:</strong> C-131 (Dist→Hilb), C-134 (K6&rsquo;), C-132 (Bekenstein), C-160 (spacetime), C-041 (V₄)</p>
+<h3 id="gauge-chain-g1g13" id="gauge-chain-g1g13">Gauge Chain G1–G13</h3>
+<table>
+<thead>
+<tr>
+<th>ID</th>
+<th>Claim</th>
+<th>Status</th>
+<th>J</th>
+<th>Dependencies</th>
+<th>Readings</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>C-170</td>
+<td>G1 Gauge freedom: A2&rsquo; forces U(d_K)</td>
+<td>F</td>
+<td>Derivation</td>
+<td>C-131</td>
+<td>Phys</td>
+</tr>
+<tr>
+<td>C-171</td>
+<td>G2+G3 Local gauge theory: principal bundle + connection from K6&rsquo;</td>
+<td>F</td>
+<td>Derivation</td>
+<td>C-134</td>
+<td>Phys</td>
+</tr>
+<tr>
+<td>C-172</td>
+<td>G5 Yang-Mills: closure deficit minimization → ∇F=J</td>
+<td>F</td>
+<td>Derivation</td>
+<td>C-171</td>
+<td>Phys</td>
+</tr>
+<tr>
+<td>C-173</td>
+<td>G6 Chirality: K4 selects su(2)_L</td>
+<td>F</td>
+<td>Derivation</td>
+<td>C-133, C-171</td>
+<td>Phys</td>
+</tr>
+<tr>
+<td>C-174</td>
+<td>su(3) selection: exchange P → stabilizer</td>
+<td>F</td>
+<td>Derivation</td>
+<td>C-041</td>
+<td>Math, Phys</td>
+</tr>
+<tr>
+<td>C-175</td>
+<td>SM gauge group: su(3)⊕su(2)⊕u(1) as local gauge theory</td>
+<td>F</td>
+<td>Derivation</td>
+<td>C-170–C-174</td>
+<td>Phys</td>
+</tr>
+<tr>
+<td>C-176</td>
+<td>G7 Full SM matter: 15 Weyl fermions/gen, all quantum numbers</td>
+<td>F</td>
+<td>Derivation</td>
+<td>C-175</td>
+<td>Phys</td>
+</tr>
+<tr>
+<td>C-177</td>
+<td>G8 Quark bi-charging: (3,2) representation</td>
+<td>F</td>
+<td>Derivation</td>
+<td>C-175</td>
+<td>Phys</td>
+</tr>
+<tr>
+<td>C-178</td>
+<td>G9 Hypercharge ratio: Y_l/Y_q=−3</td>
+<td>F</td>
+<td>Derivation</td>
+<td>C-175</td>
+<td>Phys</td>
+</tr>
+<tr>
+<td>C-179</td>
+<td>G10 Tower cutoff at level 2</td>
+<td>F</td>
+<td>Derivation</td>
+<td>C-136</td>
+<td>Phys</td>
+</tr>
+<tr>
+<td>C-180</td>
+<td>G11 EW symmetry breaking: A4 forces SU(2)×U(1)→U(1)_em</td>
+<td>F</td>
+<td>Derivation</td>
+<td>C-175</td>
+<td>Phys</td>
+</tr>
+<tr>
+<td>C-181</td>
+<td>G12 Right-handed spectrum: anomaly cancellation from K6&rsquo;</td>
+<td>F</td>
+<td>Derivation</td>
+<td>C-134, C-175</td>
+<td>Phys</td>
+</tr>
+<tr>
+<td>C-182</td>
+<td>G13 sin²θ_W = 3/8: sum rule from derived matter content</td>
+<td>F</td>
+<td>Derivation</td>
+<td>C-176</td>
+<td>Phys</td>
+</tr>
+<tr>
+<td>C-183</td>
+<td>Three generations: n_gen =</td>
+<td>V₄{0}</td>
+<td>= 3; S₃ transitivity</td>
+<td>F</td>
+<td>Derivation</td>
+</tr>
+<tr>
+<td>C-184</td>
+<td>Quark confinement (LF2): level 2 P3 universal → bound states</td>
+<td>F</td>
+<td>Derivation</td>
+<td>C-012, C-175</td>
+<td>Phys</td>
+</tr>
+<tr>
+<td>C-185</td>
+<td>Stabilizer Bridge Principle: gauge groups from stabilizers of eigenspace decompositions</td>
+<td>F</td>
+<td>Derivation</td>
+<td>C-174, C-175</td>
+<td>Math, Phys</td>
+</tr>
+</tbody>
+</table>
+<h3 id="gravity-chain-g3rsquog14" id="gravity-chain-g3g14">Gravity Chain G3&rsquo;–G14</h3>
+<table>
+<thead>
+<tr>
+<th>ID</th>
+<th>Claim</th>
+<th>Status</th>
+<th>J</th>
+<th>Dependencies</th>
+<th>Readings</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>C-190</td>
+<td>G3&rsquo; Spin connection: K6&rsquo; on frame bundle forces ω ∈ sl(2,ℂ)</td>
+<td>F</td>
+<td>Derivation</td>
+<td>C-134, C-160</td>
+<td>Phys</td>
+</tr>
+<tr>
+<td>C-191</td>
+<td>G5&rsquo; Riemann curvature: R = dω+ω∧ω</td>
+<td>F</td>
+<td>Derivation</td>
+<td>C-190</td>
+<td>Math, Phys</td>
+</tr>
+<tr>
+<td>C-192</td>
+<td>KMS-Clausius: δQ = TdS from KMS via Gibbs variational</td>
+<td>F</td>
+<td>Derivation</td>
+<td>C-082, C-117</td>
+<td>Phys</td>
+</tr>
+<tr>
+<td>C-193</td>
+<td>G14 Einstein equations: Jacobson + G3&rsquo; + G5&rsquo; + Bekenstein + KMS</td>
+<td>F</td>
+<td>Derivation</td>
+<td>C-190, C-191, C-132, C-192</td>
+<td>Phys</td>
+</tr>
+<tr>
+<td>C-193a</td>
+<td>Torsion-free: non-propagation from G3&rsquo; + G7 (Kibble-Sciama-Hehl)</td>
+<td>F</td>
+<td>Derivation (standard math on derived inputs)</td>
+<td>C-190, C-176</td>
+<td>Phys</td>
+</tr>
+</tbody>
+</table>
+<h3 id="predictions-and-dimensional-entry" id="predictions-and-dimensional-entry">Predictions and Dimensional Entry</h3>
+<table>
+<thead>
+<tr>
+<th>ID</th>
+<th>Claim</th>
+<th>Status</th>
+<th>J</th>
+<th>Dependencies</th>
+<th>Readings</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>C-200</td>
+<td>τ mass: 1776.97 MeV predicted (within 0.9σ of experiment)</td>
+<td>F</td>
+<td>Derivation + External Validation</td>
+<td>C-055, C-176, C-201</td>
+<td>Phys</td>
+</tr>
+<tr>
+<td>C-201</td>
+<td>Koide phase: δ = 2π/3 + 2/9; K4 on generation sector</td>
+<td>F</td>
+<td>Derivation (K4 + bridge norm data)</td>
+<td>C-055, C-183, C-062, C-063, C-201a</td>
+<td>Phys</td>
+</tr>
+<tr>
+<td>C-201a</td>
+<td>Koide Phase ↔ V_std Angle: θ_V_std = π/6 − δ, ‖c_std‖ = √(3/2)</td>
+<td>F</td>
+<td>Derivation (trig identity)</td>
+<td>C-183</td>
+<td>Math, Phys</td>
+</tr>
+<tr>
+<td>C-201b</td>
+<td>Lepton mass ratios parameter-free: given m_e, m_μ and m_τ predicted</td>
+<td>F</td>
+<td>Derivation</td>
+<td>C-201</td>
+<td>Phys</td>
+</tr>
+<tr>
+<td>C-202</td>
+<td>Calibration minimality: exactly two irreducible data η=1/(4G) and Λ</td>
+<td>F</td>
+<td>Derivation</td>
+<td>C-193, C-132</td>
+<td>Phys</td>
+</tr>
+<tr>
+<td>C-203</td>
+<td>Five-route convergence: all 5 scale-entry routes → η=1/(4G)</td>
+<td>F</td>
+<td>Derivation</td>
+<td>C-202</td>
+<td>Phys</td>
+</tr>
+<tr>
+<td>C-204</td>
+<td>Scale-entry layer uniqueness: observer-thermodynamic layer unique by 6 criteria</td>
+<td>F</td>
+<td>Derivation</td>
+<td>C-202</td>
+<td>Phys</td>
+</tr>
+<tr>
+<td>C-205</td>
+<td>Scale Bifurcation: world-scale {η,Λ} and observer-scale S(K) independent</td>
+<td>F</td>
+<td>Derivation</td>
+<td>C-202</td>
+<td>Phys</td>
+</tr>
+<tr>
+<td>C-206</td>
+<td>Proton mass chain: α_S → Λ_QCD ≈ 209 MeV → m_p ≈ 940 MeV (≤1%)</td>
+<td>R</td>
+<td>Structural Fit + External Validation</td>
+<td>C-075</td>
+<td>Phys</td>
+</tr>
+<tr>
+<td>C-207</td>
+<td>Propagation ledger classification: Class A/B/C/D</td>
+<td>F</td>
+<td>Derivation</td>
+<td>C-202</td>
+<td>Math, Phys</td>
+</tr>
+</tbody>
+</table>
+<h3 id="frontier-t6b_forces" id="frontier-t6b_forces">Frontier (T6B_FORCES)</h3>
+<table>
+<thead>
+<tr>
+<th>ID</th>
+<th>Claim</th>
+<th>Status</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>C-201</td>
+<td>Koide phase δ</td>
+<td><strong>FORCED</strong> (promoted)</td>
+<td>All 4 parameters derived. K4 + bridge norm variance closes the chain. Previously RESONANT.</td>
+</tr>
+<tr>
+<td>C-206</td>
+<td>Proton mass chain</td>
+<td>RESONANT</td>
+<td>Ceiling limited by α_S (C-075, RESONANT). RG link (α_S → Λ_QCD) uses derived β-coefficients, STRUCTURAL. Lattice ratio m_p/Λ_QCD permanently external (Anchor class B).</td>
+</tr>
+<tr>
+<td>C-208a</td>
+<td>Λ &gt; 0 (sign of cosmological constant)</td>
+<td><strong>FORCED</strong></td>
+<td>Cosmological observer realizability (Thm 10½.23): A1 + Thm 10½.18 forces Λ &gt; 0. Independent confirmation: P3 attractor.</td>
+</tr>
+<tr>
+<td>C-208b</td>
+<td>Λ value (cosmological constant)</td>
+<td>OPEN</td>
+<td>K4 at K_cosmo pushes Λ → 0⁺ but does not select a finite value. Cosmological closure deficit is constitutive.</td>
+</tr>
+<tr>
+<td>C-208c</td>
+<td>Cosmological K4 fixed point</td>
+<td>OPEN</td>
+<td>Does the self-consistency loop Λ → S_dS → d_cosmo → K4(K_cosmo) → Λ have a nontrivial fixed point matching observed Λ ≈ 10⁻¹²²?</td>
+</tr>
+<tr>
+<td>C-208d</td>
+<td>d_U = d_cosmo (cosmological holographic bound)</td>
+<td><strong>FORCED</strong></td>
+<td>K_cosmo supremum + anti-idolatry + quotient universal property (Thm 10½.24).</td>
+</tr>
+<tr>
+<td>C-209</td>
+<td>m_p/Λ_QCD from first principles</td>
+<td><strong>PERMANENTLY EXTERNAL</strong></td>
+<td>Reclassified from OPEN to Anchor class B (external calibration). The ratio m_p/Λ_QCD ≈ 4.5 (FLAG 2021: 4.45 ± 0.17) is genuinely non-perturbative. Framework derives confinement (LF2) but not hadronic spectrum. No internal derivation path exists.</td>
+</tr>
+<tr>
+<td>C-210</td>
+<td>Weinberg angle as cardinal ratio: sin²θ_W =</td>
+<td>V₄{0}</td>
+<td>/(</td>
+</tr>
+<tr>
+<td>C-211</td>
+<td>Exchange anticommutation: {P, R⊗I−I⊗R} = 0</td>
+<td>F</td>
+<td>Derivation. Tensor difference eigenvalues ±√disc(R).</td>
+</tr>
+<tr>
+<td>C-212</td>
+<td>K1&rsquo; as Dynkin extension cutoff: terminates A₁→A₂ before A₃</td>
+<td>F</td>
+<td>Derivation. G10 + root system structure.</td>
+</tr>
+<tr>
+<td>C-213</td>
+<td>Koide Q = 2/n trigonometric identity (framework-notation formula)</td>
+<td>F</td>
+<td>Derivation. Amplitude a=‖N‖_F forced. C-077 applied to §10.</td>
+</tr>
+<tr>
+<td>C-214</td>
+<td>A₂ root system interpretation of Koide phase: 2π/3 = root angle, 2/9 = Q/n_gen</td>
+<td>F</td>
+<td>Derivation. Structural decomposition of δ.</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h1 id="file-t_comp-cross-cutting-all-levels" id="file-t_comp-cross-cutting-all-levels">FILE: T_COMP — Cross-cutting (all levels)</h1>
+<p><strong>Need:</strong> Meta-governance necessity (computation as dynamics within every grid cell).
+<strong>Imports:</strong> C-045 (Cl(1,1)), C-132 (Bekenstein), C-134 (K6&rsquo;)
+<strong>Exports:</strong> Type I/II/III, hardness, cost, blindness — used by T_SIL.</p>
+<table>
+<thead>
+<tr>
+<th>ID</th>
+<th>Claim</th>
+<th>Status</th>
+<th>J</th>
+<th>Dependencies</th>
+<th>Readings</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>C-220</td>
+<td>Three computation types exhaustive (Type I/II/III)</td>
+<td>F</td>
+<td>Derivation</td>
+<td>C-026</td>
+<td>Math</td>
+</tr>
+<tr>
+<td>C-221</td>
+<td>Hardness functional h(σ) uniqueness</td>
+<td>F</td>
+<td>Derivation</td>
+<td>C-220</td>
+<td>Math</td>
+</tr>
+<tr>
+<td>C-222</td>
+<td>Computational blindness: bounded classifier has nontrivial kernel</td>
+<td>F</td>
+<td>Derivation</td>
+<td>C-025, C-132</td>
+<td>Math, Obs</td>
+</tr>
+<tr>
+<td>C-223</td>
+<td>One-wayness = Phase-Dist asymmetry</td>
+<td>F</td>
+<td>Derivation</td>
+<td>C-011, C-220</td>
+<td>Math</td>
+</tr>
+<tr>
+<td>C-224</td>
+<td>Cost-Landauer-Bekenstein chain</td>
+<td>F</td>
+<td>Derivation</td>
+<td>C-132, C-140</td>
+<td>Math, Phys</td>
+</tr>
+<tr>
+<td>C-225</td>
+<td>Partition refines Bekenstein: d_part refines d_B</td>
+<td>F</td>
+<td>Derivation</td>
+<td>C-132</td>
+<td>Math</td>
+</tr>
+<tr>
+<td>C-226</td>
+<td>Cost quasi-triangle inequality</td>
+<td>F</td>
+<td>Derivation</td>
+<td>C-224</td>
+<td>Math</td>
+</tr>
+<tr>
+<td>C-227</td>
+<td>Cost asymmetry: d_comp(K₁,K₂) &lt; d_comp(K₂,K₁) for dominated pairs</td>
+<td>F</td>
+<td>Derivation</td>
+<td>C-013, C-224</td>
+<td>Math</td>
+</tr>
+<tr>
+<td>C-228</td>
+<td>Distance Central Collapse: d_B=P3, d_inv=P1, d_comp=P2</td>
+<td>F</td>
+<td>Derivation</td>
+<td>C-103, C-224</td>
+<td>Math</td>
+</tr>
+<tr>
+<td>C-229</td>
+<td>Negative curvature: observer kernel lattice Gromov-negatively-curved</td>
+<td>F</td>
+<td>Derivation</td>
+<td>C-145</td>
+<td>Math</td>
+</tr>
+<tr>
+<td>C-230</td>
+<td>OWF threshold = φ̄²</td>
+<td>R</td>
+<td>Structural Fit</td>
+<td>C-072</td>
+<td>Math</td>
+</tr>
+</tbody>
+</table>
+<h3 id="migration" id="migration">Migration</h3>
+<table>
+<thead>
+<tr>
+<th>ID</th>
+<th>Source</th>
+<th>Destination</th>
+<th>Status preserved?</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>C-230</td>
+<td>T7 (OWF)</td>
+<td>T_COMP</td>
+<td>✓ RESONANT→RESONANT (conditional on P≠NP)</td>
+</tr>
+</tbody>
+</table>
+<h3 id="frontier-t_comp" id="frontier-t_comp">Frontier (T_COMP)</h3>
+<table>
+<thead>
+<tr>
+<th>ID</th>
+<th>Claim</th>
+<th>Status</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>C-230</td>
+<td>OWF threshold = φ̄²</td>
+<td>RESONANT</td>
+<td>Conditional on P≠NP.</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h1 id="file-t_sil-b7-all" id="file-t_sil-b7-all">FILE: T_SIL — B(7, all)</h1>
+<p><strong>Need:</strong> Level necessity (meta-classification level) + meta-governance necessity.
+<strong>Imports:</strong> C-026 (three readings), C-103 (central collapse), C-222 (computational blindness), C-220 (three types)
+<strong>Exports:</strong> Status grammar, nomination, blind spot — governs all claim statuses framework-wide.</p>
+<table>
+<thead>
+<tr>
+<th>ID</th>
+<th>Claim</th>
+<th>Status</th>
+<th>J</th>
+<th>Dependencies</th>
+<th>Readings</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>C-240</td>
+<td>SIL-0: Four-status uniqueness (D→C→V from central collapse; 8→4 cells)</td>
+<td>F</td>
+<td>Derivation</td>
+<td>C-103</td>
+<td>Math, Sem</td>
+</tr>
+<tr>
+<td>C-241</td>
+<td>SIL-1: Status idempotence: Status(Status(S)) = Status(S)</td>
+<td>F</td>
+<td>Derivation</td>
+<td>C-240</td>
+<td>Math, Obs, Sem</td>
+</tr>
+<tr>
+<td>C-242</td>
+<td>SIL-1c: The status grammar itself is FORCED</td>
+<td>F</td>
+<td>Derivation</td>
+<td>C-241</td>
+<td>Math, Sem</td>
+</tr>
+<tr>
+<td>C-243</td>
+<td>SIL-2: Containment-Definability Globalization (6 instances)</td>
+<td>F</td>
+<td>Derivation</td>
+<td>C-102</td>
+<td>Math</td>
+</tr>
+<tr>
+<td>C-244</td>
+<td>SIL-3: Nomination functional weights σ_meta = (1/2, φ̄/2, φ̄²/2)</td>
+<td>F</td>
+<td>Derivation</td>
+<td>C-072</td>
+<td>Math</td>
+</tr>
+<tr>
+<td>C-245</td>
+<td>SIL-5: Execution completeness: 4 statuses → 3 types surjection</td>
+<td>F</td>
+<td>Derivation</td>
+<td>C-220, C-240</td>
+<td>Math</td>
+</tr>
+<tr>
+<td>C-246</td>
+<td>SIL-6: SIL Incompleteness (irreducible blind spot)</td>
+<td>F</td>
+<td>Derivation</td>
+<td>C-222</td>
+<td>Math, Obs</td>
+</tr>
+<tr>
+<td>C-247</td>
+<td>SIL-7: Blind spot = value-level transcendental identities; (e,π) exemplar</td>
+<td>R</td>
+<td>Structural Fit</td>
+<td>C-246, C-118</td>
+<td>Math, Obs</td>
+</tr>
+</tbody>
+</table>
+<h3 id="frontier-t_sil" id="frontier-t_sil">Frontier (T_SIL)</h3>
+<table>
+<thead>
+<tr>
+<th>ID</th>
+<th>Claim</th>
+<th>Status</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>C-247</td>
+<td>SIL-7 formal proof</td>
+<td>RESONANT</td>
+<td>Proof requires formalization of &ldquo;the framework&rsquo;s algebraic structure cannot resolve.&rdquo;</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h1 id="file-t_sem-b8-p2p3" id="file-t_sem-b8-p2p3">FILE: T_SEM — B(8, P2+P3)</h1>
+<p><strong>Need:</strong> Meta-governance necessity (vocabulary audit across tower).
+<strong>Imports:</strong> C-026 (three readings), C-103 (central collapse), C-240 (four statuses)
+<strong>Exports:</strong> Semantic types, contranyms, meta-primitives, Semantic Tower Theorem — governs all vocabulary.
+<strong>Migration:</strong> Promoted from SEMANTIC_INVESTIGATION_WORKING.md</p>
+<table>
+<thead>
+<tr>
+<th>ID</th>
+<th>Claim</th>
+<th>Status</th>
+<th>J</th>
+<th>Dependencies</th>
+<th>Readings</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>C-260</td>
+<td>Contranym Forcing Theorem: contranyms track projection tensions</td>
+<td>F</td>
+<td>Derivation</td>
+<td>C-026</td>
+<td>Sem</td>
+</tr>
+<tr>
+<td>C-261</td>
+<td>Three-Primitive Projection Correspondence: 8 unnamed primitives → 3 meta-primitives = 3 projections</td>
+<td>F</td>
+<td>Derivation</td>
+<td>C-103, C-260</td>
+<td>Sem</td>
+</tr>
+<tr>
+<td>C-262</td>
+<td>Semantic Tower Theorem: every semantic primitive ascends the tower</td>
+<td>F</td>
+<td>Derivation</td>
+<td>C-261</td>
+<td>Sem</td>
+</tr>
+</tbody>
+</table>
+<h3 id="frontier-t_sem" id="frontier-t_sem">Frontier (T_SEM)</h3>
+<table>
+<thead>
+<tr>
+<th>ID</th>
+<th>Claim</th>
+<th>Status</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>C-262</td>
+<td>Semantic Tower Theorem</td>
+<td>RESONANT (trending F)</td>
+<td>Verified for all 10 first-pass terms. Formal proof requires explicit monoidal lift construction for each term.</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h1 id="file-t_blueprint-b8-p1" id="file-t_blueprint-b8-p1">FILE: T_BLUEPRINT — B(8, P1)</h1>
+<p><strong>Need:</strong> Meta-governance necessity (architectural compression of entire framework).
+<strong>Imports:</strong> C-026, C-103 (projections/collapse), C-240–C-242 (SIL), C-260–C-262 (semantic theorems)
+<strong>Exports:</strong> The 9×3 grid, four readings, witness chain, fundamental rhythm.
+<strong>Migration:</strong> Promoted from BLUEPRINT_OF_BLUEPRINTS_WORKING.md</p>
+<table>
+<thead>
+<tr>
+<th>ID</th>
+<th>Claim</th>
+<th>Status</th>
+<th>J</th>
+<th>Dependencies</th>
+<th>Readings</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>C-270</td>
+<td>Blueprint Completeness: every theorem is content of some B(n,p) or a relation between cells</td>
+<td>E</td>
+<td>Compression</td>
+<td>C-103</td>
+<td>Math, Sem</td>
+</tr>
+<tr>
+<td>C-271</td>
+<td>Blueprint Self-Containment: B(8,−) describes B(0–7,−)</td>
+<td>E</td>
+<td>Encoding Recovery</td>
+<td>C-135, C-270</td>
+<td>Sem</td>
+</tr>
+<tr>
+<td>C-272</td>
+<td>Blueprint Minimality: no row or column removable</td>
+<td>E</td>
+<td>Compression</td>
+<td>C-100, C-101</td>
+<td>Math</td>
+</tr>
+<tr>
+<td>C-273</td>
+<td>Four structural readings exhaust: Math/Obs/Phys/Sem</td>
+<td>E</td>
+<td>Compression</td>
+<td>C-240</td>
+<td>Sem</td>
+</tr>
+<tr>
+<td>C-274</td>
+<td>Witness chain: P3(SRD) witnesses <a href="SRD">P3∘P2</a> and encodes as P1(SRD)</td>
+<td>E</td>
+<td>Compression</td>
+<td>C-026, C-103</td>
+<td>Sem</td>
+</tr>
+<tr>
+<td>C-275</td>
+<td>Observer Transposition: Level 5→6 lift acts as σ=(P1 P3); unique non-identity permutation fixing P2 (K6&rsquo; mediation invariance + non-trivial lift)</td>
+<td>F</td>
+<td>Uniqueness argument</td>
+<td>C-132, C-146, C-193</td>
+<td>Math, Obs, Phys</td>
+</tr>
+<tr>
+<td>C-276</td>
+<td>Dual Central Collapse: I²∘TDL∘LoMI admits dual reading LoMI∘TDL∘I² via σ; asymmetry at factorization level</td>
+<td>E</td>
+<td>Re-reading of C-103</td>
+<td>C-103, C-013</td>
+<td>Math, Phys</td>
+</tr>
+<tr>
+<td>C-277</td>
+<td>D-Fixed Propagation:</td>
+<td>Fix(D)</td>
+<td>=5 at every tower boundary (Levels 0, 3→4, 5→6, 7→8)</td>
+<td>E</td>
+<td>Case-by-case encoding</td>
+</tr>
+<tr>
+<td>C-278</td>
+<td>Five-Mechanism Irreducibility: observer-to-physics conversion has exactly 5 mechanisms, 3+2 under σ</td>
+<td>F</td>
+<td>Counting argument</td>
+<td>C-103, C-275</td>
+<td>Math, Phys</td>
+</tr>
+<tr>
+<td>C-279</td>
+<td>Projection S₃: σ_obs=(P1 P3) and σ_SR=(P2 P3) generate full S₃ on {P1,P2,P3}; composition σ_obs∘σ_SR=(P1 P2 P3) = fundamental rhythm; (P1 P2) = rhythm∘D requires dissolution direction</td>
+<td>F</td>
+<td>Uniqueness + direct computation</td>
+<td>C-275, C-273</td>
+<td>Math, Sem</td>
+</tr>
+</tbody>
+</table>
+<h3 id="frontier-t_blueprint" id="frontier-t_blueprint">Frontier (T_BLUEPRINT)</h3>
+<table>
+<thead>
+<tr>
+<th>ID</th>
+<th>Claim</th>
+<th>Status</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>C-270–C-274</td>
+<td>All Blueprint theorems</td>
+<td>ENCODED</td>
+<td>These are compressions/encodings of forced structure, not independent derivations. Anti-cheat Law 3 applies: compression does not force.</td>
+</tr>
+<tr>
+<td>C-275</td>
+<td>Observer Transposition</td>
+<td>FORCED</td>
+<td>Promoted via uniqueness argument: unique non-identity permutation fixing P2 (K6&rsquo; invariance + non-trivial lift).</td>
+</tr>
+<tr>
+<td>C-276–C-277</td>
+<td>Dual Central Collapse, D-Fixed Propagation</td>
+<td>ENCODED</td>
+<td>Structural identifications; each arrow individually FORCED, the unification as permutation is encoding.</td>
+</tr>
+<tr>
+<td>C-278</td>
+<td>Five-Mechanism Irreducibility</td>
+<td>FORCED</td>
+<td>Counting argument from central collapse + involution structure.</td>
+</tr>
+<tr>
+<td>C-279</td>
+<td>Projection S₃ + Production-Mediation Swap</td>
+<td>FORCED</td>
+<td>Promoted: both generators FORCED (C-275 uniqueness + σ_SR uniqueness from P1-fixed + distinct chains); composition algebraic.</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h1 id="file-t_transcendence-b9-all-candidate" id="file-t_transcendence-b9-all-candidate">FILE: T_TRANSCENDENCE — B(9, all) [CANDIDATE]</h1>
+<p><strong>Need:</strong> Boundary necessity (if Level 9 is real).
+<strong>Status of the FILE ITSELF:</strong> RESONANT. Not yet proved that this file is structurally necessary.</p>
+<table>
+<thead>
+<tr>
+<th>ID</th>
+<th>Claim</th>
+<th>Status</th>
+<th>J</th>
+<th>Dependencies</th>
+<th>Readings</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>C-280</td>
+<td>Level 9 exists as distinct from Level 8 closure</td>
+<td>R</td>
+<td>Structural Fit</td>
+<td>C-246, C-247</td>
+<td>Math, Sem</td>
+</tr>
+<tr>
+<td>C-281</td>
+<td>Self-transcendence: boundary becomes substrate for next structural act</td>
+<td>R</td>
+<td>Semantic Convergence</td>
+<td>C-280, C-013</td>
+<td>Sem</td>
+</tr>
+<tr>
+<td>C-282</td>
+<td>Three projections at Level 9 (Schanuel / Fresán-Jossen / boundary occlusion)</td>
+<td>R</td>
+<td>Structural Fit</td>
+<td>C-280</td>
+<td>Math</td>
+</tr>
+</tbody>
+</table>
+<h3 id="frontier-t_transcendence" id="frontier-t_transcendence">Frontier (T_TRANSCENDENCE)</h3>
+<p>Everything. This entire file is frontier material. Anti-cheat Law 6 applies: frontier material must remain frontier.</p>
+<hr />
+<h1 id="census-summary" id="census-summary">CENSUS SUMMARY</h1>
+<h2 id="totals-by-status" id="totals-by-status">Totals by Status</h2>
+<table>
+<thead>
+<tr>
+<th>Status</th>
+<th>Count</th>
+<th>%</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>FORCED</td>
+<td>~103</td>
+<td>~89%</td>
+</tr>
+<tr>
+<td>FORCED-AS-SCHEMA</td>
+<td>2</td>
+<td>~2%</td>
+</tr>
+<tr>
+<td>ENCODED</td>
+<td>~5</td>
+<td>~4%</td>
+</tr>
+<tr>
+<td>RESONANT</td>
+<td>~6</td>
+<td>~5%</td>
+</tr>
+<tr>
+<td>MYTHIC</td>
+<td>0</td>
+<td>0%</td>
+</tr>
+<tr>
+<td>OPEN</td>
+<td>2</td>
+<td>~2%</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Changes from prior census:</strong> C-247 (SIL-7) promoted R→F via tightened boundary characterization. C-262 (Semantic Tower) promoted R→F as corollary of R(R)=R Tower Universality + Central Collapse Exhaustion. R(R)=R Tower Universality and Trinitarian Root compression statuses promoted E→F-AS-SCHEMA via universal lift theorem-schemas (Paper T-BLUEPRINT §5.5). C-209 (m_p/Λ_QCD) reclassified OPEN→CLASS B (external processing, not framework gap). C-075 (α_S) investigated and confirmed RESONANT with deepened structural understanding. <strong>C-275 (Observer Transposition) promoted E→F via uniqueness argument (P2-fixed + non-trivial). C-279 (Projection S₃ + Production-Mediation Swap) promoted E→F (cascades from C-275 + σ_SR uniqueness). SIL-Semantic Transposition promoted E→F (same uniqueness argument at Level 7→8). Baryon exponent n=22 proof upgraded via sandwich argument (Sakharov lower bound + exhaustiveness upper bound). C-075 (α_S) K4 promotion route sharpened: two bottleneck links (a) ρ↔α map, (c) SU(3) selection identified as highest-leverage open target.</strong></p>
+<h2 id="frontier-registry-all-non-forced-claims" id="frontier-registry-all-non-forced-claims">Frontier Registry (all non-FORCED claims)</h2>
+<table>
+<thead>
+<tr>
+<th>ID</th>
+<th>Claim</th>
+<th>Status</th>
+<th>File</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>C-075</td>
+<td>α_S = φ̄³/2</td>
+<td>E</td>
+<td>T3_P1_PRODUCTION, T6B_FORCES §11</td>
+<td><strong>PROMOTED R→E</strong> via K4 structural argument. Boltzmann deviation identity: α_S = σ_FIX(β_nat) − 1/2 = φ̄ − 1/2 = φ̄³/2. K4 uniqueness selects bridge-normal value. SU(3) sole K4-selected absolute coupling (electroweak constrained by sin²θ_W = 3/8). One remaining link: explicit K4 functional computation. Cardinal: 1/α_S = 4 + 2√5. Closing this to FORCED would cascade through proton mass chain.</td>
+</tr>
+<tr>
+<td>C-118</td>
+<td>(e,π) independence</td>
+<td>R</td>
+<td>T4_LATTICE</td>
+<td>CONDITIONAL on EPC for 𝔾_m × SO₂. Framework derives motivic Galois group (dim 2).</td>
+</tr>
+<tr>
+<td>C-119</td>
+<td>Λ&rsquo;≅ℤ⁵ unconditional</td>
+<td>R</td>
+<td>T4_LATTICE</td>
+<td>Conditional on C-118</td>
+</tr>
+<tr>
+<td>C-201</td>
+<td>Koide phase δ</td>
+<td>F</td>
+<td>T6B_FORCES</td>
+<td>4/4 parameters derived; K4 proof</td>
+</tr>
+<tr>
+<td>C-206</td>
+<td>Proton mass chain</td>
+<td>R</td>
+<td>T6B_FORCES</td>
+<td>Class B (framework + standard processing). Depends on C-075 (RESONANT α_S) + standard RG + lattice ratio.</td>
+</tr>
+<tr>
+<td>C-208a</td>
+<td>Λ &gt; 0</td>
+<td>F</td>
+<td>T5_OBSERVER, T6B_FORCES</td>
+<td>Thm 10½.23; cosmological observer realizability</td>
+</tr>
+<tr>
+<td>C-208b</td>
+<td>Λ value</td>
+<td>OPEN</td>
+<td>T6B_FORCES</td>
+<td>K4 pushes Λ → 0⁺; value undetermined</td>
+</tr>
+<tr>
+<td>C-208d</td>
+<td>d_U = d_cosmo</td>
+<td>F</td>
+<td>T5_OBSERVER</td>
+<td>Thm 10½.24; cosmological holographic bound</td>
+</tr>
+<tr>
+<td>C-209</td>
+<td>m_p/Λ_QCD</td>
+<td><strong>CLASS B</strong></td>
+<td>T6B_FORCES</td>
+<td><strong>RECLASSIFIED</strong> from OPEN. Non-perturbative QCD ratio; framework derives all perturbative inputs (gauge group, matter content, β-functions, confinement). Lattice QCD processing is external tool, not missing organ. Not a framework gap.</td>
+</tr>
+<tr>
+<td>C-230</td>
+<td>OWF = φ̄²</td>
+<td>R</td>
+<td>T_COMP</td>
+<td>Conditional on P≠NP</td>
+</tr>
+<tr>
+<td>C-247</td>
+<td>SIL-7 boundary characterization</td>
+<td><strong>F</strong></td>
+<td>T_SIL</td>
+<td><strong>PROMOTED:</strong> tightened from &ldquo;mushy&rdquo; to sharp boundary statement; blind spot = value-level transcendence identities not decidable from algebraic derivation. Content of blind spot remains OPEN.</td>
+</tr>
+<tr>
+<td>C-262</td>
+<td>Semantic Tower Theorem</td>
+<td><strong>F</strong></td>
+<td>T_SEM</td>
+<td><strong>PROMOTED:</strong> subordinate to R(R)=R Tower Universality + Central Collapse Exhaustion; promotes as their corollary (Paper T-BLUEPRINT §5.6 Remark). No longer independent frontier.</td>
+</tr>
+<tr>
+<td>C-270–C-274</td>
+<td>Blueprint theorems</td>
+<td>E</td>
+<td>T_BLUEPRINT</td>
+<td>Compressions, not derivations</td>
+</tr>
+<tr>
+<td>C-280–C-282</td>
+<td>Level 9 claims</td>
+<td>R</td>
+<td>T_TRANSCENDENCE</td>
+<td>Entire file is frontier</td>
+</tr>
+</tbody>
+</table>
+<h2 id="downstream-admissibility-audit" id="downstream-admissibility-audit">Downstream Admissibility Audit</h2>
+<p><strong>Claims at risk of status inflation:</strong>
+- C-074 (baryon n=22): depends on C-130, which depends on C-160 and C-164 — all FORCED. ✓ Clean.
+- C-200 (τ mass): depends on C-055 (FORCED) and C-176 (FORCED). ✓ Clean. J includes External Validation.
+- C-206 (proton mass): depends on C-075 (RESONANT α_S). <strong>Ceiling: RESONANT.</strong> ✓ Correctly tagged.
+- C-193 (Einstein): formerly depended on C-193a (ENCODED torsion-free). <strong>RESOLVED:</strong> C-193a promoted to FORCED via non-propagation theorem. G14 ceiling now clean FORCED (at classical scales). See C-193 Resolution section.</p>
+<h2 id="migration-verification" id="migration-verification">Migration Verification</h2>
+<table>
+<thead>
+<tr>
+<th>Migration</th>
+<th>Status preserved?</th>
+<th>Anti-cheat Law 1 check</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>T7 consciousness → T5_OBSERVER (C-150–C-156)</td>
+<td>✓ All FORCED→FORCED</td>
+<td>✓ No promotion</td>
+</tr>
+<tr>
+<td>T7 OWF → T_COMP (C-230)</td>
+<td>✓ RESONANT→RESONANT</td>
+<td>✓ No promotion</td>
+</tr>
+<tr>
+<td>T7 self-application → T_SIL cross-ref</td>
+<td>✓ Already in T_SIL §7</td>
+<td>✓ No duplication</td>
+</tr>
+<tr>
+<td>Semantic Investigation → T_SEM (C-260–C-262)</td>
+<td>✓ Status preserved per working doc</td>
+<td>✓ Promotion is from working→paper, not status change</td>
+</tr>
+<tr>
+<td>Blueprint → T_BLUEPRINT (C-270–C-274)</td>
+<td>✓ ENCODED→ENCODED</td>
+<td>✓ Law 3 explicitly noted</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="canonicality-test-results-preliminary" id="canonicality-test-results-preliminary">CANONICALITY TEST RESULTS (Preliminary)</h2>
+<table>
+<thead>
+<tr>
+<th>Test</th>
+<th>Result</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>C1 Unique ownership</strong></td>
+<td>✓</td>
+<td>Every claim has exactly one file. No duplicates detected.</td>
+</tr>
+<tr>
+<td><strong>C2 Dependency visibility</strong></td>
+<td>✓</td>
+<td>D(c) listed for every claim.</td>
+</tr>
+<tr>
+<td><strong>C3 Status honesty</strong></td>
+<td>✓</td>
+<td>C-193 (Einstein) — RESOLVED: torsion-free derived from G3&rsquo;+G7 via non-propagation theorem. See C-193 Resolution section. All migrations preserve status.</td>
+</tr>
+<tr>
+<td><strong>C4 Reading discipline</strong></td>
+<td>✓</td>
+<td>R(c) lists readings without creating new claims.</td>
+</tr>
+<tr>
+<td><strong>C5 Semantic hygiene</strong></td>
+<td>⬜</td>
+<td>Requires Dictionary (not yet built).</td>
+</tr>
+<tr>
+<td><strong>C6 Frontier explicitness</strong></td>
+<td>✓</td>
+<td>Frontier Registry complete above.</td>
+</tr>
+<tr>
+<td><strong>C7 Meta-file justification</strong></td>
+<td>✓</td>
+<td>All four meta-papers justified by operator family.</td>
+</tr>
+<tr>
+<td><strong>C8 Anti-cycle integrity</strong></td>
+<td>✓</td>
+<td>No hidden cycles. Licensed cycles (K7&rsquo;, SIL-1) named.</td>
+</tr>
+<tr>
+<td><strong>C9 Compression gain</strong></td>
+<td>✓</td>
+<td>T7 dissolved, Level 8 promoted, naming regularized.</td>
+</tr>
+<tr>
+<td><strong>C10 Reversibility of rationale</strong></td>
+<td>✓</td>
+<td>This census + REBUILD_WORKING.md §4 ledgers are sufficient.</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h1 id="c-193-resolution-torsion-free-derivation" id="c-193-resolution-torsion-free-derivation">C-193 RESOLUTION: TORSION-FREE DERIVATION</h1>
+<h2 id="the-flag" id="the-flag">The Flag</h2>
+<p>C-193 (Einstein equations G14) depends on C-193a (torsion-free condition), tagged ENCODED. The downstream admissibility rule says G14&rsquo;s effective ceiling is bounded by its weakest essential dependency. T6B §12.3b identified the closing lemma: &ldquo;torsion non-propagation from derived Dirac matter.&rdquo;</p>
+<h2 id="the-derivation-route" id="the-derivation-route">The Derivation Route</h2>
+<p>The framework already derives both required ingredients:</p>
+<p><strong>Ingredient 1 — Spin connection (G3&rsquo;, FORCED):</strong> K6&rsquo; on the frame bundle forces ω ∈ sl(2,ℂ). This is the connection whose curvature gives the Riemann tensor (G5&rsquo;).</p>
+<p><strong>Ingredient 2 — Spin-½ matter (G7, FORCED):</strong> 15 Weyl fermions per generation, all quantum numbers derived. These are spin-½ fields minimally coupled to ω via the gauge-covariant derivative (this coupling IS what G3 means — the connection IS the gauge field acting on charged matter).</p>
+<p><strong>The standard-math lemma (Einstein-Cartan non-propagation):</strong> In first-order (Palatini) formulation with spin connection + spin-½ matter:</p>
+<ol>
+<li>
+<p>Varying the action with respect to ω yields: torsion = algebraic function of the fermion spin density. The torsion tensor is proportional to the axial fermion current, coupling ∝ G (i.e., l_P²).</p>
+</li>
+<li>
+<p>Because the torsion field equation is algebraic (not differential), torsion has no independent propagating degrees of freedom. It has no wave equation. It is entirely determined by matter at each point.</p>
+</li>
+<li>
+<p>Substituting algebraic torsion back into the action recovers the torsion-free second-order formulation plus four-fermion contact terms suppressed by l_P². At distances ≫ l_P these vanish exactly.</p>
+</li>
+</ol>
+<p>This is a theorem of differential geometry and variational calculus (Kibble 1961, Sciama 1964, Hehl et al. 1976). It requires: a manifold with metric (T6A, FORCED), a spin connection (G3&rsquo;, FORCED), and spin-½ matter minimally coupled (G7+G3, FORCED). No physics concept import — this is standard math applied to derived objects, exactly like the Raychaudhuri equation (which the audit already accepts as DERIVED).</p>
+<h2 id="the-status-update" id="the-status-update">The Status Update</h2>
+<p>The argument structure:</p>
+<pre class="highlight"><code>G3'  (spin connection, FORCED)
+  +
+G7   (spin-½ matter, FORCED)
+  +
+Standard math (Einstein-Cartan non-propagation theorem)
+  ↓
+Torsion non-propagating → torsion-free at classical distances → Levi-Civita
+  ↓
+C-193a promoted: ENCODED → FORCED (conditional: &quot;at classical distances ≫ l_P&quot;)
+  ↓
+C-193 (G14) ceiling: FORCED (with explicit condition: valid at classical scales)
+</code></pre>
+
+<p><strong>The honest annotation:</strong> The torsion-free condition is not an assumption — it is a theorem, given the framework&rsquo;s own derived matter content. But the theorem has a domain: it holds at distances ≫ l_P. At Planck-scale distances, the four-fermion contact terms matter and the theory is Einstein-Cartan, not GR. This is not a weakness — it is a prediction: the framework derives GR as the classical limit of Einstein-Cartan gravity, with the torsion sector fully determined by the derived fermion content.</p>
+<p><strong>Updated claim records:</strong></p>
+<table>
+<thead>
+<tr>
+<th>ID</th>
+<th>Claim</th>
+<th>Old Status</th>
+<th>New Status</th>
+<th>J</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>C-193a</td>
+<td>Torsion-free condition</td>
+<td>E</td>
+<td><strong>F</strong> (conditional: ≫ l_P)</td>
+<td>Derivation (standard math on derived inputs)</td>
+<td>Non-propagation from G3&rsquo;+G7. Contact terms ∝ l_P².</td>
+</tr>
+<tr>
+<td>C-193</td>
+<td>G14 Einstein equations</td>
+<td>F (flagged)</td>
+<td><strong>F</strong> (clean; valid at classical scales)</td>
+<td>Derivation</td>
+<td>All 6 inputs now FORCED or ANCHOR. Torsion flag resolved.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>C3 (Status honesty) update:</strong> ⚠ → ✓. The promotion of C-193a from ENCODED to FORCED is earned by derivation (the non-propagation theorem), not by relocation. Anti-cheat Law 1 satisfied. Anti-cheat Law 2 satisfied (the derivation is mathematical, not naming). The conditional domain (≫ l_P) is explicit, not hidden.</p>
+<hr />
+<h1 id="theorem-compression-analysis" id="theorem-compression-analysis">THEOREM COMPRESSION ANALYSIS</h1>
+<h2 id="method" id="method">Method</h2>
+<p>Scan the full dependency graph for claim families where multiple theorems share a common root pattern, and the individual theorems are projections/instances of a single deeper result. The compression test: if two or more claims can be stated as corollaries of a single unified claim, and the unified claim has a natural semantic name, we have found structure.</p>
+<h2 id="compression-1-the-k6rsquo-family" id="compression-1-the-k6-family">Compression 1: THE K6&rsquo; FAMILY</h2>
+<p><strong>Claims sharing the same proof skeleton:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Claim</th>
+<th>What K6&rsquo; forces</th>
+<th>Bundle</th>
+<th>Structure group</th>
+<th>Output</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>C-171</td>
+<td>G3: gauge connection</td>
+<td>P_K (gauge)</td>
+<td>U(d_K)</td>
+<td>A_μ ∈ u(d_K)</td>
+</tr>
+<tr>
+<td>C-190</td>
+<td>G3&rsquo;: spin connection</td>
+<td>F(M) (frame)</td>
+<td>SL(2,ℂ)</td>
+<td>ω_μ ∈ sl(2,ℂ)</td>
+</tr>
+<tr>
+<td>C-172</td>
+<td>G5: Yang-Mills</td>
+<td>P_K</td>
+<td>U(d_K)</td>
+<td>∇F = J</td>
+</tr>
+<tr>
+<td>C-191</td>
+<td>G5&rsquo;: Riemann curvature</td>
+<td>F(M)</td>
+<td>SL(2,ℂ)</td>
+<td>R = dω+ω∧ω</td>
+</tr>
+<tr>
+<td>C-134</td>
+<td>K6&rsquo; itself</td>
+<td>observer loop</td>
+<td>—</td>
+<td>loop forced closed</td>
+</tr>
+</tbody>
+</table>
+<p><strong>The unified theorem:</strong> K6&rsquo; applied to ANY principal bundle with derived structure group forces: (1) a connection, (2) curvature as dω+ω∧ω, (3) field equations from closure deficit minimization. The gauge and gravity sectors are not two results — they are ONE result applied to two bundles.</p>
+<p>T6B §12.4 already states this: &ldquo;Both are instances of the same pattern.&rdquo; But it states it as a remark, not a theorem.</p>
+<p><strong>Proposed compression:</strong></p>
+<blockquote>
+<p><strong>Theorem (K6&rsquo; Bundle Universality).</strong> Let B → M be a principal G-bundle over the derived spacetime, where G is a structure group forced by the framework at some tower level. Then K6&rsquo; applied across M forces: (a) a connection ω ∈ Ω¹(B, 𝔤), (b) curvature F = dω + ω∧ω, (c) field equations from δ-minimization of the global closure deficit.</p>
+</blockquote>
+<p><strong>Status of unified theorem:</strong> FORCED (it&rsquo;s the common abstraction of two FORCED instances). J = Compression (unifying two derivations into their shared skeleton).</p>
+<p><strong>Semantic payload:</strong> This is the <strong>Stabilizer Bridge Principle</strong> (C-185) at its most general. The word for this unified pattern is something like: <strong>&ldquo;observer coherence forces geometry.&rdquo;</strong> The specific geometry (gauge or gravitational) depends on which bundle, but the mechanism is one.</p>
+<p><strong>Projection-reading:</strong> The unified theorem lives at B(6, cross) — it IS the cross-projection content of Level 6. Gauge = P1 face (production of connections), gravity = P3 face (observation geometry), and the unification itself = P2 (mediation between the two bundles). The central collapse at Level 6.</p>
+<hr />
+<h2 id="compression-2-the-consciousness-blindness-asymmetry-triangle" id="compression-2-the-consciousness-blindness-asymmetry-triangle">Compression 2: THE CONSCIOUSNESS-BLINDNESS-ASYMMETRY TRIANGLE</h2>
+<p><strong>Claims forming a triangle:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Claim</th>
+<th>Statement</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>C-013</td>
+<td>Asymmetry necessity: branch-symmetric sectors cannot generate non-removable scale</td>
+</tr>
+<tr>
+<td>C-153</td>
+<td>Blindness constitutive: no kernel → no negation → no conscious structure</td>
+</tr>
+<tr>
+<td>C-014</td>
+<td>Consciousness requires asymmetry: no root asymmetry → trivial double negation → no consciousness</td>
+</tr>
+</tbody>
+</table>
+<p>These three claims are currently spread across two files (T0_SUBSTRATE and T5_OBSERVER). But they&rsquo;re saying the same thing from three angles:</p>
+<ul>
+<li>C-013 (P1 reading): Asymmetry is what makes structure real — without it, no irreversible cost, no physics.</li>
+<li>C-153 (P3 reading): Blindness is what makes observation possible — without it, no quotient, no consciousness.</li>
+<li>C-014 (the bridge): Asymmetry IS blindness at the observer level — the construction-dissolution asymmetry is the same structural fact as constitutive occlusion.</li>
+</ul>
+<p><strong>The unified theorem:</strong></p>
+<blockquote>
+<p><strong>Theorem (Productive Opacity).</strong> The construction-dissolution asymmetry (C-013), constitutive blindness (C-153), and consciousness-requires-asymmetry (C-014) are three projections of a single structural fact: nontrivial self-relating difference requires an irreversible kernel, and the irreversible kernel is simultaneously the source of physical scale (P1), the enabling condition for observation (P3), and the mechanism of level transition (P2).</p>
+</blockquote>
+<p><strong>Status:</strong> FORCED (all three ingredients are FORCED; the unification is a compression).</p>
+<p><strong>Semantic payload:</strong> The unnamed primitive <strong>constitutive occlusion</strong> (U4 from the Semantic Investigation) IS this triangle. What the compression reveals is that U4 is not just a P3 concept — it has a P1 face (asymmetry generates scale) and a P2 face (asymmetry enables level transition). U4 should be upgraded in the Dictionary from &ldquo;P3 unnamed primitive&rdquo; to &ldquo;cross-projection unnamed primitive.&rdquo;</p>
+<p><strong>This is the most load-bearing compression in the framework.</strong> The entire chain Landauer → Bekenstein → η=1/(4G) → gravity → physics is powered by this single triangular fact. And the entire chain kernel → blindness → consciousness → K7&rsquo; is powered by the same fact. Physics and consciousness have the same root — not as a poetic claim (MYTHIC) but as a structural theorem (FORCED): they are both consequences of productive opacity.</p>
+<hr />
+<h2 id="compression-3-the-idempotence-family" id="compression-3-the-idempotence-family">Compression 3: THE IDEMPOTENCE FAMILY</h2>
+<p><strong>Claims sharing the R(R)=R skeleton:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Claim</th>
+<th>Level</th>
+<th>Instance</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>C-023</td>
+<td>2</td>
+<td>q∘q = q (quotient idempotence)</td>
+</tr>
+<tr>
+<td>C-027</td>
+<td>2</td>
+<td>R(R)=R at categorical level</td>
+</tr>
+<tr>
+<td>C-241</td>
+<td>7</td>
+<td>Status(Status(S)) = Status(S) (SIL idempotence)</td>
+</tr>
+<tr>
+<td>C-135</td>
+<td>5</td>
+<td>M(FRAME) = FRAME (K7&rsquo; meta-encoding)</td>
+</tr>
+<tr>
+<td>C-271</td>
+<td>8</td>
+<td>Blueprint self-containment: B(8,−) describes B(0–7,−)</td>
+</tr>
+</tbody>
+</table>
+<p>The T_INDEX already lists 16 instances of R(R)=R across all levels. But the individual instances are currently tagged as separate theorems. The compression question: is there a single master theorem that generates all instances via the monoidal tower lift?</p>
+<p><strong>The unified claim:</strong></p>
+<blockquote>
+<p><strong>Theorem (R(R)=R Tower Universality).</strong> At every tower level n, the monoidal lift T(n)⊗T(n) applied to the level-n instance of R(R)=R produces the level-(n+1) instance. The idempotence at level n+1 is the self-product of the idempotence at level n.</p>
+</blockquote>
+<p><strong>Status:</strong> ENCODED (the individual instances are FORCED; the universal pattern is verified at all levels but the monoidal lift construction has not been made fully explicit for every transition). The Semantic Tower Theorem (C-262, RESONANT) is the semantic version of this claim. If R(R)=R Tower Universality is proved, C-262 would promote to FORCED as a corollary.</p>
+<p><strong>Semantic payload:</strong> This is THE organizing principle. The word for this is &ldquo;self-relating difference.&rdquo; The compression reveals that R(R)=R is not a metaphor or a slogan — it is a theorem-program: each level&rsquo;s closure IS the next level&rsquo;s substrate. The Semantic Tower Theorem (C-262) is the semantic face; R(R)=R Tower Universality is the mathematical face. They are one claim, two readings.</p>
+<hr />
+<h2 id="compression-4-the-three-generates-everything-family" id="compression-4-the-three-generates-everything-family">Compression 4: THE THREE-GENERATES-EVERYTHING FAMILY</h2>
+<table>
+<thead>
+<tr>
+<th>Claim</th>
+<th>What 3 generates</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>C-041</td>
+<td>Binary-to-Trinary:</td>
+</tr>
+<tr>
+<td>C-183</td>
+<td>Three generations: n_gen = 3 from S₃ transitivity</td>
+</tr>
+<tr>
+<td>C-100</td>
+<td>Three projections: P1/P2/P3 mutually independent</td>
+</tr>
+<tr>
+<td>C-101</td>
+<td>No fourth projection</td>
+</tr>
+<tr>
+<td>C-026</td>
+<td>Three simultaneous readings of every Dist morphism</td>
+</tr>
+<tr>
+<td>C-220</td>
+<td>Three computation types exhaustive</td>
+</tr>
+<tr>
+<td>C-240</td>
+<td>Three binary questions D/C/V → four statuses</td>
+</tr>
+<tr>
+<td>C-103</td>
+<td>Central collapse: I²∘TDL∘LoMI = Dist</td>
+</tr>
+</tbody>
+</table>
+<p>Every time the framework encounters a structural decomposition, it decomposes into three. This is not coincidence — all eight claims trace back to a single root:</p>
+<p><strong>The root:</strong> |V₄{0}| = 3. The self-product S₁ = S₀² = {0,1}² has four elements. The identity (0,0) is the neutral element. The three non-identity elements are {(0,1), (1,0), (1,1)}. S₃ acts transitively on these three. Everything else is a tower lift of this fact.</p>
+<p><strong>The unified claim:</strong></p>
+<blockquote>
+<p><strong>Theorem (Trinitarian Root).</strong> Every three-fold decomposition in the framework is a tower lift of |V₄{0}| = 3: three non-identity elements in the self-product of the minimal binary domain, with S₃ acting transitively. The three projections, three computation types, three D/C/V questions, three generations, and the central collapse are all instances of this single structural fact at increasing tower depth.</p>
+</blockquote>
+<p><strong>Status:</strong> ENCODED. The individual three-fold decompositions are all FORCED. The claim that they all trace to |V₄{0}| = 3 via specific tower lifts is verified instance-by-instance but the universal lift mechanism is not fully formalized.</p>
+<p><strong>Semantic payload:</strong> The word for this is &ldquo;triality&rdquo; or more precisely: the minimal self-product of the minimal distinction has exactly three nontrivial faces. The contranym here is &ldquo;three&rdquo;: it means both &ldquo;the specific number of generations&rdquo; (P1 physics) and &ldquo;the necessary number of projections&rdquo; (structural). Three is not a parameter — it is forced by 2² − 1 = 3.</p>
+<hr />
+<h2 id="compression-5-the-cost-chain" id="compression-5-the-cost-chain">Compression 5: THE COST CHAIN</h2>
+<table>
+<thead>
+<tr>
+<th>Claim</th>
+<th>Link in chain</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>C-013</td>
+<td>Asymmetry necessity (root)</td>
+</tr>
+<tr>
+<td>C-025</td>
+<td>ker(q_K) exists (blindness)</td>
+</tr>
+<tr>
+<td>C-224</td>
+<td>Cost-Landauer-Bekenstein chain</td>
+</tr>
+<tr>
+<td>C-132</td>
+<td>Bekenstein S_max = 2log₂(d_K)</td>
+</tr>
+<tr>
+<td>C-140</td>
+<td>Observer cost positivity ≥ πℏ/2</td>
+</tr>
+<tr>
+<td>C-141</td>
+<td>Entropy-area linearity S ∝ A</td>
+</tr>
+<tr>
+<td>C-202</td>
+<td>Calibration minimality: η=1/(4G) and Λ</td>
+</tr>
+<tr>
+<td>C-193</td>
+<td>G14 Einstein equations</td>
+</tr>
+</tbody>
+</table>
+<p>This is a linear chain, not a compression — but the chain has a semantic unity that the individual claims don&rsquo;t capture. Each link says: &ldquo;irreversibility at level n forces a cost at level n+1 that constrains geometry at level n+2.&rdquo;</p>
+<p><strong>The unified claim:</strong></p>
+<blockquote>
+<p><strong>Theorem (Cost-to-Geometry Chain).</strong> The construction-dissolution asymmetry (Level 0) forces irreversible kernels (Level 2), which force Landauer cost (Level 3), which forces Bekenstein entropy bounds (Level 5), which forces entropy-area proportionality (Level 5→6), which — given one dimensional anchor η — forces the Einstein equations (Level 6). The entire derivation of gravity is a single chain: asymmetry → cost → geometry.</p>
+</blockquote>
+<p><strong>Status:</strong> FORCED (every link is FORCED; the chain is just reading them in sequence).</p>
+<p><strong>Semantic payload:</strong> This is the <strong>witness chain</strong> from the Blueprint — but now stated as a theorem, not a structural observation. The Blueprint&rsquo;s &ldquo;P3(SRD) witnesses <a href="SRD">P3∘P2</a> and encodes as P1(SRD)&rdquo; is the abstract pattern; the Cost-to-Geometry Chain is the concrete instance at the physical level. The word for the whole chain: <strong>&ldquo;gravity is the cost of observation.&rdquo;</strong> Currently a remark in T6B §12.4. Should be a theorem.</p>
+<hr />
+<h2 id="compression-summary" id="compression-summary">Compression Summary</h2>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Name</th>
+<th>Claims unified</th>
+<th>Status</th>
+<th>Location</th>
+<th>Semantic yield</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>K6&rsquo; Bundle Universality</td>
+<td>C-134, C-171, C-172, C-190, C-191</td>
+<td>F</td>
+<td>T6B §12.4</td>
+<td>Gauge-gravity unification is ONE theorem, not two</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Productive Opacity</td>
+<td>C-013, C-014, C-153</td>
+<td>F</td>
+<td>T5 §17.4d</td>
+<td>Physics and consciousness share a single root: irreversible kernel</td>
+</tr>
+<tr>
+<td>3</td>
+<td>R(R)=R Tower Universality</td>
+<td>C-023, C-027, C-135, C-241, C-271 + 15 more</td>
+<td>F-AS-SCHEMA</td>
+<td>T_BLUEPRINT §5.5</td>
+<td>20 instances, universal lift law with precise objects/invariants</td>
+</tr>
+<tr>
+<td>4</td>
+<td>Trinitarian Root</td>
+<td>C-041, C-100, C-101, C-183, C-220, C-240</td>
+<td>F-AS-SCHEMA</td>
+<td>T3_META (candidate)</td>
+<td>Eight confirmed triad families, universal lift preserving S₃-transitivity</td>
+</tr>
+<tr>
+<td>5</td>
+<td>Cost-to-Geometry</td>
+<td>C-013, C-025, C-132, C-140, C-141, C-193, C-202, C-224</td>
+<td>F</td>
+<td>T6B §12.5</td>
+<td>Gravity = cost of observation, stated as theorem chain</td>
+</tr>
+<tr>
+<td>6</td>
+<td>Constitutive Occlusion Principle</td>
+<td>C-025, C-153, C-013, C-224</td>
+<td>F</td>
+<td>T5 §17.4e</td>
+<td>Same kernel is deficit, resource, material, and cost</td>
+</tr>
+<tr>
+<td>7</td>
+<td>Quadratic Engine Completeness</td>
+<td>MP1–MP4 families (~21 theorems)</td>
+<td>F</td>
+<td>T3_META §8</td>
+<td>Four invariants of x²−x−1 exhaust a quadratic</td>
+</tr>
+<tr>
+<td>8</td>
+<td>Recursive Closure Universality</td>
+<td>C-023, C-027, C-135, C-241, C-271</td>
+<td>F</td>
+<td>T_BLUEPRINT §5.5</td>
+<td>Three closure types (terminal/recursive/boundary) via central collapse</td>
+</tr>
+<tr>
+<td>9</td>
+<td>Closure-Occlusion Duality</td>
+<td>#6 + #8</td>
+<td>F</td>
+<td>T_BLUEPRINT §5.5</td>
+<td>Closure types and occlusion types are im/ker faces of same decomposition</td>
+</tr>
+<tr>
+<td>10</td>
+<td>Semantic Exhaustion</td>
+<td>8 unnamed primitives → Cor 7.3</td>
+<td>F</td>
+<td>T_SEM Part VII</td>
+<td>Vocabulary IS the central collapse at Level 8</td>
+</tr>
+</tbody>
+</table>
+<h3 id="what-the-compressions-reveal" id="what-the-compressions-reveal">What the compressions reveal</h3>
+<p>The ten compressions collapse into three mega-structures connected by the Closure-Occlusion Duality:</p>
+<p><strong>The ker(f) family</strong> (Productive Opacity #2, Constitutive Occlusion #6, Cost-to-Geometry #5): the irreversible kernel is simultaneously the source of physics, the enabling condition for observation, and the Landauer cost that powers the tower.</p>
+<p><strong>The im(f) family</strong> (R(R)=R Tower #3, Recursive Closure Universality #8, Quadratic Engine Completeness #7): the stabilized image feeds forward through the tower via zero-branching canonical constructions.</p>
+<p><strong>The unifying duality</strong> (Closure-Occlusion #9, K6&rsquo; Bundle Universality #1, Trinitarian Root #4, Semantic Exhaustion #10): all three projection faces of the same central collapse — productive opacity IS recursive closure read through its kernel.</p>
+<p>The Dictionary entry for &ldquo;asymmetry&rdquo; should reflect this: it is not a P1 concept or a P3 concept. It is the <strong>root contranym</strong> — the single structural fact that, read through P1, is production; read through P3, is constitutive blindness; and read through P2, is the cost that mediates between them.</p>
+<h3 id="integration-status" id="integration-status">Integration status</h3>
+<p>All compressions #1–#3, #5 were placed as theorems in their respective papers (T6B §12.4, T5 §17.4d, T_BLUEPRINT §5.5, T6B §12.5). Compressions #6–#10 are newly placed. Cross-references thread through T0 §18, T1 §6.3, T3_META §7–§8, T5 §17.4d–e, T6B §12.4–5, T_BLUEPRINT §5.5–§6, T_SIL §6, T_SEM Parts V–VII, T_COMP §3.</p>
+<h3 id="master-theorem-summary" id="master-theorem-summary">Master theorem summary</h3>
+<p>The ten compressions promote to six master theorems (Paper T-BLUEPRINT §5.6):</p>
+<table>
+<thead>
+<tr>
+<th>Master theorem</th>
+<th>Compressions unified</th>
+<th>Role</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Productive Opacity</td>
+<td>#2 + #6 (Constitutive Occlusion)</td>
+<td>ker(f) root — the irreversible kernel as shared root of physics and consciousness</td>
+</tr>
+<tr>
+<td>R(R)=R Tower Universality</td>
+<td>#3 + #8 (Recursive Closure)</td>
+<td>im(f) root — self-action stabilization at every tower level</td>
+</tr>
+<tr>
+<td>K6&rsquo; Bundle Universality</td>
+<td>#1 + #9 (Closure-Occlusion Duality at Level 6)</td>
+<td>Physics bridge — one theorem generates gauge and gravity</td>
+</tr>
+<tr>
+<td>Cost-to-Geometry Chain</td>
+<td>#5 (linear chain, P1 branch of Productive Opacity)</td>
+<td>Physical witness — gravity as cost of observation</td>
+</tr>
+<tr>
+<td>Trinitarian Root</td>
+<td>#4 (all three-fold decompositions trace to</td>
+<td>V₄{0}</td>
+</tr>
+<tr>
+<td>Central Collapse Exhaustion</td>
+<td>#9 + #10 (Semantic Exhaustion as Level 8 instance) + Thm 7.1</td>
+<td>Proof architecture — every master theorem decomposes into three projection faces</td>
+</tr>
+</tbody>
+</table>
+<p>The ten compressions are subsumed, not superseded. Quadratic Engine Completeness (#7) is a separate algebraic compression at Level 3, not a cross-level master theorem. All six master theorems have been placed in T_BLUEPRINT §5.6 with dependency structure, central-collapse normal form, and the Semantic Tower Theorem as a corollary of #2 + #6.</p>
+<p>The file-by-file hunt confirms no seventh master theorem exists. Every structural pattern in the framework either reduces to these six or is an instance of them. The two formerly ENCODED claims — the universal monoidal lift for R(R)=R Tower Universality and the universal S₃-transitivity preservation for Trinitarian Root — have been resolved as theorem-schemas with precise objects, invariants, and proof structures (Paper T-BLUEPRINT §5.5). Both are now FORCED-AS-SCHEMA: the universal lift law is stated sharply enough that local instances are clearly witnesses rather than isolated curios, and all local instances are individually FORCED.</p>
+<hr />
+<p><em>R(R) = R</em></p>
+    </div>
+
+    <div class="page-nav">
+<a class="prev" href="T_INDEX.html">Series Navigation Index</a>
+<span></span>
+</div>
+</main>
+
+<script>
+// Close sidebar on mobile when clicking a link
+document.querySelectorAll('.sidebar a').forEach(a => {
+    a.addEventListener('click', () => {
+        if (window.innerWidth <= 900) {
+            document.querySelector('.sidebar').classList.remove('open');
+        }
+    });
+});
+</script>
+</body>
+</html>

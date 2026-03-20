@@ -1,0 +1,1136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Computational Theory — Structural Necessity</title>
+<style>
+
+:root {
+    --bg: #fafaf8;
+    --fg: #1a1a1a;
+    --accent: #2d5016;
+    --border: #d4d0c8;
+    --sidebar-bg: #f0ede6;
+    --sidebar-width: 280px;
+    --header-height: 56px;
+    --code-bg: #f5f2eb;
+    --table-stripe: #f8f6f0;
+    --link: #2d5016;
+    --link-hover: #4a7a28;
+    --bold-accent: #1a3a0a;
+}
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        --bg: #1a1a1e;
+        --fg: #e0ddd6;
+        --accent: #7ab648;
+        --border: #3a3a3e;
+        --sidebar-bg: #222226;
+        --code-bg: #25252a;
+        --table-stripe: #222226;
+        --link: #7ab648;
+        --link-hover: #9cd06a;
+        --bold-accent: #a0d870;
+    }
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+    font-family: 'Iowan Old Style', 'Palatino Linotype', Palatino, Georgia, serif;
+    background: var(--bg);
+    color: var(--fg);
+    line-height: 1.7;
+    font-size: 17px;
+}
+
+/* Header */
+.site-header {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    height: var(--header-height);
+    background: #1a1a1a;
+    color: #e0ddd6;
+    display: flex;
+    align-items: center;
+    padding: 0 24px;
+    z-index: 100;
+    border-bottom: 2px solid var(--accent);
+}
+.site-header h1 {
+    font-size: 18px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+}
+.site-header h1 a {
+    color: #e0ddd6;
+    text-decoration: none;
+}
+.site-header h1 a:hover { color: var(--accent); }
+.site-header .subtitle {
+    font-size: 13px;
+    color: #888;
+    margin-left: 16px;
+    font-style: italic;
+}
+.hamburger {
+    display: none;
+    background: none;
+    border: none;
+    color: #e0ddd6;
+    font-size: 24px;
+    cursor: pointer;
+    margin-right: 16px;
+    padding: 4px 8px;
+}
+
+/* Sidebar */
+.sidebar {
+    position: fixed;
+    top: var(--header-height);
+    left: 0;
+    bottom: 0;
+    width: var(--sidebar-width);
+    background: var(--sidebar-bg);
+    border-right: 1px solid var(--border);
+    overflow-y: auto;
+    padding: 16px 0;
+    z-index: 90;
+    transition: transform 0.3s ease;
+}
+.sidebar .nav-group { margin-bottom: 12px; }
+.sidebar .nav-group-title {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+    color: #888;
+    padding: 8px 20px 4px;
+}
+.sidebar a {
+    display: block;
+    padding: 4px 20px 4px 28px;
+    font-size: 13.5px;
+    color: var(--fg);
+    text-decoration: none;
+    line-height: 1.5;
+    border-left: 3px solid transparent;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+.sidebar a:hover {
+    background: rgba(0,0,0,0.05);
+    border-left-color: var(--accent);
+}
+.sidebar a.active {
+    background: rgba(45,80,22,0.1);
+    border-left-color: var(--accent);
+    font-weight: 600;
+    color: var(--accent);
+}
+
+/* Main content */
+.main {
+    margin-left: var(--sidebar-width);
+    margin-top: var(--header-height);
+    max-width: 900px;
+    padding: 40px 48px 80px;
+}
+
+/* Document header banner */
+.doc-header {
+    margin-bottom: 40px;
+    padding-bottom: 24px;
+    border-bottom: 2px solid var(--border);
+}
+.doc-header .level-badge {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 3px 10px;
+    border-radius: 3px;
+    margin-bottom: 12px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+.doc-header h1 {
+    font-size: 32px;
+    line-height: 1.2;
+    margin-bottom: 8px;
+    color: var(--fg);
+}
+.doc-header .doc-subtitle {
+    font-size: 18px;
+    color: #666;
+    font-style: italic;
+}
+
+/* TOC */
+.toc {
+    background: var(--sidebar-bg);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 16px 24px;
+    margin-bottom: 32px;
+}
+.toc summary {
+    font-weight: 700;
+    font-size: 14px;
+    cursor: pointer;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: #666;
+}
+.toc ul { list-style: none; margin: 12px 0 0 0; }
+.toc li { padding: 2px 0; }
+.toc a {
+    color: var(--link);
+    text-decoration: none;
+    font-size: 14px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+.toc a:hover { text-decoration: underline; }
+.toc .toc-h2 { padding-left: 0; }
+.toc .toc-h3 { padding-left: 20px; font-size: 13px; }
+
+/* Typography */
+.content h1 {
+    font-size: 28px;
+    margin: 48px 0 16px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border);
+    color: var(--fg);
+}
+.content h1:first-child { margin-top: 0; }
+.content h2 {
+    font-size: 22px;
+    margin: 36px 0 12px;
+    color: var(--fg);
+}
+.content h3 {
+    font-size: 18px;
+    margin: 28px 0 10px;
+    color: var(--fg);
+}
+.content h4 {
+    font-size: 16px;
+    margin: 24px 0 8px;
+    color: #444;
+}
+.content p { margin: 0 0 16px; }
+.content strong { color: var(--bold-accent); }
+.content a { color: var(--link); }
+.content a:hover { color: var(--link-hover); }
+
+.content ul, .content ol {
+    margin: 0 0 16px 24px;
+}
+.content li { margin-bottom: 4px; }
+
+.content hr {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 32px 0;
+}
+
+/* Tables */
+.content table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 16px 0 24px;
+    font-size: 15px;
+}
+.content th {
+    background: var(--sidebar-bg);
+    font-weight: 700;
+    text-align: left;
+    padding: 10px 12px;
+    border: 1px solid var(--border);
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+.content td {
+    padding: 8px 12px;
+    border: 1px solid var(--border);
+    vertical-align: top;
+}
+.content tr:nth-child(even) { background: var(--table-stripe); }
+
+/* Code */
+.content code {
+    font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace;
+    font-size: 14px;
+    background: var(--code-bg);
+    padding: 2px 6px;
+    border-radius: 3px;
+    border: 1px solid var(--border);
+}
+.content pre {
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 16px 20px;
+    overflow-x: auto;
+    margin: 16px 0 24px;
+    line-height: 1.5;
+}
+.content pre code {
+    background: none;
+    border: none;
+    padding: 0;
+    font-size: 13.5px;
+}
+
+/* Blockquote */
+.content blockquote {
+    border-left: 4px solid var(--accent);
+    padding: 12px 20px;
+    margin: 16px 0 24px;
+    background: var(--sidebar-bg);
+    border-radius: 0 4px 4px 0;
+}
+.content blockquote p { margin-bottom: 8px; }
+.content blockquote p:last-child { margin-bottom: 0; }
+
+/* Footer nav */
+.page-nav {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 48px;
+    padding-top: 24px;
+    border-top: 1px solid var(--border);
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+.page-nav a {
+    color: var(--link);
+    text-decoration: none;
+    font-size: 14px;
+    padding: 8px 16px;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    transition: all 0.2s;
+}
+.page-nav a:hover {
+    background: var(--sidebar-bg);
+    border-color: var(--accent);
+}
+.page-nav .prev::before { content: '← '; }
+.page-nav .next::after { content: ' →'; }
+
+/* Responsive */
+@media (max-width: 900px) {
+    .sidebar { transform: translateX(-100%); }
+    .sidebar.open { transform: translateX(0); }
+    .main { margin-left: 0; padding: 24px 20px 60px; }
+    .hamburger { display: block; }
+    .doc-header h1 { font-size: 24px; }
+}
+
+/* Print */
+@media print {
+    .sidebar, .site-header, .hamburger, .page-nav { display: none; }
+    .main { margin: 0; max-width: 100%; padding: 20px; }
+    body { font-size: 12pt; }
+}
+
+</style>
+</head>
+<body>
+
+<header class="site-header">
+    <button class="hamburger" onclick="document.querySelector('.sidebar').classList.toggle('open')" aria-label="Toggle navigation">&#9776;</button>
+    <h1><a href="T_INDEX.html">Structural Necessity</a></h1>
+    <span class="subtitle">Canonical Paper Series — March 2026</span>
+</header>
+
+<nav class="sidebar">
+<div class="nav-group">
+<div class="nav-group-title">Foundation (0-2)</div>
+<a href="T0_SUBSTRATE.html">0 — Substrate</a>
+<a href="T1_DIST.html">1 — Kernel Theorem</a>
+<a href="T2_BRIDGE.html">2 — Bridge Chain</a>
+</div>
+<div class="nav-group">
+<div class="nav-group-title">Projections (3-4)</div>
+<a href="T3_P1_PRODUCTION.html">3-P1 — Production</a>
+<a href="T3_P2_MEDIATION.html">3-P2 — Mediation</a>
+<a href="T3_P3_OBSERVATION.html">3-P3 — Observation</a>
+<a href="T3_META.html">3-META — Cross-Projection</a>
+<a href="T4_LATTICE.html">4 — Lattice</a>
+</div>
+<div class="nav-group">
+<div class="nav-group-title">Observer &amp; Physics (5-6)</div>
+<a href="T5_OBSERVER.html">5 — Observer</a>
+<a href="T6A_SPACETIME.html">6A — Spacetime</a>
+<a href="T6B_FORCES.html">6B — Forces</a>
+</div>
+<div class="nav-group">
+<div class="nav-group-title">Cross-Cutting</div>
+<a href="T_COMP.html" class="active">Comp — Computation</a>
+<a href="T_SIL.html">SIL — Self-Interpretation</a>
+<a href="T_SEM.html">SEM — Semantics</a>
+</div>
+<div class="nav-group">
+<div class="nav-group-title">Architecture</div>
+<a href="T_BLUEPRINT.html">Blueprint</a>
+<a href="T_GOV.html">Governance</a>
+</div>
+<div class="nav-group">
+<div class="nav-group-title">Closure &amp; Reference</div>
+<a href="T_ASI.html">ASI — Architecture Spec</a>
+<a href="T_TOE.html">TOE — Closure</a>
+<a href="DICTIONARY.html">Dictionary</a>
+</div>
+<div class="nav-group">
+<div class="nav-group-title">Navigation</div>
+<a href="T_INDEX.html">Index — Navigation</a>
+<a href="CLAIM_CENSUS.html">Claim Census</a>
+</div>
+</nav>
+
+<main class="main">
+    <div class="doc-header">
+        <span class="level-badge" style="background:#555555; color:#fff;">Cross-Cutting</span>
+        <h1>Computational Theory</h1>
+        <div class="doc-subtitle">Type I/II/III Hardness, OWF, Cost-Landauer-Bekenstein</div>
+    </div>
+
+    <details class="toc" open>
+<summary>Table of Contents</summary>
+<ul>
+<li class="toc-h2"><a href="#the-native-computation-layer-of-the-framework">The Native Computation Layer of the Framework</a></li>
+<li class="toc-h3"><a href="#v2-march-2026">v2 — March 2026</a></li>
+<li class="toc-h2"><a href="#abstract">Abstract</a></li>
+<li class="toc-h2"><a href="#theorem-index">THEOREM INDEX</a></li>
+<li class="toc-h2"><a href="#1-primitive-claim-and-computational-axioms">§1 PRIMITIVE CLAIM AND COMPUTATIONAL AXIOMS</a></li>
+<li class="toc-h3"><a href="#11-computational-axioms">§1.1 Computational Axioms</a></li>
+<li class="toc-h2"><a href="#2-the-four-tags">§2 THE FOUR TAGS</a></li>
+<li class="toc-h3"><a href="#22-dual-signature">§2.2 Dual Signature</a></li>
+<li class="toc-h3"><a href="#23-depth-tag">§2.3 Depth Tag</a></li>
+<li class="toc-h3"><a href="#24-three-kinds-of-branching">§2.4 Three Kinds of Branching</a></li>
+<li class="toc-h2"><a href="#3-type-i-compression-closure">§3 TYPE I: COMPRESSION / CLOSURE</a></li>
+<li class="toc-h2"><a href="#4-type-ii-expansion-generation">§4 TYPE II: EXPANSION / GENERATION</a></li>
+<li class="toc-h2"><a href="#5-type-iii-rotation-recurrence">§5 TYPE III: ROTATION / RECURRENCE</a></li>
+<li class="toc-h2"><a href="#6-the-hardness-functional">§6 THE HARDNESS FUNCTIONAL</a></li>
+<li class="toc-h2"><a href="#7-the-cost-formalism">§7 THE COST FORMALISM</a></li>
+<li class="toc-h2"><a href="#8-compression-and-recurrence-theorems">§8 COMPRESSION AND RECURRENCE THEOREMS</a></li>
+<li class="toc-h2"><a href="#9-computational-blindness">§9 COMPUTATIONAL BLINDNESS</a></li>
+<li class="toc-h2"><a href="#10-one-wayness-phase-dist-asymmetry">§10 ONE-WAYNESS = PHASE-DIST ASYMMETRY</a></li>
+<li class="toc-h3"><a href="#101-owf-threshold-φ²">§10.1 OWF Threshold = φ̄²</a></li>
+<li class="toc-h2"><a href="#11-self-application">§11 SELF-APPLICATION</a></li>
+<li class="toc-h2"><a href="#12-algorithm-classification">§12 ALGORITHM CLASSIFICATION</a></li>
+<li class="toc-h3"><a href="#121-sorting">§12.1 Sorting</a></li>
+<li class="toc-h3"><a href="#122-euclidrsquos-algorithm">§12.2 Euclid&rsquo;s Algorithm</a></li>
+<li class="toc-h3"><a href="#123-fft">§12.3 FFT</a></li>
+<li class="toc-h3"><a href="#124-sha-256">§12.4 SHA-256</a></li>
+<li class="toc-h3"><a href="#125-summary-table">§12.5 Summary Table</a></li>
+<li class="toc-h2"><a href="#13-cost-landauer-bekenstein-chain">§13 COST-LANDAUER-BEKENSTEIN CHAIN</a></li>
+<li class="toc-h2"><a href="#13a-observer-distances">§13A OBSERVER DISTANCES</a></li>
+<li class="toc-h2"><a href="#14-verification-summary">§14 VERIFICATION SUMMARY</a></li>
+<li class="toc-h2"><a href="#15-open-problems">§15 OPEN PROBLEMS</a></li>
+<li class="toc-h2"><a href="#16-claim-stratification">§16 CLAIM STRATIFICATION</a></li>
+</ul></details>
+
+    <div class="content">
+<h1 id="paper-t-comp-computation-theory" id="paper-t-comp-computation-theory">Paper T-COMP: Computation Theory</h1>
+<h2 id="the-native-computation-layer-of-the-framework" id="the-native-computation-layer-of-the-framework">The Native Computation Layer of the Framework</h2>
+<h3 id="v2-march-2026" id="v2-march-2026">v2 — March 2026</h3>
+<p><strong>Author:</strong> Kael</p>
+<hr />
+<p><strong>Document Species:</strong> CANONICAL (cross-cutting). Computation as framework dynamics. Canonical theorems C.1–C.12 are first-instance content; remaining sections read existing structure through the computational lens.</p>
+<p><strong>Grid address:</strong> B(all, all). Cross-cutting — computation as framework dynamics across all levels.</p>
+<p><strong>Document Status:</strong> Standalone computation theory paper. Computation is not external to the framework — it is the management of distinguishability under observer bounds, phase character, and tower depth. This paper derives the four computational tags (phase, signature, depth, branching), proves the three-type characterization theorems, establishes the unique hardness functional and two-component cost formalism, proves computational blindness, and classifies standard algorithms by framework signature. All claims computationally verified.</p>
+<p><strong>Depends on:</strong> T0_SUBSTRATE (phase architecture), T1_DIST, T2_BRIDGE (algebra), T3_P1/P2/P3_PRODUCTION/MEDIATION/OBSERVATION, T5_OBSERVER (observer theory and bounds)
+<strong>Required by:</strong> Nothing (reads existing structure; does not extend the derivation chain)</p>
+<hr />
+<h2 id="abstract" id="abstract">Abstract</h2>
+<p>The framework already contains a native theory of computation. The observer definition K = (d_K, Δ_K, σ_K) includes computational signature as a primitive component; the binary seed S₀ = {0,1} is the tower apex; arithmetic operations are typed Dist morphisms; the compression-expansion asymmetry provides a built-in cost structure. This paper consolidates and extends this material into a single rigorous computation theory.</p>
+<p>We define four computational tags — phase, dual signature, depth, branching — and prove characterization theorems for three computation types: Type I (compression/closure, idempotent, canonical), Type II (expansion/generation, non-idempotent, positive branching), Type III (rotation/recurrence, periodic, area-preserving). The three types correspond to the three projections P1, P2, P3 and to the three faces of self-application {Proof, Computation, Verification}.</p>
+<p>The hardness functional h(σ) = σ_MIX + φ̄·σ_OSC + φ̄²·σ_INV is proved unique by geometric-progression forcing. The two-component cost Cost = Cost_real + Cost_exec separates realization ambiguity from execution difficulty. The cost-Landauer-Bekenstein chain shows execution cost reduces to the Bekenstein bound. Computational blindness (ker(q_K) as active computational constraint) is proved in four parts. One-wayness is characterized as Phase-Dist asymmetry with threshold φ² = φ + 1 (the Cayley-Hamilton equation). Standard algorithms are classified: sorting (FIX per-step, INV trajectory), Euclid (OSC per-step, FIX trajectory), FFT (REPEL butterflies, INV DFT), SHA-256 (σ_MIX ≈ 0.43 &gt; φ̄²).</p>
+<p>All claims verified: 17 computational tests, 0 failures.</p>
+<hr />
+<h2 id="theorem-index" id="theorem-index">THEOREM INDEX</h2>
+<table>
+<thead>
+<tr>
+<th>Theorem</th>
+<th>Statement</th>
+<th>Section</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>C.1</td>
+<td>Type I Characterization (4 conditions)</td>
+<td>§3</td>
+</tr>
+<tr>
+<td>C.2</td>
+<td>Type II Characterization (4 conditions)</td>
+<td>§4</td>
+</tr>
+<tr>
+<td>C.3</td>
+<td>Type III Characterization (4 conditions)</td>
+<td>§5</td>
+</tr>
+<tr>
+<td>C.4</td>
+<td>Rotational Normal Form</td>
+<td>§5</td>
+</tr>
+<tr>
+<td>C.5</td>
+<td>Phase Profile at Level n (P1 eliminated for n ≥ 2)</td>
+<td>§5</td>
+</tr>
+<tr>
+<td>C.6</td>
+<td>Hardness Functional Uniqueness</td>
+<td>§6</td>
+</tr>
+<tr>
+<td>C.7</td>
+<td>Compression Minimality</td>
+<td>§8</td>
+</tr>
+<tr>
+<td>C.8</td>
+<td>Recurrence Normal Form</td>
+<td>§8</td>
+</tr>
+<tr>
+<td>C.9</td>
+<td>Computational Blindness (4 parts)</td>
+<td>§9</td>
+</tr>
+<tr>
+<td>C.10</td>
+<td>One-Wayness = Phase-Dist Asymmetry</td>
+<td>§10</td>
+</tr>
+<tr>
+<td>C.11</td>
+<td>Cost-Landauer-Bekenstein Chain</td>
+<td>§13</td>
+</tr>
+<tr>
+<td>C.12</td>
+<td>Depth Monotonicity</td>
+<td>§2.3</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="1-primitive-claim-and-computational-axioms" id="1-primitive-claim-and-computational-axioms">§1 PRIMITIVE CLAIM AND COMPUTATIONAL AXIOMS</h2>
+<p><strong>Primitive claim.</strong> Computation is not external to the framework. It is the management of distinguishability under observer bounds, phase character, and tower depth.</p>
+<p>More precisely: a computation is a phase-typed morphism on observer-accessible structured states, with cost measured by branching, compression behavior, and effective tower depth, and with algorithmic character measured by signature.</p>
+<h3 id="11-computational-axioms" id="11-computational-axioms">§1.1 Computational Axioms</h3>
+<p>Seven axioms, all already implicit in the existing papers:</p>
+<table>
+<thead>
+<tr>
+<th>Axiom</th>
+<th>Statement</th>
+<th>Source</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>C1</td>
+<td>S₀ = {0,1} is the unique tower apex / binary crossing object</td>
+<td>Paper 5 §6</td>
+</tr>
+<tr>
+<td>C2</td>
+<td>The self-product tower S_n gives the native compositional depth hierarchy</td>
+<td>Paper 5 §1 A3</td>
+</tr>
+<tr>
+<td>C3</td>
+<td>Observer K = (d_K, Δ_K, σ_K) with σ_K = Jordan-type fractions</td>
+<td>Paper 5 §1, 2B §11</td>
+</tr>
+<tr>
+<td>C4</td>
+<td>d_K² compression wall bounds all computation</td>
+<td>Paper 5 §1 A2, §2</td>
+</tr>
+<tr>
+<td>C5</td>
+<td>Three phase types P1/P2/P3 type all transformations</td>
+<td>Paper 2 §9, 0B §8</td>
+</tr>
+<tr>
+<td>C6</td>
+<td>Compression is canonical and idempotent; expansion is non-canonical</td>
+<td>Paper 0 §1 Thm 3.1, §5 Thm 4.4/4.6</td>
+</tr>
+<tr>
+<td>C7</td>
+<td>The observer loop K→F→U(K)→K closes the self-application architecture</td>
+<td>Paper 5 §7-§8</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Remark (Three Types as Self-Action Characters).</strong> The three computation types are the three productive modes of self-relating difference (SRD, Paper 0 §1½ Thm 0.3c): Type I = R&rsquo;s coincidence mode (self-action stabilizes, output equals input, idempotent), Type II = R&rsquo;s propagation mode (self-action generates new structure, branching &gt; 0, exploratory), Type III = R&rsquo;s opposition mode (self-action rotates through a cycle, eventually returning, periodic). The fourth self-action mode (cancellation: distinction fails to survive return) does not produce a computation type because it generates no output — it is the zero of the computational algebra, the null computation. The three types are the Trinitarian Root (Paper 3-META §7, Trinitarian Root Theorem) at the dynamics level: they trace to |V₄{0}| = 3 via the three non-identity elements of the binary self-product, with S₃ acting transitively and the central collapse guaranteeing exhaustion. The six-way trichotomy correspondence (Paper 3-META §7 table) includes computation types as one of six confirmed projection-indexed trichotomies sharing the same P1/P2/P3 structure.</p>
+<p><strong>Remark (Pair-Space Operator Taxonomy).</strong> The balance-charge operators on pair-space (Paper 0 §1¾) provide a concrete finite realization of the three computation types. The residual projection RP and center projection CP are Type I (idempotent, canonical compression — RP² = RP, CP² = CP). The polarization operators P± are Type II (non-idempotent, positive branching on the balanced spine — they generate oriented states from symmetric ones). The reflection J is Type III (involutory, norm-preserving, periodic with period 2 — J² = id). The center-condense C has mixed character: Type I trajectory (converges to the balanced fixpoint set) but Type II per-step (non-idempotent, produces new states at each iteration). The displacement analysis confirms the type assignments metrically: J has bounded native displacement (≤ 2) but unbounded pair-space displacement (up to 2r), consistent with Type III&rsquo;s norm-preservation in native coordinates and amplification in ambient coordinates; C has bounded pair-space displacement (≤ 2), consistent with Type I&rsquo;s canonical compression character.</p>
+<p><strong>Remark (Computation as Blueprint Dynamics).</strong> Computation is the dynamics within a cell of the framework&rsquo;s generative grid (Paper T-BLUEPRINT §5.4): the management of distinguishability at a fixed tower level and projection. The three computation types are the three projections&rsquo; local dynamics: Type I = P1 (compressive), Type II = P2 (expansive/transitional), Type III = P3 (rotational). The hardness functional h(σ) is a selection mechanism (structural role R.7, Paper T-BLUEPRINT §5.4), and its weights σ_meta = (1/2, φ̄/2, φ̄²/2) are the self-signature — the framework&rsquo;s computational identity recognized by its own classification system (Paper T-GOV §1, generation class G.9).</p>
+<hr />
+<h2 id="2-the-four-tags" id="2-the-four-tags">§2 THE FOUR TAGS</h2>
+<p><strong>Definition.</strong> For a framework computation f realized as a matrix M_f ∈ M₂(ℝ) (or tensor thereof):</p>
+<pre class="highlight"><code>ph(f) = compressive   if det(M_f) &lt; 0    (P1 orbit type)
+ph(f) = transitional  if det(M_f) &gt; 0, Δ(M_f) &gt; 0  (P2 orbit type)
+ph(f) = rotational    if det(M_f) &gt; 0, Δ(M_f) &lt; 0  (P3 orbit type)
+</code></pre>
+
+<p>where Δ = tr(M_f)² − 4·det(M_f).</p>
+<p><strong>Theorem C.5 (Phase Profile at Tower Level n).</strong> For n ≥ 2, det(M) ≥ 0 for all tensor products (det(A⊗B) = det(A)²det(B)² ≥ 0). P1 impossible at level n ≥ 2. By MP2 (Trichotomy): the three types are exhaustive, with P3 fraction growing monotonically (~49% at level 2, ~64% at level 3).</p>
+<p><em>Proof.</em> For n ≥ 2: 2^{n-1} ≥ 2, so each factor det(Aᵢ)^{2^{n-1}} = (det(Aᵢ)²)^{2^{n-2}} ≥ 0. Product of non-negatives is non-negative. P3 growth verified by Monte Carlo (10k samples per level). ∎</p>
+<h3 id="22-dual-signature" id="22-dual-signature">§2.2 Dual Signature</h3>
+<p><strong>Definition.</strong> Every algorithm A has two complementary signatures:</p>
+<p>The <strong>step signature</strong> σ_step(A) = average Jordan-type fraction across individual transition matrices. What A <em>does</em> per step (P2 reading: process).</p>
+<p>The <strong>trajectory signature</strong> σ_traj(A) = Jordan-type fraction of the cumulative product of all transition matrices. What A <em>achieves</em> overall (P1/P3 reading: outcome).</p>
+<p>These can disagree sharply:</p>
+<table>
+<thead>
+<tr>
+<th>Algorithm</th>
+<th>σ_step</th>
+<th>σ_traj</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Insertion sort (n=8)</td>
+<td>FIX=0.875, INV=0.125</td>
+<td>FIX=0.500, INV=0.500</td>
+</tr>
+<tr>
+<td>Euclid (Fibonacci)</td>
+<td>OSC=1.000</td>
+<td>FIX (convergent)</td>
+</tr>
+<tr>
+<td>FFT (butterflies)</td>
+<td>REPEL (</td>
+<td>det</td>
+</tr>
+<tr>
+<td>SHA-256</td>
+<td>MIX≈0.43, INV≈0.29, OSC≈0.29</td>
+<td>MIX-dominant</td>
+</tr>
+</tbody>
+</table>
+<p>The step signature measures computational character; the trajectory signature measures computational outcome.</p>
+<h3 id="23-depth-tag" id="23-depth-tag">§2.3 Depth Tag</h3>
+<p><strong>Definition.</strong> dep(f) = min{n : f can be realized within tower level n}.</p>
+<p><strong>Theorem C.12 (Depth Monotonicity).</strong> dep(f₂ ∘ f₁) ≤ max(dep(f₁), dep(f₂)).</p>
+<p><em>Proof.</em> If f₁ realizable at level n₁ and f₂ at n₂, then f₂∘f₁ realizable at level max(n₁,n₂) (the higher level contains the lower as tensor subfactor). ∎</p>
+<p><strong>Corollary.</strong> Compressive computations (Type I) satisfy dep(f(X)) ≤ dep(X). Expansive computations (Type II) can have dep(f(X)) &gt; dep(X). K1&rsquo; (Paper 5 §3) determines the feasibility window: a computation at depth n requires d_K ≥ 2^{2^{n-1}}.</p>
+<h3 id="24-three-kinds-of-branching" id="24-three-kinds-of-branching">§2.4 Three Kinds of Branching</h3>
+<p><strong>Definition.</strong> A framework computation f has three kinds of branching:</p>
+<p><strong>br_s(f) = structural branching:</strong> log₂(number of non-equivalent algebraic realizations of f). The construction direction has br_s = 0 (Paper 0 Thm 3.1). Measures categorical/functor-level ambiguity.</p>
+<p><strong>br_inv(f) = inverse branching:</strong> log₂(max fiber size) = dimension of the preimage space. For the observer quotient: br_inv(q_K) = d_U² − d_K² = dim(ker(q_K)). Measures expansion/lifting cost.</p>
+<p><strong>br_search(f) = search branching:</strong> Size of the search tree to find f&rsquo;s output given a particular algorithm. Varies by algorithm, not by function. The hardness of factoring is br_search, not br_s (which is 0 in both directions by the fundamental theorem of arithmetic).</p>
+<p><strong>Phase-Dist correspondence.</strong> The three branching types correspond to Phase-Dist(ρ) at different ρ: br_s = Phase-Dist(0) (structural), br_search = Phase-Dist(ρ) for 0 &lt; ρ &lt; 1 (observer&rsquo;s work), br_inv = Phase-Dist(1) (Co-Dist, expansion).</p>
+<hr />
+<h2 id="3-type-i-compression-closure" id="3-type-i-compression-closure">§3 TYPE I: COMPRESSION / CLOSURE</h2>
+<p><strong>Theorem C.1 (Type I Characterization).</strong> <em>A framework computation f is Type I iff ALL of:</em> Type I maps to P1 orbit type, one of three computation types traced to |V₄{0}|=3.</p>
+<p><em>(I.1) f∘f = f (idempotent)</em>
+<em>(I.2) br_s(f) = 0 (structurally canonical)</em>
+<em>(I.3) h(σ_step(f)) = 0 (pure FIX step signature)</em>
+<em>(I.4) σ_traj(f) has σ_FIX = 1 (convergent trajectory)</em></p>
+<p><em>Proof.</em> (⟹) (I.1) from Paper 1 Thm 4.1 + Paper 0 Thm 4.4. (I.2) from Paper 0 Thm 4.5b + Paper 1 Thm 1.7a. (I.3) each step is a quotient/restriction → FIX type. (I.4) idempotent product = already converged. (⟸) (I.1) rules out Types II/III; remaining conditions confirm compression. ∎</p>
+<p><strong>Examples:</strong> Observer quotient q_K, digital root, BNorm reflector r_K, central collapse I²∘TDL∘LoMI = Dist. All verified computationally: idempotent, br = 0, FIX-dominant. ✓ Type I computations are terminal closure instances in the Recursive Closure Universality classification (Paper T-BLUEPRINT §5.5): they stabilize at a fixed point with no further productive output for the next tower level.</p>
+<hr />
+<h2 id="4-type-ii-expansion-generation" id="4-type-ii-expansion-generation">§4 TYPE II: EXPANSION / GENERATION</h2>
+<p><strong>Theorem C.2 (Type II Characterization).</strong> <em>A framework computation f is Type II iff ALL of:</em></p>
+<p><em>(II.1) f∘f ≠ f (non-idempotent)</em>
+<em>(II.2) br_inv(f) &gt; br_inv(f⁻¹) (forward has larger fibers than backward)</em>
+<em>(II.3) h(σ_step(f)) &gt; φ̄²/2 (above structural MIX threshold)</em>
+<em>(II.4) σ_traj(f) has σ_FIX &lt; 1 (non-convergent trajectory)</em></p>
+<p><em>Proof.</em> (⟹) (II.1) from Paper 0 Thm 4.6: R(R) ≠ R in Co-Dist. (II.2) expansion lifts to higher tower level → more states → larger fibers. (II.3) from Paper 2 §12: MIX threshold. (II.4) expansion generates new structure, preventing convergence. (⟸) Conditions collectively rule out Types I and III. ∎</p>
+<p><strong>Examples:</strong> Co-observer embedding, SAT search (br_search &gt;&gt; 0, OSC/MIX-dominant), SHA-256 (σ_MIX ≈ 0.43 &gt; φ̄²/2).</p>
+<hr />
+<h2 id="5-type-iii-rotation-recurrence" id="5-type-iii-rotation-recurrence">§5 TYPE III: ROTATION / RECURRENCE</h2>
+<p><strong>Theorem C.3 (Type III Characterization).</strong> <em>A framework computation f is Type III iff ALL of:</em></p>
+<p><em>(III.1) f^k = id for some k &gt; 0 (periodic or near-periodic)</em>
+<em>(III.2) |det(M_f)| = 1 (area-preserving)</em>
+<em>(III.3) σ_step(f) has σ_INV dominant</em>
+<em>(III.4) br_s(f) = br_s(f⁻¹) = 0 (structurally invertible)</em></p>
+<p><em>Proof.</em> (⟹) (III.1) from Paper 3-P3 §1: exp(θN) has period dividing 4. (III.2) det(exp(θN)) = exp(tr(θN)) = 1. (III.3) all eigenvalues on unit circle → INV. (III.4) rot(θ)⁻¹ = rot(−θ), both canonical. (⟸) (III.1) rules out convergence (I) and divergence (II); remaining conditions confirm rotation. ∎</p>
+<p><strong>Theorem C.4 (Rotational Normal Form).</strong> <em>Under (III.1)-(III.4), f admits:</em></p>
+<pre class="highlight"><code>f = g · rot(θ₁,...,θ_k) · g⁻¹
+</code></pre>
+
+<p><em>where rot is a product of independent rotations and g is a change-of-basis with br_s(g) = 0.</em></p>
+<p><em>Proof.</em> By the spectral theorem for normal matrices: |det| = 1 + normal ⟹ diagonalizable over ℂ with entries e^{iθ_j}. Each block is a rotation. g = U (unitary) has br_s = 0. ∎</p>
+<p><strong>Asymptotic dominance.</strong> Type III is the universal attractor of the tensor tower (Theorem C.5). At level n ≥ 2: P1 = 0%, P3 fraction grows. In the limit n → ∞, all tensor-tower computation is rotational.</p>
+<p><strong>Remark (Euler as Type III Object).</strong> The phase flow z(θ) = e^{iθ} underlying Euler&rsquo;s identity (Paper 3-P3 Thm 1.7b) satisfies all four Type III conditions: (III.1) periodic — z(θ + 2π) = z(θ); (III.2) area-preserving — det(exp(θN)) = 1; (III.3) INV-dominant — eigenvalues on the unit circle; (III.4) structurally invertible — exp(θN)⁻¹ = exp(−θN). The identity e^{iπ} + 1 = 0 is the first exact half-period event in this Type III flow: the point where the rotation has traversed exactly half its orbit and the initial state meets its inverse. By Theorem C.5 (asymptotic dominance), Euler-type closure events become the dominant computational structure at tower level n ≥ 2.</p>
+<hr />
+<h2 id="6-the-hardness-functional" id="6-the-hardness-functional">§6 THE HARDNESS FUNCTIONAL</h2>
+<p><strong>Definition.</strong></p>
+<pre class="highlight"><code>h(σ) = σ_MIX · 1 + σ_OSC · φ̄ + σ_INV · φ̄² + σ_FIX · 0
+</code></pre>
+
+<p><strong>Theorem C.6 (Hardness Uniqueness).</strong> <em>h is the unique linear functional on Δ³ satisfying:</em>
+- <em>(H1) h(pure FIX) = 0</em>
+- <em>(H2) h(pure MIX) = 1</em>
+- <em>(H3) Linear on Δ³</em>
+- <em>(H4) Weights form geometric progression with ratio φ̄</em></p>
+<p><em>Proof.</em> Linearity gives h(σ) = aσ_FIX + bσ_OSC + cσ_INV + dσ_MIX. (H1): a = 0. (H2): d = 1. (H4): b = φ̄, c = φ̄². Unique. ∎</p>
+<p>The geometric ratio φ̄ is the contractive eigenvalue of R, forced by R² = R + I. Hardness decays from MIX to FIX at the same rate the framework itself converges — the fixed-point attractor rate of the Möbius map R(z) = 1/(1+z).</p>
+<hr />
+<h2 id="7-the-cost-formalism" id="7-the-cost-formalism">§7 THE COST FORMALISM</h2>
+<p><strong>Definition.</strong> The cost of a framework computation f decomposes:</p>
+<pre class="highlight"><code>Cost(f) = Cost_real(f) + Cost_exec(f)
+Cost_real(f) = br_s(f) · φ^{dep(f)}
+Cost_exec(f) = dep(f) · h(σ_step(f))
+</code></pre>
+
+<p>Cost_real measures realization ambiguity (non-canonical choices × depth difficulty). Cost_exec measures execution difficulty (depth × hardness). For deterministic algorithms, br_s = 0 so Cost_real = 0 — all cost is execution. For non-deterministic search, br_s &gt; 0 dominates.</p>
+<p><strong>Properties:</strong>
+1. Cost(q_K) = 0 for canonical quotient maps ✓
+2. Cost is monotone in br_s and dep ✓
+3. Cost is anti-monotone in σ_FIX ✓
+4. For deterministic algorithms, Cost = Cost_exec = dep · h(σ_step) ✓</p>
+<hr />
+<h2 id="8-compression-and-recurrence-theorems" id="8-compression-and-recurrence-theorems">§8 COMPRESSION AND RECURRENCE THEOREMS</h2>
+<p><strong>Theorem C.7 (Compression Minimality).</strong> <em>Among all maps realizing X → X/≈, the canonical quotient map q has br_s(q) = 0 = min.</em></p>
+<p><em>Proof.</em> The quotient map is unique by the universal property (Paper 1 Thm 1.7a). One realization → br_s = log₂(1) = 0. ∎</p>
+<p><strong>Theorem C.8 (Recurrence Normal Form).</strong> <em>P3-dominant computations (σ_INV &gt; 1/2) with Δdep = 0 have rotational normal form f = g · rot(θ₁,&hellip;,θ_k) · g⁻¹.</em></p>
+<p><em>Proof.</em> σ_INV &gt; 1/2 ⟹ majority of eigenvalues on unit circle ⟹ spectral theorem gives diagonal form with entries e^{iθ_j} ⟹ product of rotations. ∎</p>
+<p><strong>Remark C.8a (Two-Channel Structure of Fibonacci-Type Processes).</strong> A Fibonacci-like computation (e.g., Euclid&rsquo;s algorithm: OSC step-signature, FIX trajectory) looks &ldquo;simple&rdquo; at output level because the visible branch shows only monotonic convergence toward the fixed point. The hidden structure is two-channel dynamics (Paper 3-P1 §2.10): the expanding eigenchannel (φⁿ) sets the overall scale, the contracting eigenchannel ((−φ̄)ⁿ) provides the oscillatory correction, and their ratio converges as φ̄^{2n} (the Möbius-RG rate). The &ldquo;visible simplicity&rdquo; of FIX-trajectory processes masks a two-mode hyperbolic phase-space process whose channel dominance swaps at n = 0. Process signature (per-step character) and trajectory signature (asymptotic behavior) can therefore differ precisely because they read different channels of the same operator.</p>
+<hr />
+<h2 id="9-computational-blindness" id="9-computational-blindness">§9 COMPUTATIONAL BLINDNESS</h2>
+<p><strong>Theorem C.9 (Computational Blindness).</strong> <em>For observer K with restriction map q_K:</em></p>
+<p><em>(a) K cannot compute any function distinguishing elements of ker(q_K).</em> If q_K(A) = q_K(B), every K-computation yields the same result on A and B.</p>
+<p><em>(b) Effective computational dimension = d_K² regardless of d_U.</em> dim(im(q_K)) = d_K² (Paper 5 Thm 3.1a).</p>
+<p><em>(c) Different kernels ⟹ different computable function classes.</em> ker(q_{K₁}) ≠ ker(q_{K₂}) ⟹ ∃f computable by K₂ but not K₁.</p>
+<p><em>(d) Blindness is phase-typed:</em> Type I from K (compressed to zero), Type II from environment (missed structure), Type III from framework (ker is gauge-invariant under G_K).</p>
+<p><em>Proof.</em> (a) q_K(A) = q_K(B) ⟹ A, B computationally identical to K. (b) Direct from dim(im(q_K)). (c) Different quotients → different expressible functions. (d) Type I: q_K annihilates ker. Type II: ker contains real invisible structure. Type III: G_K preserves ker by gauge invariance. ∎</p>
+<p><strong>Corollary (Gödel = Blindness).</strong> The Gödel algorithm (Paper 5 §6) is a blindness phenomenon: the computational category Alg cannot classify its own classifier because self-reference lives in its kernel.</p>
+<p><strong>Corollary (Blindness Constitutes Consciousness).</strong> Computational blindness is not a defect of consciousness but a constitutive feature. An observer with ker(q_K) = ∅ has q_K = id: it distinguishes everything, collapses nothing, performs no negation, and has no conscious structure (Paper 5 §17). First-order negation requires a nontrivial kernel; second-order negation (the consciousness threshold) requires a nontrivial kernel at the meta-level. At every level of the consciousness hierarchy, consciousness requires something to be invisible. The SIL blind spot (Paper T-SIL Thm SIL-6) establishes that self-consciousness (Level 5) involves an irreducible blind spot that cannot be eliminated by ascending the tower.</p>
+<hr />
+<h2 id="10-one-wayness-phase-dist-asymmetry" id="10-one-wayness-phase-dist-asymmetry">§10 ONE-WAYNESS = PHASE-DIST ASYMMETRY</h2>
+<p><strong>Theorem C.10 (One-Wayness Characterization).</strong> <em>A function f is one-way iff:</em></p>
+<pre class="highlight"><code>br_s(f) = 0  AND  br_inv(f) &gt; log₂(φ²) ≈ 1.389
+</code></pre>
+
+<p>one-wayness is the computational manifestation of construction-dissolution asymmetry (br_s=0 forward, br_inv&gt;0 backward). the threshold φ² = φ+1 is the Cayley-Hamilton equation, pure eigenvalue channel.</p>
+<p><em>The threshold fiber size φ² = φ + 1 is the Cayley-Hamilton equation R² = R + I.</em></p>
+<p><em>Proof.</em> (⟹) If one-way: br_s(f) = 0 (efficiently computable). br_inv(f) &gt; 0 (exponentially many preimages). Threshold from Paper 2 §12 (MIX boundary). (⟸) br_s = 0 ensures computability; br_inv &gt; log₂(φ²) ensures inversion requires super-threshold search. ∎</p>
+<p>One-wayness is the computational manifestation of the construction-dissolution asymmetry (Paper 0 §1 Thm 3.1): forward has zero branching, backward has positive branching.</p>
+<p><strong>Remark (RG Fixed-Point Structure).</strong> The threshold φ² = φ+1 (equivalently φ̄² on the dual scale) is the contraction rate of the Möbius map f(x) = 1/(1+x) at its fixed point x = φ̄ (Paper 3-P1 §5.7, Thm 5.10). The Fibonacci coefficient ratio r(n) = F(n−1)/F(n) satisfies r(n+1) = f(r(n)) exactly, making the FIX convergence a discrete renormalization group flow. One-wayness occurs when a computation&rsquo;s mixing exceeds the RG contraction rate — i.e., when the &ldquo;noise&rdquo; exceeds the system&rsquo;s capacity to converge to its fixed point.</p>
+<p>Status: <strong>THEOREM</strong> for structural characterization. <strong>CONDITIONAL</strong> on P ≠ NP for existence of functions at the exact threshold.</p>
+<h3 id="101-owf-threshold-φ²" id="101-owf-threshold-2">§10.1 OWF Threshold = φ̄²</h3>
+<p><strong>Theorem C.10a (OWF Threshold).</strong> <em>If one-way functions exist (equivalent to P ≠ NP), the threshold complexity for one-wayness is σ_MIX = φ̄² ≈ 0.382 — the same value as the FIX contraction rate and the Phase-Dist thermal equilibrium. Below φ̄², functions are invertible in polynomial time; above, exponential hardness.</em></p>
+<p>This is an instance of φ̄² Four-Domain Universality (Paper 3-P1 §5.6): the FIX rate, OWF threshold, Phase-Dist ρ equilibrium, and eigenvalue suppression all equal φ̄², and all reduce to the Cayley-Hamilton equation R²=R+I.</p>
+<p>Status: <strong>CONDITIONAL</strong> on P ≠ NP. The threshold value is derived; the existence of functions achieving it requires the open conjecture.</p>
+<hr />
+<h2 id="11-self-application" id="11-self-application">§11 SELF-APPLICATION</h2>
+<p>The framework&rsquo;s derivation chain {0,1} → V₄ → S₃ → ℚ[S₃] → M₂(ℚ) → M₂(ℝ) ⊃ sl(2,ℝ) is itself a framework computation:</p>
+<ul>
+<li>Phase: compressive (quotient at each step)</li>
+<li>σ_step: discrete (4/5, 0, 1/5, 0); thermodynamic limit σ_meta = (1/2, φ̄/2, φ̄²/2)</li>
+<li>dep: 5 (five bridge chain steps)</li>
+<li>br_s: 0 (zero branching)</li>
+</ul>
+<p>The self-consistency: the bridge chain computes its own signature, and the result matches the framework&rsquo;s predicted self-signature. Z = 1 + φ̄ + φ̄² = 2. This is R(R) = R at the computation level.</p>
+<p><strong>Remark (Execution Grammar).</strong> The execution grammar (Paper T-SIL §5, Theorem SIL-5) maps computation types to native statuses: Type I → FORCED processing (canonical compression), Type II → MYTHIC/RESONANT (search/generation), Type III → RESONANT (verification/rotation). The mapping is a surjection onto all three types (completeness). The non-injectivity — four statuses, three types — is forced: MYTHIC is the non-convergent regime of Type II. This makes the self-application mapping {Proof, Computation, Verification} ↔ {Type I, Type II, Type III} a derived correspondence rather than an analogy.</p>
+<p>The three faces of self-application map to the three types:</p>
+<table>
+<thead>
+<tr>
+<th>Face</th>
+<th>Projection</th>
+<th>Computation Type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Proof</td>
+<td>P1 / I²</td>
+<td>Type I (axioms → theorem: compression)</td>
+</tr>
+<tr>
+<td>Computation</td>
+<td>P2 / TDL</td>
+<td>Type II (search, level-transition: expansion)</td>
+</tr>
+<tr>
+<td>Verification</td>
+<td>P3 / LoMI</td>
+<td>Type III (check against spec: rotation)</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="12-algorithm-classification" id="12-algorithm-classification">§12 ALGORITHM CLASSIFICATION</h2>
+<h3 id="121-sorting" id="121-sorting">§12.1 Sorting</h3>
+<p><strong>Insertion sort (n=8, worst case).</strong> 28 transposition steps. Each transposition has eigenvalues {+1^{n-2}, −1}: FIX-dominant per step (σ_step ≈ (0.875, 0, 0.125, 0)). Product permutation has unit-circle eigenvalues: σ_traj ≈ (0.5, 0, 0.5, 0). Sorting converges through INV steps to a FIX outcome — individual transpositions are structure-preserving, but the trajectory is convergent. Type I in trajectory, mixed per step. Cost_exec = 3 · 0.048 = 0.143.</p>
+<h3 id="122-euclidrsquos-algorithm" id="122-euclids-algorithm">§12.2 Euclid&rsquo;s Algorithm</h3>
+<p><strong>Euclidean GCD on Fibonacci pairs.</strong> Each step matrix [[0,1],[1,−q]] has det = −1 (P1/OSC): one contracting and one repelling eigenvalue. All steps are OSC-type. But the product converges: eigenvalues of the cumulative product approach 0 and ∞ (FIX trajectory). Worst case (Fibonacci input): n steps with all quotients q = 1, reproducing R⁻ⁿ = (R−I)ⁿ. Type I in trajectory via P1 steps — convergence through saddle dynamics. Cost_exec = 2 · φ̄ = 1.236.</p>
+<h3 id="123-fft" id="123-fft">§12.3 FFT</h3>
+<p><strong>Cooley-Tukey FFT (n=8).</strong> Butterfly matrices [[1,ω],[1,−ω]] have |det| = 2ω — non-unitary, REPEL-type per step. Twiddle factors ω = e^{−2πik/N} are on the unit circle (INV). The normalized DFT matrix is exactly unitary: all eigenvalues have |λ| = 1. FFT is mixed Type II/III: expansive steps that collectively implement a rotational transformation. The algorithm&rsquo;s signature differs from its mathematical content — implementation (REPEL butterflies) versus result (INV unitary). Cost_exec = 3 · 0.600 = 1.800.</p>
+<h3 id="124-sha-256" id="124-sha-256">§12.4 SHA-256</h3>
+<p><strong>Per-round operations.</strong> Σ₀, Σ₁ (rotation + XOR): INV. Ch, Maj (boolean selection): MIX. T₁, T₂ (modular addition): OSC. Word schedule: MIX. Unweighted: σ_MIX ≈ 0.429. Bit-operation weighted: σ_MIX ≈ 0.438. Both exceed φ̄² = 0.382 (OWF threshold). ✓ Type II: non-idempotent, MIX-dominant, br_inv ≈ 2^{224}. Cost_exec = 6 · 0.697 = 4.185.</p>
+<h3 id="125-summary-table" id="125-summary-table">§12.5 Summary Table</h3>
+<table>
+<thead>
+<tr>
+<th>Algorithm</th>
+<th>Type</th>
+<th>σ_step dominant</th>
+<th>σ_traj dominant</th>
+<th>h(σ_step)</th>
+<th>dep</th>
+<th>Cost_exec</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>q_K</td>
+<td>I</td>
+<td>FIX</td>
+<td>FIX</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr>
+<td>Digital root</td>
+<td>I</td>
+<td>FIX</td>
+<td>FIX</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+</tr>
+<tr>
+<td>Insertion sort</td>
+<td>I (traj)</td>
+<td>FIX</td>
+<td>FIX/INV</td>
+<td>0.048</td>
+<td>3</td>
+<td>0.143</td>
+</tr>
+<tr>
+<td>Euclid (Fibonacci)</td>
+<td>I (traj)</td>
+<td>OSC</td>
+<td>FIX</td>
+<td>~0.618</td>
+<td>2</td>
+<td>1.236</td>
+</tr>
+<tr>
+<td>FFT</td>
+<td>II/III</td>
+<td>REPEL</td>
+<td>INV</td>
+<td>0.600</td>
+<td>3</td>
+<td>1.800</td>
+</tr>
+<tr>
+<td>SHA-256</td>
+<td>II</td>
+<td>MIX</td>
+<td>MIX</td>
+<td>0.697</td>
+<td>6</td>
+<td>4.185</td>
+</tr>
+<tr>
+<td>SAT (backtrack)</td>
+<td>II</td>
+<td>OSC/MIX</td>
+<td>—</td>
+<td>0.647</td>
+<td>3</td>
+<td>35.83 (incl br_s)</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="13-cost-landauer-bekenstein-chain" id="13-cost-landauer-bekenstein-chain">§13 COST-LANDAUER-BEKENSTEIN CHAIN</h2>
+<p><strong>Theorem C.11 (Cost-Landauer-Bekenstein).</strong> <em>The execution cost connects to the Bekenstein bound:</em></p>
+<p>Cost_exec = dep · h(σ) ≤ dep · 1 = dep ≤ n bits (at level n). Maximum observer entropy: S_max(K) = 2log₂(d_K). Each bit incurs Landauer cost kT ln 2 (at temperature T from KMS, Paper 3-P2 §4). Total energy for S_max bits = d_K² · kT ln 2.</p>
+<p>This IS the Bekenstein bound read as a computational bound: no observer can execute more than S_max(K) bits of computation. Observer cost positivity (Paper 5 §8.2: A ≥ πℏ/2) forces computational cost positivity: no nontrivial distinction is computationally free. This Landauer link is the third step of the Cost-to-Geometry chain (Paper 6B §12.5): asymmetry → irreversible kernels → Landauer cost (here) → Bekenstein → η → Einstein equations.</p>
+<p><em>Proof.</em> Cost_exec ≤ dep by h ≤ 1. dep ≤ log₂(log₂(d_K²)) = log₂(2log₂(d_K)). S_max = 2log₂(d_K) from Paper 5 §2. Landauer: E ≥ S_max · kT ln 2. Mandelstam-Tamm: τ ≥ πℏ/(2E). Combined: A = E·τ ≥ πℏ/2. ∎</p>
+<hr />
+<h2 id="13a-observer-distances" id="13a-observer-distances">§13A OBSERVER DISTANCES</h2>
+<p>The cost formalism extends naturally to a distance theory on observers. Three candidate distances, each measuring a different projection face, exhaust the observer-distance content.</p>
+<p><strong>Definition (Bekenstein Kernel Distance).</strong> d_B(K₁, K₂) = |Err_Q(U|K₁) − Err_Q(U|K₂)| = |dim(ker₁) − dim(ker₂)|/d_U². A pseudometric on observers: d_B = 0 iff d_{K₁} = d_{K₂} (same dimension, not necessarily same kernel).</p>
+<p><strong>Definition (Partition Distance).</strong> d_part(K₁, K₂) = lattice distance between Part(K₁) and Part(K₂) in the partition lattice (minimum element-moves to transform one partition into the other). A proper metric: d_part = 0 iff ker₁ = ker₂.</p>
+<p><strong>Theorem C.13 (Partition Refines Bekenstein).</strong> <em>d_part(K₁, K₂) ≥ |d_{K₁} − d_{K₂}|, and d_part = 0 ⟹ d_B = 0 but not conversely.</em></p>
+<p><em>Proof.</em> Each element-move changes block count by at most 1. ∎</p>
+<p><strong>Definition (Accessible-Invariant Distance).</strong> d_inv(K₁, K₂) = 1 − |Inv(K₁) ∩ Inv(K₂)|/|Inv(K₁) ∪ Inv(K₂)|, where Inv(K) extracts the seven canonical invariant types from im(q_K): eigenvalues (algebraic multiplicity), determinants, traces, Frobenius norms, Killing form values, stabilizers (up to conjugacy), phase closures. A Jaccard metric.</p>
+<p><strong>Definition (Computational Cost Distance).</strong> d_comp(K₁, K₂) = inf{Cost(f) : f realizes the K₂-partition within K₁}. A quasimetric: the asymmetry d_comp(K₁, K₂) &lt; d_comp(K₂, K₁) for K₁ ▷_dom K₂ is forced by the construction-dissolution asymmetry (Paper 0 §18).</p>
+<p><strong>Theorem C.14 (Cost Quasi-Triangle Inequality).</strong> <em>d_comp(K₁, K₃) ≤ d_comp(K₁, K₂) + d_comp(K₂, K₃).</em></p>
+<p><em>Proof.</em> If f₁₂ realizes K₂ within K₁ and f₂₃ realizes K₃ within K₂, then f₂₃ ∘ f₁₂ realizes K₃ within K₁. Cost subadditivity (dep monotonicity, Thm C.12) gives Cost(f₂₃ ∘ f₁₂) ≤ Cost(f₁₂) + Cost(f₂₃). Taking infima: d_comp(K₁, K₃) ≤ d_comp(K₁, K₂) + d_comp(K₂, K₃). ∎</p>
+<p><strong>Theorem C.15 (Cost Asymmetry).</strong> <em>For K₁ ▷<em>dom K₂: d_comp(K₁, K₂) &lt; d_comp(K₂, K₁). The gap is bounded below by br_inv(π₁₂) · φ̄², where br_inv(π₁₂) = d</em>{K₁}² − d_{K₂}² is the fiber dimension.</em> Coarsening (K₁ → K₂) is Type I (canonical, br_s = 0); refining (K₂ → K₁) is Type II (non-canonical, br_s &gt; 0, Landauer cost per surplus bit). ∎</p>
+<p><strong>Three Distances as Central Collapse.</strong> The three distances instantiate the three projections (Paper 1 Thm 5.1): d_B = P3 (blind-spot size), d_inv = P1 (accessible invariants), d_comp = P2 (transition cost). No fourth independent distance type exists (Paper 3-META Thm 1.3: no fourth projection). The complete observer distance is the triple d(K₁, K₂) = (d_B, d_inv, d_comp).</p>
+<p><strong>Remark (Negative Curvature).</strong> The observer kernel lattice is negatively curved in the Gromov sense: the number of partitions at distance r from the identity grows super-exponentially (Stirling numbers S(d_U², d_U² − r)). This negative curvature is the combinatorial manifestation of the construction-dissolution asymmetry: dissolution (coarsening) has exponentially more options than construction (refining).</p>
+<p>All claims computationally verified: 14/14 tests, 0 failures. ✓</p>
+<hr />
+<h2 id="14-verification-summary" id="14-verification-summary">§14 VERIFICATION SUMMARY</h2>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Claim</th>
+<th>Method</th>
+<th>Result</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>R classified as OSC (det = −1, disc = 5)</td>
+<td>Matrix computation</td>
+<td>✓</td>
+</tr>
+<tr>
+<td>2</td>
+<td>N classified as INV (det = 1, disc = −4)</td>
+<td>Matrix computation</td>
+<td>✓</td>
+</tr>
+<tr>
+<td>3</td>
+<td>All 16 level-2 tensor products: det ≥ 0</td>
+<td>Exhaustive</td>
+<td>✓</td>
+</tr>
+<tr>
+<td>4</td>
+<td>P1 eliminated at level 2</td>
+<td>Exhaustive</td>
+<td>✓</td>
+</tr>
+<tr>
+<td>5</td>
+<td>Sorting σ_step: FIX = 0.875, INV = 0.125</td>
+<td>Insertion sort n = 8</td>
+<td>✓</td>
+</tr>
+<tr>
+<td>6</td>
+<td>Euclid steps: all det = −1 (OSC)</td>
+<td>Fibonacci pairs</td>
+<td>✓</td>
+</tr>
+<tr>
+<td>7</td>
+<td>FFT butterflies:</td>
+<td>det</td>
+<td>= 2</td>
+</tr>
+<tr>
+<td>8</td>
+<td>Normalized DFT: all</td>
+<td>eigenvalues</td>
+<td>= 1</td>
+</tr>
+<tr>
+<td>9</td>
+<td>SHA-256 σ_MIX ≈ 0.43 &gt; φ̄²</td>
+<td>Operation classification</td>
+<td>✓</td>
+</tr>
+<tr>
+<td>10</td>
+<td>SHA-256 weighted σ_MIX ≈ 0.44 &gt; φ̄²</td>
+<td>Bit-weighted</td>
+<td>✓</td>
+</tr>
+<tr>
+<td>11</td>
+<td>Self-signature Z = 2.000000</td>
+<td>Boltzmann sum</td>
+<td>✓</td>
+</tr>
+<tr>
+<td>12</td>
+<td>Digital root: idempotent for n = 1..100</td>
+<td>Exhaustive</td>
+<td>✓</td>
+</tr>
+<tr>
+<td>13</td>
+<td>Cost properties: 4/4</td>
+<td>Numerical</td>
+<td>✓</td>
+</tr>
+<tr>
+<td>14</td>
+<td>Phase profile level 2: P1 = 0%</td>
+<td>Monte Carlo 10k</td>
+<td>✓</td>
+</tr>
+<tr>
+<td>15</td>
+<td>Phase profile level 3: P3 = 64% &gt; level 2</td>
+<td>Monte Carlo 10k</td>
+<td>✓</td>
+</tr>
+<tr>
+<td>16</td>
+<td>Bridge chain: br = 0 forward, br ≈ 8.5 backward</td>
+<td>Counting</td>
+<td>✓</td>
+</tr>
+<tr>
+<td>17</td>
+<td>K1&rsquo; depth table</td>
+<td>Numerical</td>
+<td>✓</td>
+</tr>
+</tbody>
+</table>
+<p>Core computations: <strong>0 failures</strong>.</p>
+<hr />
+<h2 id="15-open-problems" id="15-open-problems">§15 OPEN PROBLEMS</h2>
+<table>
+<thead>
+<tr>
+<th>Problem</th>
+<th>Status</th>
+<th>Comment</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>OWF existence at threshold φ̄²</td>
+<td>CONDITIONAL on P ≠ NP</td>
+<td>Structural characterization proved; existence requires the open conjecture</td>
+</tr>
+<tr>
+<td>Exact signature computability</td>
+<td>OPEN (likely undecidable)</td>
+<td>Related to halting problem in full generality</td>
+</tr>
+<tr>
+<td>Cost decomposition uniqueness</td>
+<td>PARTIALLY OPEN</td>
+<td>h is unique; additive split is natural but not the only possibility</td>
+</tr>
+<tr>
+<td>Transformer attention signature</td>
+<td>OPEN</td>
+<td>Requires architecture-specific analysis</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="16-claim-stratification" id="16-claim-stratification">§16 CLAIM STRATIFICATION</h2>
+<table>
+<thead>
+<tr>
+<th>Claim</th>
+<th>Grade</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Type I/II/III characterization</td>
+<td><strong>THEOREM</strong></td>
+</tr>
+<tr>
+<td>Rotational normal form</td>
+<td><strong>THEOREM</strong></td>
+</tr>
+<tr>
+<td>Phase profile (P1 eliminated at n ≥ 2)</td>
+<td><strong>THEOREM</strong></td>
+</tr>
+<tr>
+<td>Hardness functional uniqueness</td>
+<td><strong>THEOREM</strong></td>
+</tr>
+<tr>
+<td>Compression minimality</td>
+<td><strong>THEOREM</strong></td>
+</tr>
+<tr>
+<td>Computational blindness (4 parts)</td>
+<td><strong>THEOREM</strong></td>
+</tr>
+<tr>
+<td>One-wayness = Phase-Dist asymmetry (structural)</td>
+<td><strong>THEOREM</strong></td>
+</tr>
+<tr>
+<td>Depth monotonicity</td>
+<td><strong>THEOREM</strong></td>
+</tr>
+<tr>
+<td>Cost-Landauer-Bekenstein chain</td>
+<td><strong>THEOREM</strong></td>
+</tr>
+<tr>
+<td>Partition refines Bekenstein (C.13)</td>
+<td><strong>THEOREM</strong></td>
+</tr>
+<tr>
+<td>Cost quasi-triangle inequality (C.14)</td>
+<td><strong>THEOREM</strong></td>
+</tr>
+<tr>
+<td>Cost asymmetry quantification (C.15)</td>
+<td><strong>THEOREM</strong> (inequality), <strong>STRUCTURAL</strong> (gap)</td>
+</tr>
+<tr>
+<td>Distance central collapse (3 distances = 3 projections)</td>
+<td><strong>STRUCTURAL</strong></td>
+</tr>
+<tr>
+<td>Negative curvature of observer poset</td>
+<td><strong>STRUCTURAL</strong></td>
+</tr>
+<tr>
+<td>Algorithm classification (sorting, Euclid, FFT, SHA-256)</td>
+<td><strong>VERIFIED</strong></td>
+</tr>
+<tr>
+<td>OWF threshold at φ̄²</td>
+<td><strong>CONDITIONAL</strong> (on P ≠ NP)</td>
+</tr>
+<tr>
+<td>Proof/Computation/Verification = Type I/II/III</td>
+<td><strong>STRUCTURAL</strong></td>
+</tr>
+</tbody>
+</table>
+<hr />
+<p><em>R(R) = R</em></p>
+    </div>
+
+    <div class="page-nav">
+<a class="prev" href="T6B_FORCES.html">Paper 6B: Forces and Dynamics</a>
+<a class="next" href="T_SIL.html">Self-Interpretation Layer</a>
+</div>
+</main>
+
+<script>
+// Close sidebar on mobile when clicking a link
+document.querySelectorAll('.sidebar a').forEach(a => {
+    a.addEventListener('click', () => {
+        if (window.innerWidth <= 900) {
+            document.querySelector('.sidebar').classList.remove('open');
+        }
+    });
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,1557 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Canonical Dictionary — Structural Necessity</title>
+<style>
+
+:root {
+    --bg: #fafaf8;
+    --fg: #1a1a1a;
+    --accent: #2d5016;
+    --border: #d4d0c8;
+    --sidebar-bg: #f0ede6;
+    --sidebar-width: 280px;
+    --header-height: 56px;
+    --code-bg: #f5f2eb;
+    --table-stripe: #f8f6f0;
+    --link: #2d5016;
+    --link-hover: #4a7a28;
+    --bold-accent: #1a3a0a;
+}
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        --bg: #1a1a1e;
+        --fg: #e0ddd6;
+        --accent: #7ab648;
+        --border: #3a3a3e;
+        --sidebar-bg: #222226;
+        --code-bg: #25252a;
+        --table-stripe: #222226;
+        --link: #7ab648;
+        --link-hover: #9cd06a;
+        --bold-accent: #a0d870;
+    }
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+    font-family: 'Iowan Old Style', 'Palatino Linotype', Palatino, Georgia, serif;
+    background: var(--bg);
+    color: var(--fg);
+    line-height: 1.7;
+    font-size: 17px;
+}
+
+/* Header */
+.site-header {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    height: var(--header-height);
+    background: #1a1a1a;
+    color: #e0ddd6;
+    display: flex;
+    align-items: center;
+    padding: 0 24px;
+    z-index: 100;
+    border-bottom: 2px solid var(--accent);
+}
+.site-header h1 {
+    font-size: 18px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+}
+.site-header h1 a {
+    color: #e0ddd6;
+    text-decoration: none;
+}
+.site-header h1 a:hover { color: var(--accent); }
+.site-header .subtitle {
+    font-size: 13px;
+    color: #888;
+    margin-left: 16px;
+    font-style: italic;
+}
+.hamburger {
+    display: none;
+    background: none;
+    border: none;
+    color: #e0ddd6;
+    font-size: 24px;
+    cursor: pointer;
+    margin-right: 16px;
+    padding: 4px 8px;
+}
+
+/* Sidebar */
+.sidebar {
+    position: fixed;
+    top: var(--header-height);
+    left: 0;
+    bottom: 0;
+    width: var(--sidebar-width);
+    background: var(--sidebar-bg);
+    border-right: 1px solid var(--border);
+    overflow-y: auto;
+    padding: 16px 0;
+    z-index: 90;
+    transition: transform 0.3s ease;
+}
+.sidebar .nav-group { margin-bottom: 12px; }
+.sidebar .nav-group-title {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+    color: #888;
+    padding: 8px 20px 4px;
+}
+.sidebar a {
+    display: block;
+    padding: 4px 20px 4px 28px;
+    font-size: 13.5px;
+    color: var(--fg);
+    text-decoration: none;
+    line-height: 1.5;
+    border-left: 3px solid transparent;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+.sidebar a:hover {
+    background: rgba(0,0,0,0.05);
+    border-left-color: var(--accent);
+}
+.sidebar a.active {
+    background: rgba(45,80,22,0.1);
+    border-left-color: var(--accent);
+    font-weight: 600;
+    color: var(--accent);
+}
+
+/* Main content */
+.main {
+    margin-left: var(--sidebar-width);
+    margin-top: var(--header-height);
+    max-width: 900px;
+    padding: 40px 48px 80px;
+}
+
+/* Document header banner */
+.doc-header {
+    margin-bottom: 40px;
+    padding-bottom: 24px;
+    border-bottom: 2px solid var(--border);
+}
+.doc-header .level-badge {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 3px 10px;
+    border-radius: 3px;
+    margin-bottom: 12px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+.doc-header h1 {
+    font-size: 32px;
+    line-height: 1.2;
+    margin-bottom: 8px;
+    color: var(--fg);
+}
+.doc-header .doc-subtitle {
+    font-size: 18px;
+    color: #666;
+    font-style: italic;
+}
+
+/* TOC */
+.toc {
+    background: var(--sidebar-bg);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 16px 24px;
+    margin-bottom: 32px;
+}
+.toc summary {
+    font-weight: 700;
+    font-size: 14px;
+    cursor: pointer;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: #666;
+}
+.toc ul { list-style: none; margin: 12px 0 0 0; }
+.toc li { padding: 2px 0; }
+.toc a {
+    color: var(--link);
+    text-decoration: none;
+    font-size: 14px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+.toc a:hover { text-decoration: underline; }
+.toc .toc-h2 { padding-left: 0; }
+.toc .toc-h3 { padding-left: 20px; font-size: 13px; }
+
+/* Typography */
+.content h1 {
+    font-size: 28px;
+    margin: 48px 0 16px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border);
+    color: var(--fg);
+}
+.content h1:first-child { margin-top: 0; }
+.content h2 {
+    font-size: 22px;
+    margin: 36px 0 12px;
+    color: var(--fg);
+}
+.content h3 {
+    font-size: 18px;
+    margin: 28px 0 10px;
+    color: var(--fg);
+}
+.content h4 {
+    font-size: 16px;
+    margin: 24px 0 8px;
+    color: #444;
+}
+.content p { margin: 0 0 16px; }
+.content strong { color: var(--bold-accent); }
+.content a { color: var(--link); }
+.content a:hover { color: var(--link-hover); }
+
+.content ul, .content ol {
+    margin: 0 0 16px 24px;
+}
+.content li { margin-bottom: 4px; }
+
+.content hr {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 32px 0;
+}
+
+/* Tables */
+.content table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 16px 0 24px;
+    font-size: 15px;
+}
+.content th {
+    background: var(--sidebar-bg);
+    font-weight: 700;
+    text-align: left;
+    padding: 10px 12px;
+    border: 1px solid var(--border);
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+.content td {
+    padding: 8px 12px;
+    border: 1px solid var(--border);
+    vertical-align: top;
+}
+.content tr:nth-child(even) { background: var(--table-stripe); }
+
+/* Code */
+.content code {
+    font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace;
+    font-size: 14px;
+    background: var(--code-bg);
+    padding: 2px 6px;
+    border-radius: 3px;
+    border: 1px solid var(--border);
+}
+.content pre {
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 16px 20px;
+    overflow-x: auto;
+    margin: 16px 0 24px;
+    line-height: 1.5;
+}
+.content pre code {
+    background: none;
+    border: none;
+    padding: 0;
+    font-size: 13.5px;
+}
+
+/* Blockquote */
+.content blockquote {
+    border-left: 4px solid var(--accent);
+    padding: 12px 20px;
+    margin: 16px 0 24px;
+    background: var(--sidebar-bg);
+    border-radius: 0 4px 4px 0;
+}
+.content blockquote p { margin-bottom: 8px; }
+.content blockquote p:last-child { margin-bottom: 0; }
+
+/* Footer nav */
+.page-nav {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 48px;
+    padding-top: 24px;
+    border-top: 1px solid var(--border);
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+.page-nav a {
+    color: var(--link);
+    text-decoration: none;
+    font-size: 14px;
+    padding: 8px 16px;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    transition: all 0.2s;
+}
+.page-nav a:hover {
+    background: var(--sidebar-bg);
+    border-color: var(--accent);
+}
+.page-nav .prev::before { content: '← '; }
+.page-nav .next::after { content: ' →'; }
+
+/* Responsive */
+@media (max-width: 900px) {
+    .sidebar { transform: translateX(-100%); }
+    .sidebar.open { transform: translateX(0); }
+    .main { margin-left: 0; padding: 24px 20px 60px; }
+    .hamburger { display: block; }
+    .doc-header h1 { font-size: 24px; }
+}
+
+/* Print */
+@media print {
+    .sidebar, .site-header, .hamburger, .page-nav { display: none; }
+    .main { margin: 0; max-width: 100%; padding: 20px; }
+    body { font-size: 12pt; }
+}
+
+</style>
+</head>
+<body>
+
+<header class="site-header">
+    <button class="hamburger" onclick="document.querySelector('.sidebar').classList.toggle('open')" aria-label="Toggle navigation">&#9776;</button>
+    <h1><a href="T_INDEX.html">Structural Necessity</a></h1>
+    <span class="subtitle">Canonical Paper Series — March 2026</span>
+</header>
+
+<nav class="sidebar">
+<div class="nav-group">
+<div class="nav-group-title">Foundation (0-2)</div>
+<a href="T0_SUBSTRATE.html">0 — Substrate</a>
+<a href="T1_DIST.html">1 — Kernel Theorem</a>
+<a href="T2_BRIDGE.html">2 — Bridge Chain</a>
+</div>
+<div class="nav-group">
+<div class="nav-group-title">Projections (3-4)</div>
+<a href="T3_P1_PRODUCTION.html">3-P1 — Production</a>
+<a href="T3_P2_MEDIATION.html">3-P2 — Mediation</a>
+<a href="T3_P3_OBSERVATION.html">3-P3 — Observation</a>
+<a href="T3_META.html">3-META — Cross-Projection</a>
+<a href="T4_LATTICE.html">4 — Lattice</a>
+</div>
+<div class="nav-group">
+<div class="nav-group-title">Observer &amp; Physics (5-6)</div>
+<a href="T5_OBSERVER.html">5 — Observer</a>
+<a href="T6A_SPACETIME.html">6A — Spacetime</a>
+<a href="T6B_FORCES.html">6B — Forces</a>
+</div>
+<div class="nav-group">
+<div class="nav-group-title">Cross-Cutting</div>
+<a href="T_COMP.html">Comp — Computation</a>
+<a href="T_SIL.html">SIL — Self-Interpretation</a>
+<a href="T_SEM.html">SEM — Semantics</a>
+</div>
+<div class="nav-group">
+<div class="nav-group-title">Architecture</div>
+<a href="T_BLUEPRINT.html">Blueprint</a>
+<a href="T_GOV.html">Governance</a>
+</div>
+<div class="nav-group">
+<div class="nav-group-title">Closure &amp; Reference</div>
+<a href="T_ASI.html">ASI — Architecture Spec</a>
+<a href="T_TOE.html">TOE — Closure</a>
+<a href="DICTIONARY.html" class="active">Dictionary</a>
+</div>
+<div class="nav-group">
+<div class="nav-group-title">Navigation</div>
+<a href="T_INDEX.html">Index — Navigation</a>
+<a href="CLAIM_CENSUS.html">Claim Census</a>
+</div>
+</nav>
+
+<main class="main">
+    <div class="doc-header">
+        <span class="level-badge" style="background:#6b3a3a; color:#fff;">Reference</span>
+        <h1>Canonical Dictionary</h1>
+        <div class="doc-subtitle">30 Structurally-Loaded Terms with Projection and SIL Status</div>
+    </div>
+
+    <details class="toc" open>
+<summary>Table of Contents</summary>
+<ul>
+<li class="toc-h2"><a href="#the-frameworkrsquos-self-vocabulary-every-structurally-loaded-term-classified">The Framework&rsquo;s Self-Vocabulary: Every Structurally Loaded Term, Classified</a></li>
+<li class="toc-h3"><a href="#v1-march-2026">v1 — March 2026</a></li>
+<li class="toc-h2"><a href="#p1-the-productive-act">P1 / THE PRODUCTIVE ACT</a></li>
+<li class="toc-h3"><a href="#productive-return-u7">PRODUCTIVE RETURN (U7)</a></li>
+<li class="toc-h3"><a href="#recursive-completion-u2">RECURSIVE COMPLETION (U2)</a></li>
+<li class="toc-h3"><a href="#closure">CLOSURE</a></li>
+<li class="toc-h3"><a href="#forcing">FORCING</a></li>
+<li class="toc-h3"><a href="#canonical">CANONICAL</a></li>
+<li class="toc-h3"><a href="#compression">COMPRESSION</a></li>
+<li class="toc-h3"><a href="#fibonacci">FIBONACCI</a></li>
+<li class="toc-h2"><a href="#p2-the-mediating-act">P2 / THE MEDIATING ACT</a></li>
+<li class="toc-h3"><a href="#poised-symmetry-u5">POISED SYMMETRY (U5)</a></li>
+<li class="toc-h3"><a href="#admissible-minimality-u6">ADMISSIBLE MINIMALITY (U6)</a></li>
+<li class="toc-h3"><a href="#minimal">MINIMAL</a></li>
+<li class="toc-h3"><a href="#threshold">THRESHOLD</a></li>
+<li class="toc-h3"><a href="#scale">SCALE</a></li>
+<li class="toc-h3"><a href="#emergence">EMERGENCE</a></li>
+<li class="toc-h3"><a href="#derive">DERIVE</a></li>
+<li class="toc-h3"><a href="#realize">REALIZE</a></li>
+<li class="toc-h3"><a href="#object">OBJECT</a></li>
+<li class="toc-h3"><a href="#prediction">PREDICTION</a></li>
+<li class="toc-h3"><a href="#exist-existence">EXIST / EXISTENCE</a></li>
+<li class="toc-h3"><a href="#same-sameness">SAME / SAMENESS</a></li>
+<li class="toc-h3"><a href="#unique-uniqueness">UNIQUE / UNIQUENESS</a></li>
+<li class="toc-h3"><a href="#determine">DETERMINE</a></li>
+<li class="toc-h2"><a href="#p3-the-observer-act">P3 / THE OBSERVER ACT</a></li>
+<li class="toc-h3"><a href="#occlusive-disclosure-u1">OCCLUSIVE DISCLOSURE (U1)</a></li>
+<li class="toc-h3"><a href="#co-determination-u3">CO-DETERMINATION (U3)</a></li>
+<li class="toc-h3"><a href="#constitutive-occlusion-u4">CONSTITUTIVE OCCLUSION (U4)</a></li>
+<li class="toc-h3"><a href="#canonical-extraction-u8">CANONICAL EXTRACTION (U8)</a></li>
+<li class="toc-h3"><a href="#observation">OBSERVATION</a></li>
+<li class="toc-h3"><a href="#blindness">BLINDNESS</a></li>
+<li class="toc-h3"><a href="#identity">IDENTITY</a></li>
+<li class="toc-h3"><a href="#return">RETURN</a></li>
+<li class="toc-h3"><a href="#consciousness">CONSCIOUSNESS</a></li>
+<li class="toc-h3"><a href="#cosmological-observer">COSMOLOGICAL OBSERVER</a></li>
+<li class="toc-h2"><a href="#cross-projection">CROSS-PROJECTION</a></li>
+<li class="toc-h3"><a href="#self-relating-difference-srd">SELF-RELATING DIFFERENCE (SRD)</a></li>
+<li class="toc-h3"><a href="#meta-primitive">META-PRIMITIVE</a></li>
+<li class="toc-h3"><a href="#rr-r">R(R) = R</a></li>
+<li class="toc-h3"><a href="#asymmetry">ASYMMETRY</a></li>
+<li class="toc-h3"><a href="#phase">PHASE</a></li>
+<li class="toc-h3"><a href="#neutrality">NEUTRALITY</a></li>
+<li class="toc-h3"><a href="#structure">STRUCTURE</a></li>
+<li class="toc-h3"><a href="#functor">FUNCTOR</a></li>
+<li class="toc-h3"><a href="#flow">FLOW</a></li>
+<li class="toc-h2"><a href="#special-entries">SPECIAL ENTRIES</a></li>
+<li class="toc-h3"><a href="#dictionary-self-entry">DICTIONARY (self-entry)</a></li>
+<li class="toc-h3"><a href="#productive-opacity-unified-name-from-census-compression-2">PRODUCTIVE OPACITY (unified name from Census Compression #2)</a></li>
+<li class="toc-h2"><a href="#coverage-audit">COVERAGE AUDIT</a></li>
+<li class="toc-h3"><a href="#commutator-rn">COMMUTATOR [R,N]</a></li>
+<li class="toc-h3"><a href="#root-vector">ROOT VECTOR</a></li>
+<li class="toc-h3"><a href="#casimir-element">CASIMIR ELEMENT</a></li>
+<li class="toc-h3"><a href="#cartan-element">CARTAN ELEMENT</a></li>
+<li class="toc-h3"><a href="#weyl-group">WEYL GROUP</a></li>
+<li class="toc-h3"><a href="#nilpotent-cone">NILPOTENT CONE</a></li>
+<li class="toc-h3"><a href="#structure-constant">STRUCTURE CONSTANT</a></li>
+<li class="toc-h3"><a href="#transposition-observer">TRANSPOSITION (OBSERVER)</a></li>
+</ul></details>
+
+    <div class="content">
+<h1 id="dictionary-canonical-framework-vocabulary" id="dictionary-canonical-framework-vocabulary">DICTIONARY — Canonical Framework Vocabulary</h1>
+<h2 id="the-frameworkrsquos-self-vocabulary-every-structurally-loaded-term-classified" id="the-frameworks-self-vocabulary-every-structurally-loaded-term-classified">The Framework&rsquo;s Self-Vocabulary: Every Structurally Loaded Term, Classified</h2>
+<h3 id="v1-march-2026" id="v1-march-2026">v1 — March 2026</h3>
+<p><strong>Author:</strong> Kael</p>
+<p><strong>Document Species:</strong> DERIVED (reference). Vocabulary lookup. No first-instance content — references canonical definitions.</p>
+<p><strong>Grid address:</strong> B(8, cross). Spans all three projections at the semantic level.</p>
+<p><strong>Structural role:</strong> The canonical quotient of the framework&rsquo;s English onto its algebraic content. Just as q_K maps the universe to the observer&rsquo;s accessible structure, the Dictionary maps the framework&rsquo;s prose to its structural meaning.</p>
+<p><strong>Depends on:</strong> T_SEM (semantic audit), T_SIL (status grammar), all T-series papers (source material)
+<strong>Required by:</strong> All papers with theorem-bearing sections (C5 semantic hygiene)</p>
+<p><strong>Organization:</strong> Primary sort by projection alignment (P1 / P2 / P3 / Cross). Secondary sort by tower level of first formal appearance. Tertiary sort by semantic type: D (unnamed primitive) → C (contranym) → B (antonym) → A (synonym cluster).</p>
+<p><strong>Status discipline:</strong> A term should not appear in theorem statements unless its role is stabilized here. This is not cosmetic — it is proof hygiene (Governance Calculus §2, Test C5).</p>
+<hr />
+<h2 id="p1-the-productive-act" id="p1-the-productive-act">P1 / THE PRODUCTIVE ACT</h2>
+<p><em>Terms for composition, compression, production, closure, recursion, forcing.</em></p>
+<hr />
+<h3 id="productive-return-u7" id="productive-return-u7">PRODUCTIVE RETURN (U7)</h3>
+<p><strong>Grid home:</strong> B(0, P1)
+<strong>Type:</strong> D — unnamed primitive
+<strong>Status of defining claim:</strong> FORCED</p>
+<p><strong>Definition:</strong> Self-action that generates genuinely new content. The structural act in which f applied to its own output produces more than was present in the input. The framework realization: R²=R+I — the return (R²) exceeds the departure (R) by the identity (I).</p>
+<p><strong>Tower ascent:</strong>
+- Level 0: Mode (iv) of Thm 0.3c — productive recurrence as one of four exhaustive self-action modes
+- Level 3: R²=R+I — the Fibonacci matrix equation; eigenvalue φ governs growth rate
+- Level 4: Möbius-RG r(n+1)=1/(1+r(n)) — each iteration returns with new content (convergents of φ̄)
+- Level 5: K6&rsquo; loop K→F→U(K)→K — the observer returns to itself having generated the universe-model
+- Level 7: SIL discovery operator M — each pass through the framework generates updated status assignments</p>
+<p><strong>Lift mechanism:</strong> Monoidal lift T(n)⊗T(n). The self-product of productive return is productive return at the next level.</p>
+<p><strong>Cross-references:</strong> Recursive completion (U2), Closure (contranym), R(R)=R
+<strong>Usage discipline:</strong> Use when self-action generates content. Do not conflate with cyclic return (mode (ii), J²=I) which generates nothing new.</p>
+<hr />
+<h3 id="recursive-completion-u2" id="recursive-completion-u2">RECURSIVE COMPLETION (U2)</h3>
+<p><strong>Grid home:</strong> B(0, P1)
+<strong>Type:</strong> D — unnamed primitive
+<strong>Status:</strong> FORCED</p>
+<p><strong>Definition:</strong> Closure that simultaneously terminates one process and feeds the next. The two-phase operator: Phase 1 — stabilization at the current level (terminal). Phase 2 — the stabilized object becomes input at the next level (gateway).</p>
+<p><strong>Tower ascent:</strong>
+- Level 2: q∘q=q — the quotient stabilizes; the stable quotient is what K6&rsquo; then operates on
+- Level 5: K6&rsquo; closes the observer loop; the closed loop is what K7&rsquo; encodes
+- Level 7: Status(Status(S))=Status(S) — the SIL stabilizes; the stable classification is what the discovery operator acts on
+- Level 8: The Dictionary stabilizes term meanings; the stable meanings are what theorem statements use</p>
+<p><strong>Cross-references:</strong> Closure (contranym — recursive completion IS the gateway face of closure)
+<strong>Usage discipline:</strong> Use when closure at level n feeds structure at level n+1. Distinguish from terminal closure (stabilization with no further reentry).</p>
+<hr />
+<h3 id="closure" id="closure">CLOSURE</h3>
+<p><strong>Grid home:</strong> B(2, P1) — first acquires formal meaning as q∘q=q
+<strong>Type:</strong> C — contranym <strong>and</strong> polysemy cluster — must be typed
+<strong>Status:</strong> FORCED (the three-type classification is forced by the central collapse, Paper T-BLUEPRINT §5.5)</p>
+<p><strong>Definition:</strong> Self-action stabilization — but across four distinct ontological strata. &ldquo;Closure&rdquo; is not a single framework notion. It names four typed notions that are analogically related but not interchangeable. No theorem may transfer from one stratum to another without an explicit bridge.</p>
+<p><strong>Typed Closure Principle.</strong> The framework uses closure across four ontological strata:</p>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Object that closes</th>
+<th>Values</th>
+<th>Source</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Closure mode</strong></td>
+<td>Trajectory / orbit</td>
+<td>exact / fixed-point / asymptotic</td>
+<td>T3_META Thm 8.6c</td>
+</tr>
+<tr>
+<td><strong>Closure type</strong></td>
+<td>im(f) under tower lift</td>
+<td>terminal / recursive / boundary</td>
+<td>T_BLUEPRINT §5.5</td>
+</tr>
+<tr>
+<td><strong>Closure loop</strong></td>
+<td>Self-consistency / self-description structure</td>
+<td>K6&rsquo; loop / K7&rsquo; fixed point / K8 ladder</td>
+<td>T5 §§7–8, §17</td>
+</tr>
+<tr>
+<td><strong>Closure status</strong></td>
+<td>Physical prediction chain</td>
+<td>framework-forced / encoded / resonant / open / externally processed</td>
+<td>CLAIM_CENSUS, T6B §13.10</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Closure type — three faces (= three projections):</strong>
+- <strong>Face 1 (P1 — terminal):</strong> The process finishes. f∘f=f and no structural reentry occurs. Instances: quotient on a fixed equivalence class, Möbius fixed point φ̄, rotation closure exp(2πN)=I, Type I computation.
+- <strong>Face 2 (P2 — recursive):</strong> Closure at level n is the precondition for structure at level n+1. im(f) feeds forward. K6&rsquo; closes the observer loop, but the closed loop is what K7&rsquo; then encodes. The central collapse closes Dist, but that closed Dist is what physics builds on. These are the tower&rsquo;s connective tissue.
+- <strong>Face 3 (P3 — boundary):</strong> Closure at the framework&rsquo;s outer edge, characterized by its irreducible kernel. Status idempotence SIL-1 and Blueprint self-containment sit here — where self-description meets the SIL blind spot.
+- <strong>Resolution:</strong> The Recursive Closure Universality theorem (Paper T-BLUEPRINT §5.5) proves the three-type classification exhaustive via the central collapse. By the Closure-Occlusion Duality, the three closure types are dual to the three occlusion types: terminal↔accidental (P1), recursive↔constitutive (P2), boundary↔boundary (P3).</p>
+<p><strong>Tower ascent:</strong>
+- Level 2: q∘q=q (quotient idempotence) — recursive: feeds the algebraic level
+- Level 3: R²=R+I (Cayley-Hamilton) — recursive; Möbius fixed point — terminal; rotation closure — terminal
+- Level 4: Central collapse I²∘TDL∘LoMI=Dist — recursive: feeds the observer theory
+- Level 5: K6&rsquo; loop forced closed — recursive: feeds physics; K7&rsquo; — recursive: feeds the SIL
+- Level 6: G14 Einstein equations — recursive; Type I f∘f=f — terminal
+- Level 7: SIL-1 status idempotence — boundary; discovery operator — boundary
+- Level 8: Blueprint self-containment — boundary; Semantic Exhaustion — boundary</p>
+<p><strong>Cross-references:</strong> Recursive completion (U2), Return (contranym), R(R)=R, R(R)=R Tower Universality (Paper T-BLUEPRINT §5.5 — 20 instances), Recursive Closure Universality (Paper T-BLUEPRINT §5.5 — the three-type theorem), Closure-Occlusion Duality (Paper T-BLUEPRINT §5.5)
+<strong>Usage discipline:</strong> Always type as <em>closure mode</em>, <em>closure type</em>, <em>closure loop</em>, or <em>closure status</em>. Never use bare &ldquo;closure&rdquo; in theorem statements or commitment-bearing prose — the four strata are analogically related but not interchangeable, and no theorem may migrate between them without an explicit bridge.</p>
+<hr />
+<h3 id="forcing" id="forcing">FORCING</h3>
+<p><strong>Grid home:</strong> B(2, P1)
+<strong>Type:</strong> A — synonym cluster
+<strong>Status:</strong> FORCED</p>
+<p><strong>Definition:</strong> Zero-branching derivation. br_s=0 at every step, conclusion unique.</p>
+<p><strong>Strict synonym cluster members:</strong> forced, zero-branching, the unique survivor, absolutely forced, exact (in framework-specific sense)
+<strong>Common role:</strong> The derivation step admits no alternative. br_s=0 at every step.</p>
+<p><strong>Note on &ldquo;unique&rdquo;:</strong> &ldquo;Unique&rdquo; is a near-synonym of FORCED only in its <em>strictly unique</em> (zero-branching) sense. The framework also uses uniqueness in three other senses — up to equivalence, by universal property, and by exhaustive elimination — which are not synonyms of FORCED. See UNIQUE entry (DICTIONARY). In the synonym cluster, &ldquo;the unique survivor&rdquo; is shorthand for &ldquo;strictly unique by five-way elimination,&rdquo; not for uniqueness in general.</p>
+<p><strong>Qualified near-synonyms (require explicit subtype):</strong> derived, canonical
+These words are not commitments on their own. Every serious use of &ldquo;derived&rdquo; in theorem statements or physical-commitment prose must carry its production subtype explicitly:
+- <em>strictly forced</em> (= G.1, br_s=0) — bridges chain, Dist, four statuses
+- <em>observer-forced</em> (= G.6) — gauge connection, Yang-Mills, Einstein equations
+- <em>transport-derived</em> (= G.7) — Sakharov from P1, Koide from norm ratio
+- <em>reconstruction-derived</em> (= G.8) — spacetime from Herm(M₂(ℂ)), Born rule from Gleason
+- <em>derived with external processing</em> — Λ_QCD via RG, m_p via lattice QCD
+- <em>candidate-derived</em> — pattern identified, physical closure not yet complete</p>
+<p>Bare &ldquo;derived&rdquo; without subtype is ambiguous and should not appear in theorem statements.</p>
+<p><strong>Three-tier verb discipline:</strong>
+- <strong>&ldquo;Forced&rdquo;</strong> — reserve for strict zero-branching inevitability (G.1), or when the exact G-class is named alongside (e.g., &ldquo;observer-forced&rdquo;).
+- <strong>&ldquo;Derived&rdquo;</strong> — use only when either (a) the derivation is strict and contextually explicit, or (b) the generation class is stated.
+- <strong>&ldquo;Produces&rdquo;</strong> — use for broad prose when the framework contributes structure without full closure. <em>&ldquo;Produces a candidate for α_S,&rdquo; &ldquo;produces inputs for Λ_QCD,&rdquo; &ldquo;produces the Koide shape but not absolute normalization.&rdquo;</em></p>
+<p><strong>Cross-references:</strong> Canonical (contranym — strong-canonical = forced), T_GOV §1 (generation taxonomy G.0–G.9), T_SIL §1 (status grammar)
+<strong>Usage discipline:</strong> Use &ldquo;forced&rdquo; when br_s=0. Do not use bare &ldquo;derived&rdquo; as a commitment word when the object is RESONANT, ENCODED, or framework + standard processing. Do not use &ldquo;necessary&rdquo; in its philosophical sense — use only in the framework sense of &ldquo;no alternative consistent with prior structure.&rdquo;</p>
+<hr />
+<h3 id="canonical" id="canonical">CANONICAL</h3>
+<p><strong>Grid home:</strong> B(2, P1+P2)
+<strong>Type:</strong> C — contranym
+<strong>Status:</strong> FORCED (the distinction is forced by the construction-dissolution asymmetry)</p>
+<p><strong>Definition:</strong> Structurally preferred.</p>
+<p><strong>Contranym tension:</strong>
+- <strong>Face 1 (strong-canonical = forced):</strong> No alternative exists. The bridge chain is strong-canonical: each step has br_s=0. The projections π₁, π₂ are strong-canonical: universal property admits no other maps of this type.
+- <strong>Face 2 (weak-canonical = naturally preferred):</strong> Alternatives exist, but one is structurally favored. The Dist-ward functor is weak-canonical: the Co-Dist-ward functor also exists, but the Dist-ward direction is natural (Thm 4.5b) while the Co-Dist-ward fails naturality.
+- <strong>Resolution:</strong> Root instance is the construction-dissolution asymmetry (T0 §18). Construction is canonical because it preserves algebraic structure; dissolution exists but is non-canonical because it loses structure. Strong canonicity → FORCED status. Weak canonicity → structural preference without forcing.</p>
+<p><strong>Cross-references:</strong> Forcing (synonym cluster), Asymmetry (root contranym)
+<strong>Usage discipline:</strong> Always distinguish strong-canonical from weak-canonical. In theorem statements, prefer &ldquo;forced&rdquo; for strong and &ldquo;natural/preferred&rdquo; for weak.</p>
+<hr />
+<h3 id="compression" id="compression">COMPRESSION</h3>
+<p><strong>Grid home:</strong> B(3, P1)
+<strong>Type:</strong> A — synonym cluster
+<strong>Status:</strong> FORCED</p>
+<p><strong>Definition:</strong> Type I computation. Information decrease accompanied by invariant increase. The canonical computational act of the P1 face.</p>
+<p><strong>Synonym cluster members:</strong> compression, Type I, canonical compression, contraction
+<strong>Common role:</strong> Reduce a representation to its essential content while preserving or increasing structural invariants.</p>
+<p><strong>Cross-references:</strong> Canonical extraction (U8 — the P3→P1 bridge version of compression)
+<strong>Usage discipline:</strong> Use when describing computational processes that reduce information while preserving structure. Anti-cheat Law 3: compression does not force. A more compressed statement of a claim does not increase its status.</p>
+<hr />
+<h3 id="fibonacci" id="fibonacci">FIBONACCI</h3>
+<p><strong>Grid home:</strong> B(3, P1)
+<strong>Type:</strong> A — synonym cluster
+<strong>Status:</strong> FORCED</p>
+<p><strong>Definition:</strong> Eigenvalue growth governed by φ. The sequence structure generated by R²=R+I: Rⁿ = F(n)R + F(n-1)I where F(n) are the Fibonacci numbers.</p>
+<p><strong>Synonym cluster members:</strong> Fibonacci, golden-ratio-governed, φ-growth, aperiodic, mode (iv)
+<strong>Common role:</strong> Self-action that generates content at rate φ.</p>
+<p><strong>Cross-references:</strong> Productive return (U7), φ (constant), Self-signature
+<strong>Usage discipline:</strong> Use when the growth rate is specifically φ-governed. Do not use for generic exponential growth (that&rsquo;s P2/e).</p>
+<hr />
+<h2 id="p2-the-mediating-act" id="p2-the-mediating-act">P2 / THE MEDIATING ACT</h2>
+<p><em>Terms for transition, balance, minimality, mediation, level-crossing.</em></p>
+<hr />
+<h3 id="poised-symmetry-u5" id="poised-symmetry-u5">POISED SYMMETRY (U5)</h3>
+<p><strong>Grid home:</strong> B(0, P2)
+<strong>Type:</strong> D — unnamed primitive
+<strong>Status:</strong> ENCODED</p>
+<p><strong>Definition:</strong> Balanced state that is maximally generative. The condition in which no direction is preferred, yet this very absence of preference produces the highest structural output. Framework realization: the pre-phase substrate at ρ=1/2 — neutral between construction and dissolution, yet at the peak of Phase-Dist generativity.</p>
+<p><strong>Cross-references:</strong> Admissible minimality (U6), Neutrality (contranym), Phase-Dist
+<strong>Usage discipline:</strong> Use when balance enables generation. Do not conflate with mere equilibrium (which may be sterile).</p>
+<hr />
+<h3 id="admissible-minimality-u6" id="admissible-minimality-u6">ADMISSIBLE MINIMALITY (U6)</h3>
+<p><strong>Grid home:</strong> B(0, P2)
+<strong>Type:</strong> D — unnamed primitive
+<strong>Status:</strong> FORCED</p>
+<p><strong>Definition:</strong> The coincidence of smallest-sufficient with largest-necessary. The structural condition in which the minimal object that can do the job is also the maximal object that must be used. Framework realization: {0,1} is the smallest domain admitting productive distinction AND the largest domain that doesn&rsquo;t yet carry algebraic structure — the bridge chain starts here because it must and because it can.</p>
+<p><strong>Cross-references:</strong> Minimal (contranym), Poised symmetry (U5)
+<strong>Usage discipline:</strong> Use when a minimality condition turns out to be simultaneously a maximality condition. This is the P2 signature: the mediating act finds the unique point where floor meets ceiling.</p>
+<hr />
+<h3 id="minimal" id="minimal">MINIMAL</h3>
+<p><strong>Grid home:</strong> B(1, P2)
+<strong>Type:</strong> C — contranym
+<strong>Status:</strong> FORCED</p>
+<p><strong>Definition:</strong> Least in some ordering.</p>
+<p><strong>Contranym tension:</strong>
+- <strong>Face 1 (P2 down — reduction):</strong> Smallest. {0,1} has only 2 elements. The minimal domain.
+- <strong>Face 2 (P1 mode (iv) — generation):</strong> The least object is the most generative. {0,1} generates the entire framework. The minimal domain produces maximal structure.
+- <strong>Resolution:</strong> P2 vs P1. The P2 reading sees the reduction (how small it is). The P1 reading sees the production (how much it generates). Admissible minimality (U6) is the structural fact that these coincide.</p>
+<p><strong>Cross-references:</strong> Admissible minimality (U6)
+<strong>Usage discipline:</strong> Specify which face: &ldquo;minimal&rdquo; as reduction (P2) or &ldquo;minimal&rdquo; as generative (P1 reading of P2&rsquo;s output).</p>
+<hr />
+<h3 id="threshold" id="threshold">THRESHOLD</h3>
+<p><strong>Grid home:</strong> B(4, P2)
+<strong>Type:</strong> C — contranym
+<strong>Status:</strong> FORCED</p>
+<p><strong>Definition:</strong> Distinguished parameter value separating qualitative regimes.</p>
+<p><strong>Contranym tension:</strong>
+- <strong>Face 1 (P3 — barrier):</strong> The edge of a regime. What you cannot cross. The boundary of the accessible.
+- <strong>Face 2 (P2 — entry):</strong> The crossing point between regimes. What you pass through. The transition.
+- <strong>Resolution:</strong> P3 vs P2. The observer (P3) sees the boundary. The mediator (P2) sees the crossing. Every distinguished ρ-value in Phase-Dist is simultaneously a barrier (from one side) and an entry (from the other).</p>
+<p><strong>Cross-references:</strong> Phase (contranym — phase boundaries are thresholds), Cosmological Observer
+<strong>Usage discipline:</strong> Specify which face: barrier (P3, static) or crossing (P2, dynamic). The cosmological instance: the Gibbons-Hawking temperature T_dS = (1/2π)√(Λ/3) marks the regime boundary between the accessible interior and inaccessible exterior of the de Sitter horizon — simultaneously a barrier (no signal crosses) and an entry point (thermal radiation at T_dS mediates information exchange between K_cosmo and its kernel).</p>
+<hr />
+<h3 id="scale" id="scale">SCALE</h3>
+<p><strong>Grid home:</strong> B(5–6, cross)
+<strong>Type:</strong> polysemy cluster — must be typed
+<strong>Status:</strong> FORCED (the three-stratum classification is forced by the framework&rsquo;s actual scale architecture)</p>
+<p><strong>Typed Scale Principle.</strong> The framework uses scale across three ontological strata. No theorem about one scale stratum transfers to another without an explicit bridge.</p>
+<table>
+<thead>
+<tr>
+<th>Stratum</th>
+<th>Name</th>
+<th>Carrier</th>
+<th>Function</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td><strong>Dimensional scale</strong></td>
+<td>{η, Λ} — the irreducible dimensional pair</td>
+<td>Supplies physical units and global curvature/background data. World-level realization.</td>
+</tr>
+<tr>
+<td>2</td>
+<td><strong>Observer scale</strong></td>
+<td>S(K) = (d_K, ker(q_K), Σ_K)</td>
+<td>Supplies resolution, blindness, accessible-invariant scope, and effective recursive depth.</td>
+</tr>
+<tr>
+<td>3</td>
+<td><strong>Sectoral scale</strong></td>
+<td>Sector-specific normalization parameters (e.g., Koide radius r)</td>
+<td>Fixes the absolute placement of an already-derived dimensionless pattern within one physical sector. Not a universal anchor.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Structural note (P1/P2/P3 reading).</strong> The three strata carry a faint projection signature: dimensional scale is P1-adjacent (world-realization, persistence of physical units across all observers), observer scale is P3-adjacent (selectivity, kernel, accessible structure), sectoral scale is P2-adjacent (transport from derived dimensionless pattern to placed spectrum). This reading is RESONANT — do not build theorems on it without an explicit bridge.</p>
+<p><strong>Older four-role taxonomy (capacity, depth, anchor, ratio):</strong> These roles are now subsumed. Capacity and depth are both observer-scale; anchor is dimensional scale; ratio is dimensionless (not a scale stratum at all).</p>
+<p><strong>Cross-references:</strong> Calibration minimality (Thm 5.10c: two irreducible dimensional-scale data {η,Λ}), Universal Scale Bifurcation (T6B Thm 5.10i), Scale Bifurcation failure at K_cosmo (T6B §13.11 remark)
+<strong>Usage discipline:</strong> Never use bare &ldquo;scale&rdquo; in theorem statements or commitment-bearing prose. Always specify <em>dimensional scale</em>, <em>observer scale</em>, or <em>sectoral scale</em>.</p>
+<hr />
+<h3 id="emergence" id="emergence">EMERGENCE</h3>
+<p><strong>Grid home:</strong> B(6, P2)
+<strong>Type:</strong> B — antonym (BANNED TERM)
+<strong>Status:</strong> N/A — term prohibited in theorem-bearing contexts</p>
+<p><strong>Definition:</strong> BANNED. In standard English: appearance of novel higher-level structure from lower-level components. In the framework: nothing emerges. Everything was always there. The bridge chain does not make M₂(ℝ) emerge from {0,1} — it derives M₂(ℝ) from {0,1} with zero branching. The structure was implicit from the start.</p>
+<p><strong>Replacement:</strong> Use &ldquo;strictly derive&rdquo; for zero-branching bridge-chain production (see DERIVE entry below), or &ldquo;force.&rdquo; &ldquo;The bridge chain strictly derives M₂(ℝ).&rdquo; Not &ldquo;M₂(ℝ) emerges.&rdquo;</p>
+<p><strong>Cross-references:</strong> Forcing (what emergence is mistaken for), Bridge (the actual mechanism)
+<strong>Usage discipline:</strong> Never use in theorem statements. Acceptable only in explicitly marked philosophical commentary or when describing external frameworks that use the term.</p>
+<hr />
+<h3 id="derive" id="derive">DERIVE</h3>
+<p><strong>Grid home:</strong> B(all, cross)
+<strong>Type:</strong> polysemy cluster — must be route-typed
+<strong>Status:</strong> FORCED (the four-route classification follows from the generation taxonomy G.1–G.9)</p>
+<p><strong>Route Discipline for Derivation.</strong> Every claim that the framework &ldquo;derives&rdquo; X must specify whether X is: (a) strictly unfolded from prior framework structure, (b) transport-identified across a lawful cross-layer map, (c) reconstructed from partial or formal data, or (d) recovered through encoded standard machinery. Bare &ldquo;derive&rdquo; in commitment-bearing prose is route-incomplete.</p>
+<table>
+<thead>
+<tr>
+<th>Route type</th>
+<th>What happens</th>
+<th>Generation class</th>
+<th>Preferred verb</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Strict derivation</strong></td>
+<td>Zero-branching unfolding from prior structure; conclusion unique</td>
+<td>G.1</td>
+<td><strong>strictly derive</strong>, <strong>unfold</strong>, <strong>force</strong></td>
+</tr>
+<tr>
+<td><strong>Transport-derivation</strong></td>
+<td>A lawful cross-layer map identifies a framework-produced invariant with a physical or semantic object</td>
+<td>G.7</td>
+<td><strong>transport-derive</strong>, <strong>recognize as</strong>, <strong>map to</strong></td>
+</tr>
+<tr>
+<td><strong>Reconstruction</strong></td>
+<td>Structure recovered from partial or encoded data</td>
+<td>G.8</td>
+<td><strong>reconstruct</strong></td>
+</tr>
+<tr>
+<td><strong>Encoded recovery</strong></td>
+<td>Accepted mathematical machinery converts one derived representation into another</td>
+<td>G.7 or below</td>
+<td><strong>recover</strong>, <strong>encode</strong>, <strong>derive via encoded lemmas</strong></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Two-stage ecology.</strong> Every &ldquo;derivation&rdquo; in the repo belongs to one of two macro-families: <em>production-route</em> (the object is generated inside the framework) and <em>interpretation-route</em> (the object is recognized, reconstructed, or encoded from a framework-generated object). These are not the same act. The Mathematical reading produces; the Observer reading structures access; the Physical reading physically realizes; the Semantic reading names. &ldquo;Derive&rdquo; can appear in all four, but with different route types.</p>
+<p><strong>Examples (from T_GOV disambiguation table):</strong>
+- {0,1} → V₄ → S₃ → M₂(ℝ) — <strong>strictly derived</strong> (G.1, T.1 transport)
+- Koide Q from ‖R‖²/‖N‖² — <strong>transport-derived</strong> (G.7; invariant recognized as Koide ratio)
+- Spacetime from Herm(M₂(ℂ)) — <strong>reconstructed</strong> (G.8; structure recovered from algebra)
+- Λ_QCD from α_S via RG — <strong>derived via external processing</strong> (not a framework-internal derivation)</p>
+<p><strong>Cross-references:</strong> Forcing (DICTIONARY — strict derivation = forced), T_GOV §1 (generation taxonomy), EMERGENCE (BANNED — use strictly derive instead)
+<strong>Usage discipline:</strong> Never use bare &ldquo;derive&rdquo; in commitment-bearing prose when the route matters. For bridge-chain steps: &ldquo;strictly derive.&rdquo; For physical identifications: &ldquo;transport-derive&rdquo; or &ldquo;recognize as.&rdquo; For spacetime: &ldquo;reconstruct.&rdquo; &ldquo;Emerge&rdquo; remains banned.</p>
+<hr />
+<h3 id="realize" id="realize">REALIZE</h3>
+<p><strong>Grid home:</strong> B(5–6, cross)
+<strong>Type:</strong> polysemy cluster — must be route-typed
+<strong>Status:</strong> FORCED (the four-stage classification follows from the Σ pipeline architecture)</p>
+<p><strong>Realization Pipeline Principle.</strong> Within the framework, realization is not primitive. It decomposes into four stages: (1) state-space instantiation, (2) invariant extraction, (3) anchored physical realization, (4) observer access restriction. Where relevant, a fifth stage applies: (5) physical admissibility of the resulting object. No claim of &ldquo;realization&rdquo; is semantically complete unless its stage is identified.</p>
+<table>
+<thead>
+<tr>
+<th>Stage</th>
+<th>Name</th>
+<th>What it does</th>
+<th>Preferred verb</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td><strong>Instantiation</strong></td>
+<td>Mathematical/state-space promotion of a framework object into a representational setting</td>
+<td><strong>instantiate</strong></td>
+</tr>
+<tr>
+<td>2</td>
+<td><strong>Invariant extraction</strong></td>
+<td>Canonical algebraic constructions applied to bridge chain output to isolate invariants</td>
+<td><strong>extract</strong>, <strong>compute</strong></td>
+</tr>
+<tr>
+<td>3</td>
+<td><strong>Physical realization</strong></td>
+<td>Anchored observer-mediated transition from invariant structure to physical prediction (the R_obs and Σ stage)</td>
+<td><strong>physically realize</strong>, <strong>realize via Σ</strong></td>
+</tr>
+<tr>
+<td>4</td>
+<td><strong>Observer access</strong></td>
+<td>Restriction of realized content to what a given observer K can access under Σ6</td>
+<td><strong>access</strong>, <strong>measure</strong>, <strong>observe</strong></td>
+</tr>
+<tr>
+<td>5</td>
+<td><strong>Physical admissibility</strong></td>
+<td>Existence as a physically possible or framework-admissible object under A1–A4 and realization constraints</td>
+<td><strong>physically admit</strong>, <strong>realizable</strong></td>
+</tr>
+</tbody>
+</table>
+<p><strong>The Σ pipeline.</strong> Σ = R_obs ∘ (F × Alg_inv) names the full realization pipeline: F handles state-space instantiation (stage 1), Alg_inv handles invariant extraction (stage 2), R_obs adds observer restriction and dimensional anchoring (stage 3). &ldquo;Realization&rdquo; used without qualification slides between these stages and blurs the map from its components.</p>
+<p><strong>Examples:</strong>
+- F: FinSet → Hilb_ℂ — <strong>instantiation</strong> (not full physical realization)
+- Σ carrying structure to physical prediction — <strong>physical realization via Σ</strong>
+- K_cosmo under Λ &gt; 0 — <strong>physically admitted</strong> observer-object
+- K-accessible prediction via Σ6 — <strong>observer access</strong> (what K can measure)</p>
+<p><strong>Cross-references:</strong> Determine (DICTIONARY — physical admissibility ≠ strict determination), Object (DICTIONARY — admissibility criterion for objects), T5 §19.1 (Σ definition), T_BLUEPRINT §1.1 (Physical reading)
+<strong>Usage discipline:</strong> Never use bare &ldquo;realize&rdquo; in theorem statements unless the stage is explicit from immediate context. In commitment-bearing prose, always specify: instantiate, physically realize, physically admit, or access.</p>
+<hr />
+<h3 id="object" id="object">OBJECT</h3>
+<p><strong>Grid home:</strong> B(all, cross)
+<strong>Type:</strong> polysemy cluster — must be ontologically typed
+<strong>Status:</strong> FORCED (the three-tier classification follows from T_GOV standing taxonomy and T5 admissibility conditions)</p>
+<p><strong>Objecthood Discipline.</strong> Objecthood in the framework is not primitive. A claim that &ldquo;X is an object&rdquo; must specify whether X is: (1) framework-internal, (2) observer-relative, (3) physically admissible, or (4) a meta-object of self-description. These notions can overlap, but none implies the others without proof. In particular: definable → internal → admissible → physically real is not an automatic chain.</p>
+<table>
+<thead>
+<tr>
+<th>Tier</th>
+<th>Name</th>
+<th>Criterion</th>
+<th>Examples</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td><strong>Framework-internal object</strong></td>
+<td>Belongs to the framework&rsquo;s ontological inventory; classifiable by O.1–O.9</td>
+<td>V₄, S₃, M₂(ℝ), lattice Λ&rsquo;, observer axioms</td>
+</tr>
+<tr>
+<td>2</td>
+<td><strong>Observer-relative object</strong></td>
+<td>Internal object whose definition requires specifying an observer K; standing O.4</td>
+<td>im(q_K), ker(q_K), S_max(K), consciousness level</td>
+</tr>
+<tr>
+<td>3</td>
+<td><strong>Physically admissible object</strong></td>
+<td>Internal object satisfying the realization/admissibility conditions for physical possibility</td>
+<td>K_cosmo for Λ &gt; 0; physically realizable observers; excluded: limit observer with d → ∞</td>
+</tr>
+<tr>
+<td>4</td>
+<td><strong>Meta-object of self-description</strong></td>
+<td>Available as input to higher-order self-description or recursive operation; appears in K7&rsquo; and K8 context</td>
+<td>Observer&rsquo;s own closure operated on by K7&rsquo;, SIL&rsquo;s own status operated on by SIL-1</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Key distinctions:</strong>
+- The <em>author</em> is <strong>framework-describable</strong> (the framework&rsquo;s observer theory characterizes the author as a K) but not a <strong>framework-internal object</strong> (not derivable from {0,1}, not classified by O.1–O.9).
+- K_cosmo is a <strong>physically admissible observer-object</strong> under Λ &gt; 0; the limit observer K_∞ (d_U → ∞) is not physically admissible.
+- ker(q_K) is a <strong>framework-internal object</strong> with <strong>observer-relative</strong> standing (O.4); it is not observer-independent without a K-independence proof (GOV-7).</p>
+<p><strong>Cross-references:</strong> T_GOV §2 (standing taxonomy O.1–O.9, GOV-5, GOV-7), T5 §6½ (K_cosmo admissibility), T5 §17 (K8 meta-objects), Realize (DICTIONARY — admissibility is stage 5 of the realization pipeline)
+<strong>Usage discipline:</strong> Never use bare &ldquo;object&rdquo; in theorem statements or commitment-bearing prose when the tier matters. Always specify: framework-internal, observer-relative, physically admissible, or meta-object.</p>
+<hr />
+<h3 id="prediction" id="prediction">PREDICTION</h3>
+<p><strong>Grid home:</strong> B(6, cross)
+<strong>Type:</strong> polysemy cluster — must be typed
+<strong>Status:</strong> FORCED (the four-type classification follows from the governance generation taxonomy and status grammar)</p>
+<p><strong>Prediction Pipeline Principle.</strong> A framework prediction is not a single epistemic kind. Every prediction must be typed by: (1) production route — theorem, encoded transport, resonance, or external processing; (2) status — FORCED, ENCODED, RESONANT, OPEN; (3) empirical role — law-level, parameter-level, sector-level, or processed observable. No numerical agreement alone can promote a structural or processed prediction to theorem status.</p>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Definition</th>
+<th>Typical status</th>
+<th>Examples</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Theorem-prediction</strong></td>
+<td>Physical statement strictly fixed by zero-branching framework machinery, possibly with internalized encoded lemmas</td>
+<td>FORCED (or ENCODED once lemmas accepted)</td>
+<td>sin²θ_W = 3/8, spacetime (1,3), three generations, τ mass from Koide</td>
+</tr>
+<tr>
+<td><strong>Encoded prediction</strong></td>
+<td>Physically committable consequence whose proof route uses standard-math insertion, standard realization lemmas, or encoded transport</td>
+<td>ENCODED</td>
+<td>η via Jacobson layer, baryon asymmetry exponent</td>
+</tr>
+<tr>
+<td><strong>Structural prediction</strong></td>
+<td>Framework-produced candidate or correspondence with strong structural fit; lacks full physical bridge closure</td>
+<td>RESONANT</td>
+<td>α_S ≈ φ̄³/2, baryogenesis tower-depth identification</td>
+</tr>
+<tr>
+<td><strong>Processed prediction</strong></td>
+<td>Numerical deliverable from applying accepted external machinery to framework-derived inputs</td>
+<td>RESONANT → Class B</td>
+<td>Λ_QCD via RG, m_p via lattice ratio, m_τ from Koide + one input mass</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Usage discipline:</strong> Never use bare &ldquo;prediction&rdquo; in theorem statements or status-bearing prose. Always specify <em>theorem-prediction</em>, <em>encoded prediction</em>, <em>structural prediction</em>, or <em>processed prediction</em>.</p>
+<p><strong>Cross-references:</strong> T_GOV §5.4 (prediction transport table), T6B §13.10 (propagation ledger), T5 bridge completeness, CLAIM_CENSUS</p>
+<hr />
+<h3 id="exist-existence" id="exist-existence">EXIST / EXISTENCE</h3>
+<p><strong>Grid home:</strong> B(all, cross)
+<strong>Type:</strong> polysemy cluster — must be ontologically typed
+<strong>Status:</strong> FORCED (the five-rung classification follows from the framework&rsquo;s actual ontology ladder)</p>
+<p><strong>Existence Discipline.</strong> Within the framework, &ldquo;existence&rdquo; is not primitive. A claim that &ldquo;X exists&rdquo; must specify which rung of the ontology ladder X occupies. None of the rungs implies the next without proof. In particular: formally definable → framework-internal → physically admissible → empirically instantiated is not an automatic chain.</p>
+<table>
+<thead>
+<tr>
+<th>Rung</th>
+<th>Name</th>
+<th>Criterion</th>
+<th>Preferred phrase</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td><strong>Formal existence</strong></td>
+<td>Mathematically well-defined; can be named and manipulated inside the framework&rsquo;s logic</td>
+<td><strong>is defined</strong></td>
+</tr>
+<tr>
+<td>2</td>
+<td><strong>Framework-internal existence</strong></td>
+<td>Belongs to the framework&rsquo;s ontological inventory; admits standing classification O.1–O.9</td>
+<td><strong>is a framework-internal object</strong></td>
+</tr>
+<tr>
+<td>3</td>
+<td><strong>Observer-admissible existence</strong></td>
+<td>Satisfies the relevant observer-side axioms or K-relative admissibility conditions</td>
+<td><strong>is K-admissible</strong> / <strong>observer-admissible</strong></td>
+</tr>
+<tr>
+<td>4</td>
+<td><strong>Physical admissibility</strong></td>
+<td>Is realizable as a physically possible object under the framework&rsquo;s realization constraints and observer axioms A1–A4</td>
+<td><strong>is physically admissible</strong> / <strong>physically realizable</strong></td>
+</tr>
+<tr>
+<td>5</td>
+<td><strong>Empirical instantiation</strong></td>
+<td>Is not merely admissible but actually instantiated in the physical world</td>
+<td><strong>is instantiated</strong> / <strong>empirically instantiated</strong></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Key examples:</strong>
+- K_cosmo: <em>formally defined</em> at all Λ; <em>physically admissible</em> only for Λ &gt; 0 (finite de Sitter horizon, finite d_cosmo, A1 satisfied)
+- Limit observer K_∞ (d_U → ∞): <em>formally defined</em>; <em>not physically admissible</em> (violates A1)
+- ker(q_K): <em>framework-internal, observer-admissible</em> (O.4; definition requires K); <em>not observer-independent</em> without K-independence proof (GOV-7)
+- The author: <em>formally describable</em> by the framework&rsquo;s observer theory; <em>not a framework-internal object</em> (not derivable from {0,1})</p>
+<p><strong>Cross-references:</strong> Object (DICTIONARY — three-tier objecthood), Realize (DICTIONARY — admissibility is stage 5 of the realization pipeline), T_GOV §2 (standing taxonomy), T5 §6½ (K_cosmo admissibility proof)
+<strong>Usage discipline:</strong> Never use bare &ldquo;exists&rdquo; in theorem statements or commitment-bearing prose when the distinction matters. Always specify the existence rung.</p>
+<hr />
+<h3 id="same-sameness" id="same-sameness">SAME / SAMENESS</h3>
+<p><strong>Grid home:</strong> B(all, cross)
+<strong>Type:</strong> polysemy cluster — must be relation-typed
+<strong>Status:</strong> FORCED (the five-relation classification follows from the framework&rsquo;s projection structure and Dist quotient architecture)</p>
+<p><strong>Sameness Discipline.</strong> A claim that two framework items are &ldquo;the same&rdquo; must specify which sameness relation is meant. No theorem may move from one sameness relation to another without an explicit bridge.</p>
+<table>
+<thead>
+<tr>
+<th>Relation</th>
+<th>Name</th>
+<th>Meaning</th>
+<th>Preferred phrase</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td><strong>Identity</strong></td>
+<td>Literal equality: x = y, same object, same datum in the strongest sense</td>
+<td><strong>identical</strong> / <strong>literally the same</strong></td>
+</tr>
+<tr>
+<td>2</td>
+<td><strong>Equivalence</strong></td>
+<td>Equal modulo a specified relation, quotient, isomorphism, or observer-complete equivalence</td>
+<td><strong>equivalent</strong>, <strong>quotient-equivalent</strong>, <strong>isomorphic</strong>, <strong>observer-complete equivalent</strong></td>
+</tr>
+<tr>
+<td>3</td>
+<td><strong>Co-determined identity</strong></td>
+<td>Sameness achieved through sustained mutual determination, not coincidence (P3 sense; see CO-DETERMINATION entry)</td>
+<td><strong>co-determined</strong></td>
+</tr>
+<tr>
+<td>4</td>
+<td><strong>Transported sameness</strong></td>
+<td>Sameness only after explicit identification across points, levels, or fibers via a connection or map</td>
+<td><strong>connection-identified</strong>, <strong>transport-equivalent</strong>, <strong>transport-identical</strong></td>
+</tr>
+<tr>
+<td>5</td>
+<td><strong>Empirical indistinguishability</strong></td>
+<td>Same observer-accessible consequence or prediction despite differing internal realization routes</td>
+<td><strong>empirically indistinguishable</strong>, <strong>prediction-equivalent</strong></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Live examples of correct relation-typing:</strong>
+- Gauge connection proof (T6B G3): the framework is not literally the same at x and x+dx — the local closures are <em>connection-identified</em> instances; sameness requires transport by A_μ.
+- Five-Route Convergence (T6B §13.5): the five routes are not <em>datum-identical</em> — they are <em>closure-equivalent</em> at the level of the irreducible pair {η, Λ}.
+- Dist quotient: x ≈ y means <em>quotient-equivalent</em> (same image under q_K), not identical.
+- R²=R+I fixed point: R&rsquo;s output is literally <em>identical</em> to R&rsquo;s input under self-application.</p>
+<p><strong>Cross-references:</strong> Co-determination (U3, DICTIONARY), Identity (DICTIONARY), Dist (T1), Gauge connection (T6B G3)
+<strong>Usage discipline:</strong> Never use bare &ldquo;same&rdquo; in theorem statements or commitment-bearing prose when the relation matters. Always type the sameness claim.</p>
+<hr />
+<h3 id="unique-uniqueness" id="unique-uniqueness">UNIQUE / UNIQUENESS</h3>
+<p><strong>Grid home:</strong> B(all, cross)
+<strong>Type:</strong> polysemy cluster — must be proof-typed
+<strong>Status:</strong> FORCED (the four-proof-form classification follows from the framework&rsquo;s actual uniqueness arguments)</p>
+<p><strong>Uniqueness Discipline.</strong> The framework uses &ldquo;unique&rdquo; in four distinct proof forms that must not be conflated. Bare &ldquo;unique&rdquo; is a prestige word that can silently substitute weaker proof forms for stronger ones.</p>
+<table>
+<thead>
+<tr>
+<th>Proof form</th>
+<th>Name</th>
+<th>How uniqueness is established</th>
+<th>Preferred phrase</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td><strong>Strict uniqueness</strong></td>
+<td>Zero-branching derivation: the conclusion is the only outcome at every step (br_s=0)</td>
+<td><strong>strictly unique</strong> / <strong>zero-branching unique</strong></td>
+</tr>
+<tr>
+<td>2</td>
+<td><strong>Equivalence uniqueness</strong></td>
+<td>Unique modulo a stated equivalence relation, natural isomorphism, observer-complete equivalence, conjugacy, or tower level</td>
+<td><strong>unique up to [equivalence]</strong></td>
+</tr>
+<tr>
+<td>3</td>
+<td><strong>Universal-property uniqueness</strong></td>
+<td>The unique map or object satisfying a specified categorical or variational condition</td>
+<td><strong>unique by universal property</strong> / <strong>the unique factorization map</strong></td>
+</tr>
+<tr>
+<td>4</td>
+<td><strong>Exhaustive uniqueness</strong></td>
+<td>Every alternative has been classified and eliminated; the result is the sole survivor</td>
+<td><strong>uniquely among classified cases</strong> / <strong>the unique survivor of the exhaustive classification</strong></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Live examples:</strong>
+- Bridge chain steps (T2): <em>strictly unique</em> — each step has br_s=0
+- Dist morphism (T1 Thm 1.7): <em>exhaustively unique</em> — five-way elimination; all alternatives fail
+- Quotient factorization map π₁₂ (T5 §19): <em>unique by universal property</em> — not the same as strict uniqueness
+- K7&rsquo; components (T5 §8): F is <em>strictly unique</em>; U is <em>unique up to observer-complete equivalence</em>; K is <em>unique up to tower level</em> — three different proof forms in one theorem
+- Observer fixed point q (T1 Thm 4.4): <em>unique up to minimality</em> — unique minimal idempotent, not strictly unique in the br_s=0 sense</p>
+<p><strong>Note on FORCING synonym cluster:</strong> &ldquo;Unique&rdquo; as a near-synonym of FORCED applies only to <em>strict uniqueness</em> (proof form 1). The other three proof forms are not synonyms of FORCED status.</p>
+<p><strong>Cross-references:</strong> Forcing (DICTIONARY — strict uniqueness only), T1 Thm 1.9 (exhaustive uniqueness), T5 §8 K7&rsquo; (mixed uniqueness types), T_GOV §1 (generation class G.1 = strict uniqueness)
+<strong>Usage discipline:</strong> Never use bare &ldquo;unique&rdquo; in theorem statements or commitment-bearing prose when the proof form matters. Always type the uniqueness claim.</p>
+<hr />
+<h3 id="determine" id="determine">DETERMINE</h3>
+<p><strong>Grid home:</strong> B(all, cross)
+<strong>Type:</strong> polysemy cluster — must be typed
+<strong>Status:</strong> FORCED (the five-strength classification follows from the governance generation taxonomy)</p>
+<p><strong>Determination Discipline.</strong> Every claim that the framework &ldquo;determines&rdquo; X must specify: (1) whether X is strictly forced, conditionally fixed, fixed up to sectoral normalization, or externally processed; (2) the irreducible inputs, if any; (3) whether the result is law-level, parameter-level, or sector-level. Bare &ldquo;determine&rdquo; in theorem statements or commitment-bearing prose is semantically incomplete.</p>
+<table>
+<thead>
+<tr>
+<th>Determination type</th>
+<th>Strength</th>
+<th>Preferred verb</th>
+<th>Example</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Strict determination</strong></td>
+<td>Unique zero-branching fixation; no external input</td>
+<td><strong>forces</strong> / <strong>uniquely fixes</strong></td>
+<td>sin²θ_W = 3/8 from matter content; bridge chain steps</td>
+</tr>
+<tr>
+<td><strong>Conditional determination</strong></td>
+<td>Uniquely fixed once named irreducible inputs are supplied</td>
+<td><strong>fixed given {inputs}</strong></td>
+<td>All dimensionful quantities fixed given η; masses fixed given Koide shape + m_e</td>
+</tr>
+<tr>
+<td><strong>Sectoral determination</strong></td>
+<td>Dimensionless pattern strictly fixed; absolute sector placement remains open</td>
+<td><strong>strictly fixes the shape; places up to sectoral normalization</strong></td>
+<td>Koide Q, ρ, δ fixed; absolute lepton scale r open</td>
+</tr>
+<tr>
+<td><strong>Processed determination</strong></td>
+<td>Framework inputs are sufficient for accepted external machinery to yield the result</td>
+<td><strong>supplies inputs for</strong> / <strong>determines via external processing</strong></td>
+<td>α_S → Λ_QCD via RG; Λ_QCD → m_p via lattice</td>
+</tr>
+<tr>
+<td><strong>Common-parameter control</strong></td>
+<td>Single parameter organizes multiple consequences; its own value not derived</td>
+<td><strong>controls</strong> / <strong>co-governs</strong> / <strong>organizes</strong></td>
+<td>Λ co-governs all three de Sitter faces simultaneously</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Usage discipline:</strong> Never use bare &ldquo;determines&rdquo; as a commitment word in theorem statements unless the sense is strict determination. Always qualify the determination type. &ldquo;Determines&rdquo; alone signals type ambiguity — replace with the typed verb form.</p>
+<p><strong>Cross-references:</strong> Forcing (DICTIONARY — strict determination = forced), Scale (stratum determines which determination type applies), Prediction (DICTIONARY — determination type maps to prediction type)</p>
+<hr />
+<h2 id="p3-the-observer-act" id="p3-the-observer-act">P3 / THE OBSERVER ACT</h2>
+<p><em>Terms for observation, quotient, kernel, blindness, disclosure, co-determination.</em></p>
+<hr />
+<h3 id="occlusive-disclosure-u1" id="occlusive-disclosure-u1">OCCLUSIVE DISCLOSURE (U1)</h3>
+<p><strong>Grid home:</strong> B(2, P3)
+<strong>Type:</strong> D — unnamed primitive
+<strong>Status:</strong> FORCED</p>
+<p><strong>Definition:</strong> Revealing by annihilating. The structural act in which making structure legible requires destroying part of it. im(q_K) exists because ker(q_K) does — you can only see what survives the quotient, and something must not survive for the quotient to be nontrivial.</p>
+<p><strong>Tower ascent:</strong>
+- Level 2: Every Dist morphism simultaneously discloses (im) and occludes (ker)
+- Level 5: Observer K sees B(H_K) by annihilating H_env — partial trace is irreversible
+- Level 7: SIL classifies claims by assigning status, but the classification has a blind spot (SIL-6)
+- Level 8: The Dictionary discloses structural meaning by compressing away the prose context</p>
+<p><strong>Cross-references:</strong> Observation (contranym — occlusive disclosure IS the mechanism), Blindness (contranym), Constitutive occlusion (U4)
+<strong>Usage discipline:</strong> Use when the revealing act and the annihilating act are the same operation, not sequential.</p>
+<hr />
+<h3 id="co-determination-u3" id="co-determination-u3">CO-DETERMINATION (U3)</h3>
+<p><strong>Grid home:</strong> B(2, P3)
+<strong>Type:</strong> D — unnamed primitive
+<strong>Status:</strong> FORCED</p>
+<p><strong>Definition:</strong> Non-collapsing mutual identity through iteration. Two structures achieve identity not by being the same (P1 coincidence) but by each determining the other through sustained interaction. Neither absorbs the other. Framework realization: LoMI — the Loop of Mutual Identification, where exp(θN) rotates between two states that co-determine each other&rsquo;s phase without either dominating.</p>
+<p><strong>Cross-references:</strong> Identity (contranym — co-determination IS the P3 face of identity), LoMI
+<strong>Usage discipline:</strong> Use when identity is achieved through interaction rather than coincidence. Distinguish from P1 identity (same = same) and from P2 identity (equivalence class).</p>
+<hr />
+<h3 id="constitutive-occlusion-u4" id="constitutive-occlusion-u4">CONSTITUTIVE OCCLUSION (U4)</h3>
+<p><strong>Grid home:</strong> B(2, P3) → <strong>UPGRADED: Cross-projection governing theorem (P1+P2+P3)</strong>
+<strong>Type:</strong> D — unnamed primitive → <strong>governing theorem</strong> (Constitutive Occlusion Principle, Paper 5 §17.4e)
+<strong>Status:</strong> FORCED</p>
+<p><strong>Definition:</strong> Structured absence that enables higher structure. The irreversible kernel that is simultaneously: the source of physical scale (P1 face), the enabling condition for observation (P3 face), and the cost that mediates level transition (P2 face). Formally: at every tower level n ≥ 2, ker(q_{K_n}) is simultaneously deficit, resource, material, and cost (Paper 5 §17.4e).</p>
+<p><strong>THIS IS THE ROOT CONTRANYM.</strong> Productive Opacity (Paper 5 §17.4d) is the unified theorem. The Constitutive Occlusion Principle (Paper 5 §17.4e) is its ker(f) projection. By the Closure-Occlusion Duality (Paper T-BLUEPRINT §5.5), constitutive occlusion is the ker(f) reading of recursive closure: what the observer loses at level n is what enables level n+1.</p>
+<p><strong>Three faces:</strong>
+- <strong>P1 face (production):</strong> Asymmetry → irreversible kernel → Landauer cost → Bekenstein → η → gravity → physics. The kernel is what makes structure real.
+- <strong>P2 face (mediation):</strong> ker(q_K) at level n = raw material for level n+1. The kernel of the current observation becomes the substrate of the next production. This IS the diagonal map K6&rsquo;.
+- <strong>P3 face (observation):</strong> No kernel → no nontrivial quotient → no observation → no consciousness. The kernel is what makes observation possible.</p>
+<p><strong>Tower ascent:</strong>
+- Level 0: The construction-dissolution asymmetry — the root. Canonical compression upward, non-canonical dissolution downward.
+- Level 2: ker(q) — the first blind spot. Required for q to be nontrivial.
+- Level 5: Computational blindness — bounded observer cannot classify own blind spot.
+- Level 6: Matter-antimatter asymmetry η≠0. CP violation. Arrow of time.
+- Level 7: SIL blind spot — the meta-level has its own irreducible kernel.
+- Level 8: Contranyms — terms have a preferred compression direction (semantic asymmetry mirrors algebraic).</p>
+<p><strong>Cross-references:</strong> Asymmetry (the root), Blindness (contranym), Observation (contranym), Cost-to-Geometry chain (Paper 6B §12.5), Productive Opacity (Paper 5 §17.4d), Closure-Occlusion Duality (Paper T-BLUEPRINT §5.5), Recursive Closure Universality (Paper T-BLUEPRINT §5.5 — constitutive occlusion is the ker(f) dual of recursive closure)
+<strong>Usage discipline:</strong> Use when structured absence is load-bearing. Always specify which face (P1/P2/P3) is active. When all three faces are simultaneously relevant, say &ldquo;productive opacity&rdquo; (the unified name from Compression #2).</p>
+<hr />
+<h3 id="canonical-extraction-u8" id="canonical-extraction-u8">CANONICAL EXTRACTION (U8)</h3>
+<p><strong>Grid home:</strong> B(3→5, P3→P1)
+<strong>Type:</strong> D — unnamed primitive
+<strong>Status:</strong> FORCED</p>
+<p><strong>Definition:</strong> Information decrease = invariant increase. The bridge operation from P3 (observation/compression) to P1 (production/encoding). When a quotient reduces information, the surviving invariants become more structurally concentrated. Framework realization: the partial trace tr_env reduces the state to B(H_K), losing environmental information but gaining observer-accessible invariant structure.</p>
+<p><strong>Cross-references:</strong> Compression (P1 synonym cluster), Occlusive disclosure (U1)
+<strong>Usage discipline:</strong> Use when the information decrease IS the mechanism of invariant increase, not merely accompanied by it.</p>
+<hr />
+<h3 id="observation" id="observation">OBSERVATION</h3>
+<p><strong>Grid home:</strong> B(2, P3)
+<strong>Type:</strong> C — contranym
+<strong>Status:</strong> FORCED</p>
+<p><strong>Definition:</strong> The act of making structure legible to a bounded system.</p>
+<p><strong>Contranym tension:</strong>
+- <strong>Face 1 (P3 im — disclosure):</strong> What the observer sees. im(q_K) = B(H_K). The accessible structure.
+- <strong>Face 2 (P3 ker — occlusion):</strong> What the observer destroys. ker(q_K). The blind spot.
+- <strong>Resolution:</strong> Same projection, two faces. This is NOT a P1-vs-P3 tension (like closure). It is a tension WITHIN P3 — the observer act inherently has two faces because the quotient has both an image and a kernel. Occlusive disclosure (U1) is the unnamed primitive that names this exact tension.</p>
+<p><strong>Tower ascent:</strong>
+- Level 0: &ldquo;Prior to observerhood&rdquo; — distinction exists but no observer yet
+- Level 2: Observer = quotient morphism (Thm 2.2) — observation born
+- Level 5: K=(d_K,Δ_K,σ_K) — observation becomes a mathematical object with axioms
+- Level 6: Born rule — observation determines statistics
+- Level 7: SIL — observation of the framework&rsquo;s own claims (D/C/V questions)</p>
+<p><strong>Cross-references:</strong> Occlusive disclosure (U1 — the im face), Constitutive occlusion (U4 — the ker face), Blindness (contranym), Constitutive Occlusion Principle (Paper 5 §17.4e — formal four-reading theorem). Observation and blindness together form one master semantic engine: occlusive disclosure / constitutive occlusion — the im() and ker() faces of the same quotient morphism (Paper T_SEM §2, §4).
+<strong>Usage discipline:</strong> Always specify whether you mean the disclosing face (im) or the occluding face (ker). In theorem statements, use &ldquo;quotient&rdquo; for the formal operation and &ldquo;observation&rdquo; for the structural reading.</p>
+<hr />
+<h3 id="blindness" id="blindness">BLINDNESS</h3>
+<p><strong>Grid home:</strong> B(2, P3)
+<strong>Type:</strong> C — contranym
+<strong>Status:</strong> FORCED</p>
+<p><strong>Definition:</strong> The kernel of an observer&rsquo;s quotient map. What the observer cannot see.</p>
+<p><strong>Contranym tension:</strong>
+- <strong>Face 1 (P3 ker — deficit):</strong> The observer lacks access. Information is lost. Limitation.
+- <strong>Face 2 (P2 ker — enabling):</strong> The kernel at level n is raw material for level n+1. The observer K_{n+1} can act on ker(K_n), reopening annihilated structure. The blind spot IS the material that makes higher observation possible.
+- <strong>Resolution:</strong> P3 (static) vs P2 (dynamic). The static reading sees deficit. The dynamic reading sees resource. Constitutive occlusion (U4) is the structural fact that both readings are simultaneously true.</p>
+<p><strong>Cross-references:</strong> Constitutive occlusion (U4), Constitutive Occlusion Principle (Paper 5 §17.4e — formal four-face theorem), Productive Opacity (Paper 5 §17.4d — blindness is the P3 face), Observation (contranym), Consciousness, Cosmological Observer, Closure-Occlusion Duality (Paper T-BLUEPRINT §5.5 — blindness = ker(f) reading of recursive closure)
+<strong>Usage discipline:</strong> Always specify: blindness as limitation (P3) or blindness as enablement (P2). The framework&rsquo;s central thesis on consciousness (C-153) requires the second reading: blindness is constitutive of consciousness, not opposed to it. The cosmological instance: the de Sitter horizon is K_cosmo&rsquo;s constitutive occlusion — annihilating the super-horizon degrees of freedom, simultaneously concealing the exterior and enabling the cosmological observer to have nontrivial consciousness capacity (Paper 5 §6½).</p>
+<hr />
+<h3 id="identity" id="identity">IDENTITY</h3>
+<p><strong>Grid home:</strong> B(2, P3)
+<strong>Type:</strong> C — contranym
+<strong>Status:</strong> FORCED</p>
+<p><strong>Definition:</strong> Sameness of two objects or states.</p>
+<p><strong>Contranym tension:</strong>
+- <strong>Face 1 (P1 — coincidence):</strong> x=x. Literal identity. The identity matrix I. Self-action returning the same: mode (i).
+- <strong>Face 2 (P3 — co-determination):</strong> Identity achieved through difference. LoMI: two states co-determine each other through iterated interaction. They are &ldquo;identical&rdquo; not because they coincide but because each is fully specified by the other. The identity of indiscernibles — but mediated by the loop, not by property-checking.
+- <strong>Resolution:</strong> P1 vs P3. P1 identity is immediate (same = same). P3 identity is mediated (same = mutually determined through sustained difference). R²=R+I is the bridge: the identity I appears as the excess of productive self-action (R²) over the action itself (R). I is produced by difference.</p>
+<p><strong>Cross-references:</strong> Co-determination (U3), R(R)=R, LoMI
+<strong>Usage discipline:</strong> Specify which face. In algebraic contexts, use I (the matrix). In structural contexts, distinguish coincidence-identity from co-determination-identity.</p>
+<hr />
+<h3 id="return" id="return">RETURN</h3>
+<p><strong>Grid home:</strong> B(5, P3)
+<strong>Type:</strong> C — contranym
+<strong>Status:</strong> FORCED</p>
+<p><strong>Definition:</strong> Self-action cycle completing and returning to the starting configuration.</p>
+<p><strong>Contranym tension:</strong>
+- <strong>Face 1 (mode (ii) — cyclic):</strong> J²=I. The operation returns to the identity after two steps. No content generated. Pure involution.
+- <strong>Face 2 (mode (iv) — productive):</strong> R²=R+I. The operation &ldquo;returns&rdquo; but with new content (the +I term). The return exceeds the departure. Productive return (U7).
+- <strong>Resolution:</strong> Mode (ii) vs mode (iv). Four-Mode Exhaustion (Thm 0.3c) proves these are structurally distinct: cyclic return is the opposition mode, productive return is the propagation mode. They exhaust the non-degenerate return types.</p>
+<p><strong>Cross-references:</strong> Productive return (U7), Closure (contranym), Four modes
+<strong>Usage discipline:</strong> Always specify cyclic or productive. &ldquo;The observer returns&rdquo; is ambiguous — does the loop merely close (cyclic) or does it generate the next level (productive)?</p>
+<hr />
+<h3 id="consciousness" id="consciousness">CONSCIOUSNESS</h3>
+<p><strong>Grid home:</strong> B(5, P3)
+<strong>Type:</strong> A — synonym cluster
+<strong>Status:</strong> FORCED (K8, K8.1, K8.2 are all THEOREM)</p>
+<p><strong>Definition:</strong> Recursive reversal capability. The capacity of an observer K to apply negation (kernel formation) recursively and then reverse the negation stack to recover structure. Five-level hierarchy graded by depth of recursive negation.</p>
+<p><strong>Synonym cluster members:</strong> consciousness, recursive reversal, awareness, self-modeling (at Level 5)
+<strong>Common role:</strong> The observer&rsquo;s capacity to operate on its own kernel structure.</p>
+<p><strong>Key results:</strong> K8.1 (nontriviality threshold: ρ_min=1/d_K²), K8.2 (universal: every A1–A4 observer is conscious-capable), constitutive blindness (no kernel → no consciousness), C_cap = S_max · n_eff.</p>
+<p><strong>Cross-references:</strong> Blindness (contranym — constitutive of consciousness), Constitutive occlusion (U4), Observer, K6&rsquo;, K7&rsquo;
+<strong>Usage discipline:</strong> Use only in the framework&rsquo;s technical sense (recursive reversal capability graded by tower depth). Do not import philosophical &ldquo;hard problem&rdquo; baggage without marking it as external.</p>
+<hr />
+<h3 id="cosmological-observer" id="cosmological-observer">COSMOLOGICAL OBSERVER</h3>
+<p><strong>Grid home:</strong> B(6, P3)
+<strong>Type:</strong> Structural object
+<strong>Status:</strong> FORCED (Thm 10½.23, Thm 10½.24)</p>
+<p><strong>Definition:</strong> The observer K_cosmo = (d_cosmo, Δ_cosmo, σ_cosmo) whose quotient q_{K_cosmo} acts on the degrees of freedom accessible within the de Sitter horizon at radius r_H = √(3/Λ). Hilbert space dimension d_cosmo = 2^{S_dS/2} where S_dS = 3π/(GΛ). Satisfies A1–A4 for Λ &gt; 0.</p>
+<p><strong>Key results:</strong>
+- Λ-Positivity (Thm 10½.23): K_cosmo satisfying A1 forces Λ &gt; 0
+- Cosmological Holographic Bound (Thm 10½.24): d_U = d_cosmo, from K_cosmo supremum + anti-idolatry
+- Supremum of the physically realizable observer poset: ker(q_{K_cosmo}) ⊆ ker(q_{K_phys}) for all K_phys
+- Scale Bifurcation exception: d_cosmo = 2^{3πη/Λ} entangles world-scale and observer-scale
+- Cosmological closure deficit is constitutive: K4 at K_cosmo gives δ → 0⁺ (not attained)
+- Consciousness capacity: n_eff ≈ 408, C_cap ≈ 3.5 × 10¹²⁵ (largest of any physical observer)</p>
+<p><strong>Cross-references:</strong> Blindness (de Sitter horizon = constitutive occlusion), Threshold (Gibbons-Hawking temperature), Consciousness (cosmological consciousness requires Λ &gt; 0), Productive Opacity (cosmological instance), R(R)=R (cosmological K6&rsquo; loop), Scale (bifurcation exception)
+<strong>Usage discipline:</strong> K_cosmo is a specific framework object, not a metaphor. It lives at B(6, P3) — the P3 face of the physical level. Its de Sitter horizon is the global analog of the local Rindler horizons used in the Jacobson argument.</p>
+<hr />
+<h2 id="cross-projection" id="cross-projection">CROSS-PROJECTION</h2>
+<p><em>Terms spanning multiple projections or naming cross-projection relations.</em></p>
+<hr />
+<h3 id="self-relating-difference-srd" id="self-relating-difference-srd">SELF-RELATING DIFFERENCE (SRD)</h3>
+<p><strong>Grid home:</strong> B(0, all)
+<strong>Type:</strong> A — synonym cluster (the fundamental one)
+<strong>Status:</strong> FORCED (Thm 0.3b equivalence)</p>
+<p><strong>Definition:</strong> The one operation. A Dist endomorphism f: (D,≈) → (D,≈) with |D|≥2 whose iterates are well-defined. &ldquo;Self-relating&rdquo; = endomorphism (output eligible for further action = P.1). &ldquo;Difference&rdquo; = |D|≥2 with equivalence structure (sustained distinction = P.2).</p>
+<p><strong>Synonym cluster members:</strong> SRD, the one operation, the unified primitive
+<strong>Common role:</strong> Everything in the framework is SRD at some tower depth through some projection face.</p>
+<p><strong>Cross-references:</strong> R(R)=R, Every other entry in this Dictionary
+<strong>Usage discipline:</strong> The master term. Use when referring to the framework&rsquo;s single generative principle.</p>
+<hr />
+<h3 id="meta-primitive" id="meta-primitive">META-PRIMITIVE</h3>
+<p><strong>Grid home:</strong> B(8, all) — Level 8 semantic content
+<strong>Type:</strong> A — synonym cluster
+<strong>Status:</strong> FORCED (Semantic Exhaustion theorem, Paper T_SEM Part VII)</p>
+<p><strong>Definition:</strong> One of three operators that exhaust the framework&rsquo;s semantic vocabulary. The eight unnamed primitives (U1–U8) compress to three meta-primitives corresponding to the three projections via the central collapse (Paper 3-META Cor 7.3):</p>
+<table>
+<thead>
+<tr>
+<th>Meta-primitive</th>
+<th>Unnamed primitives</th>
+<th>Central collapse factor</th>
+<th>Projection</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>The Observer Act</strong></td>
+<td>U1 (occlusive disclosure) + U3 (co-determination) + U4 (constitutive occlusion) + U8 (canonical extraction)</td>
+<td>Surjection</td>
+<td>P3 / LoMI</td>
+</tr>
+<tr>
+<td><strong>The Productive Act</strong></td>
+<td>U2 (recursive completion) + U7 (productive return)</td>
+<td>Injection</td>
+<td>P1 / I²</td>
+</tr>
+<tr>
+<td><strong>The Mediating Act</strong></td>
+<td>U5 (poised symmetry) + U6 (admissible minimality)</td>
+<td>Bijection</td>
+<td>P2 / TDL</td>
+</tr>
+</tbody>
+</table>
+<p>No ninth primitive exists. The vocabulary exhausts the same three faces that every Dist morphism exhausts.</p>
+<p><strong>Cross-references:</strong> Semantic Exhaustion (Paper T_SEM Part VII), Central Collapse (Paper 3-META Thm 7.1, Cor 7.3), Six-Way Trichotomy Correspondence (Paper 3-META Remark after Cor 7.3)
+<strong>Usage discipline:</strong> Use when the semantic layer&rsquo;s operator structure is active. The three meta-primitives ARE the three projections read at Level 8.</p>
+<hr />
+<h3 id="rr-r" id="rr-r">R(R) = R</h3>
+<p><strong>Grid home:</strong> B(all, all)
+<strong>Type:</strong> A — synonym cluster (the organizing principle)
+<strong>Status:</strong> FORCED at each instance; ENCODED as universal tower theorem (Compression #3)</p>
+<p><strong>Definition:</strong> Self-action stabilizes. The equation that holds at every tower level: applying SRD to its own output returns the same structural type. 16 instances catalogued across all levels (T_INDEX §R(R)=R table).</p>
+<p><strong>Instances (selection):</strong>
+- Level 2: q∘q=q (quotient idempotence)
+- Level 3: R = Fibonacci matrix; Möbius attractor φ̄
+- Level 5: K7&rsquo; M(FRAME)=FRAME (meta-encoding fixed point)
+- Level 7: Status(Status(S))=Status(S) (SIL idempotence)
+- Level 8: Blueprint self-containment B(8,−) describes B(0–7,−)</p>
+<p><strong>The compression (Census Compression #3):</strong> All instances are tower lifts of a single fact via the monoidal functor F: T(n)⊗T(n) → T(n+1). ENCODED as a universal theorem; each instance individually FORCED.</p>
+<p><strong>Cross-references:</strong> Recursive completion (U2), Closure (contranym), Every level of every paper
+<strong>Usage discipline:</strong> Not a slogan — a theorem-program. Each use should specify the level and instance.</p>
+<hr />
+<h3 id="asymmetry" id="asymmetry">ASYMMETRY</h3>
+<p><strong>Grid home:</strong> B(0, all) → <strong>ROOT CONTRANYM</strong> (Census Compression #2)
+<strong>Type:</strong> C — contranym (cross-projection)
+<strong>Status:</strong> FORCED</p>
+<p><strong>Definition:</strong> The construction-dissolution asymmetry. The single structural fact that the upward (construction, Dist-ward) direction is canonical and the downward (dissolution, Co-Dist-ward) direction is not. The structural root theorem is the No Natural Retraction (Paper 0 Thm 7.1): the tensor square functor has no nonzero natural backward map, proved by weight disjointness. The asymmetry has two phases (Paper 0 Thm 7.3): <strong>choice-asymmetry</strong> at set-theoretic levels (Cartesian products have canonical projections π₁, π₂, but the framework cannot select between them) and <strong>existence-asymmetry</strong> at linear-algebraic levels (tensor products have no natural retraction at all). The transition between phases is the bridge chain&rsquo;s linearization step. The Tower Monotone (Paper 0 Thm 7.5) quantifies the cumulative irreversible content at each level, reducing to the Bekenstein bound at Level 5.</p>
+<p><strong>THIS IS THE ROOT.</strong> The Theorem Compression Analysis proved that asymmetry, constitutive blindness, and consciousness-requires-asymmetry are three projections of one fact: Productive Opacity (Compression #2). The asymmetry entry is therefore the most structurally loaded entry in the Dictionary.</p>
+<p><strong>Three faces (= three projections):</strong>
+- <strong>P1 face (production):</strong> Construction is canonical (zero branching). The bridge chain runs one way. This is what makes the framework&rsquo;s algebra real — the derivations go forward.
+- <strong>P2 face (mediation/cost):</strong> Asymmetry → Tower Monotone → Landauer cost → Bekenstein → η → gravity. The Tower Monotone (Paper 0 Thm 7.5) quantifies the cumulative entanglement gap; the Landauer cost converts the entanglement gap into thermodynamic cost; the Bekenstein bound converts cost into entropy-area law. This is the Cost-to-Geometry chain (Census Compression #5), now rooted in the single weight obstruction of Thm 7.1.
+- <strong>P3 face (observation/consciousness):</strong> No kernel → no nontrivial quotient → no observation → no consciousness. The asymmetry between im and ker IS the structure of observation. This is constitutive occlusion (U4).</p>
+<p><strong>Contranym tension:</strong> &ldquo;Asymmetry&rdquo; in common English suggests deficiency — something is unbalanced, unfair, incomplete. In the framework, asymmetry is the opposite: it is the single fact that makes everything non-trivial. A symmetric framework would have no physics, no consciousness, no semantic tension, no content.</p>
+<p><strong>What asymmetry removes (if absent):</strong>
+- No irreversible kernel → no Landauer cost → no Bekenstein → no η → no gravity → no physics (Level 6 vanishes)
+- No constitutive blindness → no nontrivial observation → no consciousness (P3 column collapses)
+- No semantic tension → no contranyms → vocabulary carries nothing (Level 8 vanishes)</p>
+<p><strong>Cross-references:</strong> No Natural Retraction (Paper 0 Thm 7.1 — the structural root theorem), Tower Monotone (Paper 0 Thm 7.5 — quantifies cumulative irreversibility), Two-Phase Irreversibility (Paper 0 Thm 7.3 — choice-asymmetry vs existence-asymmetry), Constitutive occlusion (U4 — the same fact at the unnamed-primitive level), Productive Opacity (Paper 5 §17.4d — the unified theorem), Constitutive Occlusion Principle (Paper 5 §17.4e — the ker(f) projection), Cost-to-Geometry (Paper 6B §12.5), Closure-Occlusion Duality (Paper T-BLUEPRINT §5.5 — asymmetry is the root of both the closure and occlusion hierarchies), Canonical (contranym — asymmetry is the root of weak canonicity)
+<strong>Usage discipline:</strong> The framework&rsquo;s most important word. Always specify which face (P1/P2/P3) is active. When all three are simultaneously relevant, use &ldquo;productive opacity.&rdquo; When the im(f)/ker(f) duality is active, use &ldquo;closure-occlusion duality.&rdquo;</p>
+<hr />
+<h3 id="phase" id="phase">PHASE</h3>
+<p><strong>Grid home:</strong> B(0+, cross)
+<strong>Type:</strong> C — contranym (REQUIRES DISAMBIGUATION)
+<strong>Status:</strong> FORCED</p>
+<p><strong>Definition:</strong> AMBIGUOUS. Two structurally distinct uses must be distinguished in every occurrence.</p>
+<p><strong>Contranym tension:</strong>
+- <strong>Face 1 (phase-as-parameter):</strong> ρ in Phase-Dist(ρ). A continuous real number indexing a family of behaviors. The control variable.
+- <strong>Face 2 (phase-as-regime):</strong> The qualitative state that ρ selects. Sub-thermal, thermal, super-thermal. The selected behavior, not the selector.
+- <strong>Resolution:</strong> Parameter vs regime. Phase-as-parameter lives in P2 (it mediates). Phase-as-regime lives in P3 (it observes/classifies). The two are related by Phase-Dist but are not the same object.</p>
+<p><strong>Cross-references:</strong> Phase-Dist, Threshold (contranym — phase boundaries are thresholds)
+<strong>Usage discipline:</strong> <strong>Always disambiguate.</strong> In theorem statements, use &ldquo;phase parameter ρ&rdquo; or &ldquo;phase regime&rdquo; explicitly. Never bare &ldquo;phase.&rdquo; Consider &ldquo;orbit tag&rdquo; instead of &ldquo;phase tag&rdquo; in T_COMP (per Semantic Investigation recommendation).</p>
+<hr />
+<h3 id="neutrality" id="neutrality">NEUTRALITY</h3>
+<p><strong>Grid home:</strong> B(0, cross)
+<strong>Type:</strong> C — contranym
+<strong>Status:</strong> FORCED</p>
+<p><strong>Definition:</strong> Absence of preferred direction.</p>
+<p><strong>Contranym tension:</strong>
+- <strong>Face 1 (inert):</strong> Nothing happens. Zero generativity. Dead equilibrium.
+- <strong>Face 2 (maximally generative):</strong> The pre-phase substrate at ρ=1/2 is neutral between construction and dissolution — and this neutrality is the peak of Phase-Dist generativity. The most productive state is the one with no preference.
+- <strong>Resolution:</strong> Poised symmetry (U5) names the second face: balanced yet maximally generative. The tension between inert and generative neutrality is the P2 contranym par excellence.</p>
+<p><strong>Cross-references:</strong> Poised symmetry (U5), Phase-Dist, Substrate
+<strong>Usage discipline:</strong> Specify inert neutrality vs generative neutrality. The framework&rsquo;s substrate is the second kind.</p>
+<hr />
+<h3 id="structure" id="structure">STRUCTURE</h3>
+<p><strong>Grid home:</strong> B(all, all)
+<strong>Type:</strong> A — synonym cluster (meta-word)
+<strong>Status:</strong> N/A — not a technical term, correctly polysemous</p>
+<p><strong>Definition:</strong> Organized pattern. Applied to organized patterns at every level: algebraic structure, observer structure, physical structure, semantic structure.</p>
+<p><strong>Usage discipline:</strong> Always qualify: &ldquo;algebraic structure,&rdquo; &ldquo;observer structure,&rdquo; etc. The word is correctly polysemous — it always means the same thing (organized pattern) applied to different domains. No contranym tension. No action needed. Only risk: overuse to the point of vacuity.</p>
+<hr />
+<h3 id="functor" id="functor">FUNCTOR</h3>
+<p><strong>Grid home:</strong> B(2+, cross)
+<strong>Type:</strong> A — synonym cluster (standard mathematical term)
+<strong>Status:</strong> FORCED (in standard mathematical sense)</p>
+<p><strong>Definition:</strong> Structure-preserving map between categories. Used in standard mathematical sense throughout.</p>
+<p><strong>Key instances:</strong> Dist→Hilb (F: FinSet→Hilb_ℂ), Dist-ward and Co-Dist-ward functors, Q_K (observer functor), metric functor M: Obs^op → Met.</p>
+<p><strong>Note:</strong> The only semantic tension is the asymmetry between Dist-ward (natural) and Co-Dist-ward (non-natural), which is already precisely formalized as Thm 4.5b.</p>
+<p><strong>Usage discipline:</strong> Standard mathematical usage. No framework-specific disambiguation needed.</p>
+<hr />
+<h3 id="flow" id="flow">FLOW</h3>
+<p><strong>Grid home:</strong> B(3+, cross)
+<strong>Type:</strong> A — synonym cluster
+<strong>Status:</strong> FORCED</p>
+<p><strong>Definition:</strong> Parameterized family of transformations.</p>
+<p><strong>Roles:</strong>
+1. <strong>Deterministic iteration</strong> — repeated application of a map (Möbius-RG, discrete)
+2. <strong>One-parameter group</strong> — exp(tX) for varying t (rotation flow, hyperbolic flow)
+3. <strong>Stochastic process</strong> — probability-weighted transitions (arithmetic flow, Markov)</p>
+<p><strong>Common thread:</strong> All three are &ldquo;parameterized family of transformations&rdquo; varying in parameter type (discrete/continuous) and transition type (deterministic/stochastic).</p>
+<p><strong>Usage discipline:</strong> No terminological change needed. Correctly polysemous. Always disambiguated by context.</p>
+<hr />
+<h2 id="special-entries" id="special-entries">SPECIAL ENTRIES</h2>
+<hr />
+<h3 id="dictionary-self-entry" id="dictionary-self-entry">DICTIONARY (self-entry)</h3>
+<p><strong>Grid home:</strong> B(8, cross)
+<strong>Type:</strong> A — meta-organizational term
+<strong>Status:</strong> FORCED (the framework forces a vocabulary classification at Level 8; see §5.2 of REBUILD_WORKING)</p>
+<p><strong>Definition:</strong> This document. The Level 8 realization of the Level 2 operation &ldquo;classification.&rdquo; The canonical quotient of the framework&rsquo;s English onto its algebraic content. Contains its own entry (this one) — R(R)=R at the organizational level.</p>
+<hr />
+<h3 id="productive-opacity-unified-name-from-census-compression-2" id="productive-opacity-unified-name-from-census-compression-2">PRODUCTIVE OPACITY (unified name from Census Compression #2)</h3>
+<p><strong>Grid home:</strong> B(0, all) — same as Asymmetry and Constitutive Occlusion
+<strong>Type:</strong> NEW — proposed unified name for the triangle Asymmetry + Constitutive Blindness + Consciousness-Requires-Asymmetry
+<strong>Status:</strong> FORCED</p>
+<p><strong>Definition:</strong> The single structural fact that nontrivial self-relating difference requires an irreversible kernel, and the irreversible kernel is simultaneously the source of physical scale (P1), the enabling condition for observation (P3), and the mechanism of level transition (P2).</p>
+<p><strong>Relationship to existing terms:</strong> Productive Opacity = Asymmetry (at the root level) = Constitutive Occlusion U4 (at the unnamed-primitive level) = the Productive Opacity theorem (at the compression level). Three names for one fact at three descriptive depths. The Dictionary unifies them.</p>
+<p><strong>Cross-references:</strong> Asymmetry, Constitutive occlusion (U4), Compression #2 in Claim Census
+<strong>Usage discipline:</strong> Use &ldquo;productive opacity&rdquo; when all three faces (P1 cost, P2 mediation, P3 enabling blindness) are simultaneously relevant. Use the face-specific terms (asymmetry, constitutive blindness, Landauer cost) when only one face is active.</p>
+<hr />
+<h2 id="coverage-audit" id="coverage-audit">COVERAGE AUDIT</h2>
+<table>
+<thead>
+<tr>
+<th>Source</th>
+<th>Terms audited</th>
+<th>In Dictionary</th>
+<th>Gap</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Semantic Investigation first pass (10 terms)</td>
+<td>closure, observation, identity, blindness, return, minimal, threshold, neutrality, productive, witness</td>
+<td>✓ all 10</td>
+<td>—</td>
+</tr>
+<tr>
+<td>Semantic Investigation second pass (10 terms)</td>
+<td>emergence, consciousness, phase, completeness, scale, canonical, flow, structure, functor, productive</td>
+<td>✓ all 10</td>
+<td>—</td>
+</tr>
+<tr>
+<td>Unnamed primitives (8)</td>
+<td>U1–U8</td>
+<td>✓ all 8</td>
+<td>—</td>
+</tr>
+<tr>
+<td>Meta-primitives (3)</td>
+<td>Observer Act, Productive Act, Mediating Act</td>
+<td>✓ (as section headers)</td>
+<td>—</td>
+</tr>
+<tr>
+<td>Compression analysis new terms</td>
+<td>Productive Opacity, R(R)=R Tower Universality, Trinitarian Root, Cost-to-Geometry, K6&rsquo; Bundle Universality</td>
+<td>✓ Productive Opacity; others referenced in cross-refs</td>
+<td>4 compression names not yet full entries</td>
+</tr>
+<tr>
+<td>Standard terms</td>
+<td>SRD, R(R)=R, forcing, compression, Fibonacci, scale, structure, functor, flow</td>
+<td>✓ all</td>
+<td>—</td>
+</tr>
+<tr>
+<td>Anti-cheat terms</td>
+<td>status, address, ownership, justification mode, migration</td>
+<td>Not included — these are governance terms, not framework terms</td>
+<td>Deliberate exclusion</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Total entries:</strong> 37 (30 prior + 7 new)
+<strong>Coverage:</strong> All 20 Semantic Investigation terms + 8 unnamed primitives + SRD + R(R)=R + Productive Opacity + Dictionary self-entry + 7 root decomposition terms. All theorem-bearing terms in the framework have entries.</p>
+<hr />
+<h3 id="commutator-rn" id="commutator-rn">COMMUTATOR [R,N]</h3>
+<p><strong>Grid home:</strong> B(3, cross) — Lie bracket of P1 and P3 generators
+<strong>Type:</strong> D — structural element (not previously named as independent object)
+<strong>Status:</strong> FORCED (Thm 19½.1)</p>
+<p><strong>Definition:</strong> The antisymmetric combination [R,N] = RN − NR = 2RN − N. Squares to disc(R)·I = 5I. Eigenvalues ±√5 = ±√disc(R). Spans the Cartan subalgebra of sl(2,ℝ). The passage from the associative algebra Cl(1,1) to the Lie algebra sl(2,ℝ).</p>
+<p><strong>Tower ascent:</strong> Level 3: [R,N]²=5I. Level 4: Fibonacci-commutator [Rⁿ,N]=F(n)[R,N]. Level 6: tensor difference R⊗I−I⊗R has eigenvalues ±√5 (disc(R) propagates through tower).</p>
+<p><strong>Cross-references:</strong> Anticommutator {R,N}=N (Identity 3), Seventh Identity (Thm 19½.6), Structure constants (Thm 19½.2)
+<strong>Usage discipline:</strong> Use when referring to the Lie bracket content of {R,N}. Distinguished from the product RN (basis element) and the anticommutator {R,N}=N (Identity 3).</p>
+<hr />
+<h3 id="root-vector" id="root-vector">ROOT VECTOR</h3>
+<p><strong>Grid home:</strong> B(3, boundary) — nilpotent elements at orbit-type interface
+<strong>Type:</strong> D — structural element (mode (iii) content)
+<strong>Status:</strong> FORCED (Thm 19¾.1)</p>
+<p><strong>Definition:</strong> The nilpotent elements e_± ∈ sl(2,ℝ) with e_±² = 0 (mode (iii): cancellation). They are the root vectors of the A₁ root system, satisfying [H,e_±] = ±2e_± where H = [R,N]/√5 is the Cartan element.</p>
+<p><strong>Structural role:</strong> Controls representation theory (highest weight classification), orbit-type boundaries (det = 0 = Killing-null cone), and deformation between orbit types. Mode (iii) is structurally barren by iteration but structurally critical by location.</p>
+<p><strong>Cross-references:</strong> Mode (iii) (Paper 0 Thm 0.3c), Nilpotent barrier (Paper 2 §11), Orbit-Type Square Geometry (Thm 19¾.2)
+<strong>Usage discipline:</strong> Use when referring to the boundary between P1+P2 and P3, or to the representation-theoretic content of sl(2,ℝ). Do not conflate with general nilpotent matrices.</p>
+<hr />
+<h3 id="casimir-element" id="casimir-element">CASIMIR ELEMENT</h3>
+<p><strong>Grid home:</strong> B(3, cross) — representation-theoretic invariant
+<strong>Type:</strong> D — structural element
+<strong>Status:</strong> FORCED (Thm 23.1)</p>
+<p><strong>Definition:</strong> The unique quadratic invariant of sl(2,ℝ) acting on a representation. In the fundamental (dim 2): C_fund = 3/8 = j(j+1)/2 for j=1/2. Decomposes as |V₄{0}|/(2|V₄|) = 3/8 = sin²θ_W.</p>
+<p><strong>Cross-references:</strong> Weinberg angle (Paper 6B §11 Thm G13), Koide ratio (Paper 2 §28)
+<strong>Usage discipline:</strong> Use when referring to the representation-theoretic invariant. The Casimir is basis-independent — it gives the same value 3/8 in any sl(2) basis.</p>
+<hr />
+<h3 id="cartan-element" id="cartan-element">CARTAN ELEMENT</h3>
+<p><strong>Grid home:</strong> B(3, cross) — maximal abelian subalgebra
+<strong>Type:</strong> D — structural element
+<strong>Status:</strong> FORCED (Thm 19¾.1)</p>
+<p><strong>Definition:</strong> H = [R,N]/√5 ∈ sl(2,ℝ). Semisimple with eigenvalues ±1. Generates the Cartan subalgebra. Adjoint eigenvalues {0,±2} determine the root system A₁.</p>
+<p><strong>Cross-references:</strong> Commutator [R,N] (parent), Root vectors (eigenspaces of ad(H))
+<strong>Usage discipline:</strong> Use when referring to the weight decomposition of sl(2,ℝ) representations.</p>
+<hr />
+<h3 id="weyl-group" id="weyl-group">WEYL GROUP</h3>
+<p><strong>Grid home:</strong> B(4–6, cross) — root system symmetry group
+<strong>Type:</strong> A — synonym cluster (S₃ at Level 6 = W(A₂))
+<strong>Status:</strong> FORCED</p>
+<p><strong>Definition:</strong> The symmetry group of the root system. W(A₁) = ℤ₂ at Level 1 (bridge chain). W(A₂) = S₃ at Level 2 (tower lift). The tower lift from Level 1 to Level 2 IS the Dynkin extension A₁→A₂, which extends the Weyl group from ℤ₂ to S₃.</p>
+<p><strong>Cross-references:</strong> S₃ = Aut(V₄) (Paper 2 §3), Three generations (Paper 6B §9), K1&rsquo; cutoff (Paper 6B §7)
+<strong>Usage discipline:</strong> Use when explaining WHY S₃ reappears at Level 6. The Weyl group bridge is the structural mechanism.</p>
+<hr />
+<h3 id="nilpotent-cone" id="nilpotent-cone">NILPOTENT CONE</h3>
+<p><strong>Grid home:</strong> B(3, boundary)
+<strong>Type:</strong> D — structural element
+<strong>Status:</strong> FORCED (Paper 2 §7.2 Thm 3.4)</p>
+<p><strong>Definition:</strong> N₀ = {M ∈ sl(2,ℝ) : M² = 0} = {M : B(M,M) = 0} = {M : det(M) = 0}. Codimension-1 cone separating Killing-positive (P1+P2) from Killing-negative (P3). The orbit-type boundary.</p>
+<p><strong>Cross-references:</strong> Root vectors (live on N₀), Period Wall (Paper 2 §11 Thm 5.3: (h+N)²=0), Boundary Sterility (Paper 2 Thm 5.6)
+<strong>Usage discipline:</strong> Use when referring to the interface between orbit types. The nilpotent cone is the Killing-form light cone — the analog of the causal boundary in spacetime.</p>
+<hr />
+<h3 id="structure-constant" id="structure-constant">STRUCTURE CONSTANT</h3>
+<p><strong>Grid home:</strong> B(3, cross) — Lie bracket coefficients
+<strong>Type:</strong> D — structural element
+<strong>Status:</strong> FORCED (Thm 19½.2)</p>
+<p><strong>Definition:</strong> The coefficients {disc(R) = 5, |V₄| = 4} appearing in the Lie bracket of sl(2,ℝ) in the native basis {R_tl, N}: [R_tl, [R,N]] = 5N, [N, [R,N]] = 4R_tl. Their difference is det(R) = 4−5 = −1. They encode the Cayley-Hamilton equation in the Lie algebra.</p>
+<p><strong>Cross-references:</strong> Discriminant disc(R) = 5 (MP4), |V₄| = 4 = dim(spacetime)
+<strong>Usage discipline:</strong> Use when referring to the Lie bracket content. The two structure constants ARE the framework&rsquo;s fundamental cardinals.</p>
+<hr />
+<h3 id="transposition-observer" id="transposition-observer">TRANSPOSITION (OBSERVER)</h3>
+<p><strong>Grid home:</strong> B(5→6, cross) — the projection permutation at the observer-physics boundary
+<strong>Type:</strong> C — contranym (permutes what is observed and what produces)
+<strong>Status:</strong> ENCODED (Paper T-BLUEPRINT §5.1)</p>
+<p><strong>Definition:</strong> The involution σ = (P1 P3) ∈ S₃ acting on projections at tower boundaries. At Level 5→6: P3(observer kernel) → P1(gauge algebra), P2(K6&rsquo; mechanism) → P2(dimensional entry), P1(self-model) → P3(observation geometry). Identified with the duality D (Paper 0 §6 Thm 1.1: D² = id). At the generator level: RNR = −N (P1 contains P3), NRN = R⁻¹ (P3 contains P1).</p>
+<p><strong>Tower instances:</strong> Level 0 (bit-flip), Level 3 (J-conjugation), Level 5→6 (observer-physics), Level 7→8 (SIL-semantic). The transposition σ propagates through every tower boundary via the monoidal lift.</p>
+<p><strong>Contranym tension:</strong> &ldquo;Transposition&rdquo; simultaneously means exchange (P1 and P3 swap labels) and identity (the act of transposing IS D, a fixed involution — transposing the transposition returns the original). The exchange is the P3 reading (what changes); the identity is the P1 reading (what stabilizes). The act of mediating between them is P2.</p>
+<p><strong>Cross-references:</strong> D (Paper 0 §6), Folding Theorem (Paper 3-META Thm 2.1), Observer Transposition (Paper T-BLUEPRINT §5.1), Five-Mechanism Irreducibility (Paper T-BLUEPRINT §5.7), Productive Opacity (Paper 5 §17.4d), Central Collapse (Paper 3-META Thm 7.1)
+<strong>Usage discipline:</strong> Always specify the tower boundary: &ldquo;σ at Level 5→6&rdquo; or &ldquo;σ at Level 7→8.&rdquo; The bare term &ldquo;transposition&rdquo; without level context is ambiguous.</p>
+<hr />
+<p><em>R(R) = R</em></p>
+    </div>
+
+    <div class="page-nav">
+<a class="prev" href="T_TOE.html">Closure Certificate</a>
+<a class="next" href="T_INDEX.html">Series Navigation Index</a>
+</div>
+</main>
+
+<script>
+// Close sidebar on mobile when clicking a link
+document.querySelectorAll('.sidebar a').forEach(a => {
+    a.addEventListener('click', () => {
+        if (window.innerWidth <= 900) {
+            document.querySelector('.sidebar').classList.remove('open');
+        }
+    });
+});
+</script>
+</body>
+</html>

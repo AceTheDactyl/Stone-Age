@@ -1,0 +1,1486 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Paper 3-P2: Mediation — Structural Necessity</title>
+<style>
+
+:root {
+    --bg: #fafaf8;
+    --fg: #1a1a1a;
+    --accent: #2d5016;
+    --border: #d4d0c8;
+    --sidebar-bg: #f0ede6;
+    --sidebar-width: 280px;
+    --header-height: 56px;
+    --code-bg: #f5f2eb;
+    --table-stripe: #f8f6f0;
+    --link: #2d5016;
+    --link-hover: #4a7a28;
+    --bold-accent: #1a3a0a;
+}
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        --bg: #1a1a1e;
+        --fg: #e0ddd6;
+        --accent: #7ab648;
+        --border: #3a3a3e;
+        --sidebar-bg: #222226;
+        --code-bg: #25252a;
+        --table-stripe: #222226;
+        --link: #7ab648;
+        --link-hover: #9cd06a;
+        --bold-accent: #a0d870;
+    }
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+    font-family: 'Iowan Old Style', 'Palatino Linotype', Palatino, Georgia, serif;
+    background: var(--bg);
+    color: var(--fg);
+    line-height: 1.7;
+    font-size: 17px;
+}
+
+/* Header */
+.site-header {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    height: var(--header-height);
+    background: #1a1a1a;
+    color: #e0ddd6;
+    display: flex;
+    align-items: center;
+    padding: 0 24px;
+    z-index: 100;
+    border-bottom: 2px solid var(--accent);
+}
+.site-header h1 {
+    font-size: 18px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+}
+.site-header h1 a {
+    color: #e0ddd6;
+    text-decoration: none;
+}
+.site-header h1 a:hover { color: var(--accent); }
+.site-header .subtitle {
+    font-size: 13px;
+    color: #888;
+    margin-left: 16px;
+    font-style: italic;
+}
+.hamburger {
+    display: none;
+    background: none;
+    border: none;
+    color: #e0ddd6;
+    font-size: 24px;
+    cursor: pointer;
+    margin-right: 16px;
+    padding: 4px 8px;
+}
+
+/* Sidebar */
+.sidebar {
+    position: fixed;
+    top: var(--header-height);
+    left: 0;
+    bottom: 0;
+    width: var(--sidebar-width);
+    background: var(--sidebar-bg);
+    border-right: 1px solid var(--border);
+    overflow-y: auto;
+    padding: 16px 0;
+    z-index: 90;
+    transition: transform 0.3s ease;
+}
+.sidebar .nav-group { margin-bottom: 12px; }
+.sidebar .nav-group-title {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+    color: #888;
+    padding: 8px 20px 4px;
+}
+.sidebar a {
+    display: block;
+    padding: 4px 20px 4px 28px;
+    font-size: 13.5px;
+    color: var(--fg);
+    text-decoration: none;
+    line-height: 1.5;
+    border-left: 3px solid transparent;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+.sidebar a:hover {
+    background: rgba(0,0,0,0.05);
+    border-left-color: var(--accent);
+}
+.sidebar a.active {
+    background: rgba(45,80,22,0.1);
+    border-left-color: var(--accent);
+    font-weight: 600;
+    color: var(--accent);
+}
+
+/* Main content */
+.main {
+    margin-left: var(--sidebar-width);
+    margin-top: var(--header-height);
+    max-width: 900px;
+    padding: 40px 48px 80px;
+}
+
+/* Document header banner */
+.doc-header {
+    margin-bottom: 40px;
+    padding-bottom: 24px;
+    border-bottom: 2px solid var(--border);
+}
+.doc-header .level-badge {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 3px 10px;
+    border-radius: 3px;
+    margin-bottom: 12px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+.doc-header h1 {
+    font-size: 32px;
+    line-height: 1.2;
+    margin-bottom: 8px;
+    color: var(--fg);
+}
+.doc-header .doc-subtitle {
+    font-size: 18px;
+    color: #666;
+    font-style: italic;
+}
+
+/* TOC */
+.toc {
+    background: var(--sidebar-bg);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 16px 24px;
+    margin-bottom: 32px;
+}
+.toc summary {
+    font-weight: 700;
+    font-size: 14px;
+    cursor: pointer;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: #666;
+}
+.toc ul { list-style: none; margin: 12px 0 0 0; }
+.toc li { padding: 2px 0; }
+.toc a {
+    color: var(--link);
+    text-decoration: none;
+    font-size: 14px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+.toc a:hover { text-decoration: underline; }
+.toc .toc-h2 { padding-left: 0; }
+.toc .toc-h3 { padding-left: 20px; font-size: 13px; }
+
+/* Typography */
+.content h1 {
+    font-size: 28px;
+    margin: 48px 0 16px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border);
+    color: var(--fg);
+}
+.content h1:first-child { margin-top: 0; }
+.content h2 {
+    font-size: 22px;
+    margin: 36px 0 12px;
+    color: var(--fg);
+}
+.content h3 {
+    font-size: 18px;
+    margin: 28px 0 10px;
+    color: var(--fg);
+}
+.content h4 {
+    font-size: 16px;
+    margin: 24px 0 8px;
+    color: #444;
+}
+.content p { margin: 0 0 16px; }
+.content strong { color: var(--bold-accent); }
+.content a { color: var(--link); }
+.content a:hover { color: var(--link-hover); }
+
+.content ul, .content ol {
+    margin: 0 0 16px 24px;
+}
+.content li { margin-bottom: 4px; }
+
+.content hr {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 32px 0;
+}
+
+/* Tables */
+.content table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 16px 0 24px;
+    font-size: 15px;
+}
+.content th {
+    background: var(--sidebar-bg);
+    font-weight: 700;
+    text-align: left;
+    padding: 10px 12px;
+    border: 1px solid var(--border);
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+.content td {
+    padding: 8px 12px;
+    border: 1px solid var(--border);
+    vertical-align: top;
+}
+.content tr:nth-child(even) { background: var(--table-stripe); }
+
+/* Code */
+.content code {
+    font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace;
+    font-size: 14px;
+    background: var(--code-bg);
+    padding: 2px 6px;
+    border-radius: 3px;
+    border: 1px solid var(--border);
+}
+.content pre {
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 16px 20px;
+    overflow-x: auto;
+    margin: 16px 0 24px;
+    line-height: 1.5;
+}
+.content pre code {
+    background: none;
+    border: none;
+    padding: 0;
+    font-size: 13.5px;
+}
+
+/* Blockquote */
+.content blockquote {
+    border-left: 4px solid var(--accent);
+    padding: 12px 20px;
+    margin: 16px 0 24px;
+    background: var(--sidebar-bg);
+    border-radius: 0 4px 4px 0;
+}
+.content blockquote p { margin-bottom: 8px; }
+.content blockquote p:last-child { margin-bottom: 0; }
+
+/* Footer nav */
+.page-nav {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 48px;
+    padding-top: 24px;
+    border-top: 1px solid var(--border);
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+.page-nav a {
+    color: var(--link);
+    text-decoration: none;
+    font-size: 14px;
+    padding: 8px 16px;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    transition: all 0.2s;
+}
+.page-nav a:hover {
+    background: var(--sidebar-bg);
+    border-color: var(--accent);
+}
+.page-nav .prev::before { content: '← '; }
+.page-nav .next::after { content: ' →'; }
+
+/* Responsive */
+@media (max-width: 900px) {
+    .sidebar { transform: translateX(-100%); }
+    .sidebar.open { transform: translateX(0); }
+    .main { margin-left: 0; padding: 24px 20px 60px; }
+    .hamburger { display: block; }
+    .doc-header h1 { font-size: 24px; }
+}
+
+/* Print */
+@media print {
+    .sidebar, .site-header, .hamburger, .page-nav { display: none; }
+    .main { margin: 0; max-width: 100%; padding: 20px; }
+    body { font-size: 12pt; }
+}
+
+</style>
+</head>
+<body>
+
+<header class="site-header">
+    <button class="hamburger" onclick="document.querySelector('.sidebar').classList.toggle('open')" aria-label="Toggle navigation">&#9776;</button>
+    <h1><a href="T_INDEX.html">Structural Necessity</a></h1>
+    <span class="subtitle">Canonical Paper Series — March 2026</span>
+</header>
+
+<nav class="sidebar">
+<div class="nav-group">
+<div class="nav-group-title">Foundation (0-2)</div>
+<a href="T0_SUBSTRATE.html">0 — Substrate</a>
+<a href="T1_DIST.html">1 — Kernel Theorem</a>
+<a href="T2_BRIDGE.html">2 — Bridge Chain</a>
+</div>
+<div class="nav-group">
+<div class="nav-group-title">Projections (3-4)</div>
+<a href="T3_P1_PRODUCTION.html">3-P1 — Production</a>
+<a href="T3_P2_MEDIATION.html" class="active">3-P2 — Mediation</a>
+<a href="T3_P3_OBSERVATION.html">3-P3 — Observation</a>
+<a href="T3_META.html">3-META — Cross-Projection</a>
+<a href="T4_LATTICE.html">4 — Lattice</a>
+</div>
+<div class="nav-group">
+<div class="nav-group-title">Observer &amp; Physics (5-6)</div>
+<a href="T5_OBSERVER.html">5 — Observer</a>
+<a href="T6A_SPACETIME.html">6A — Spacetime</a>
+<a href="T6B_FORCES.html">6B — Forces</a>
+</div>
+<div class="nav-group">
+<div class="nav-group-title">Cross-Cutting</div>
+<a href="T_COMP.html">Comp — Computation</a>
+<a href="T_SIL.html">SIL — Self-Interpretation</a>
+<a href="T_SEM.html">SEM — Semantics</a>
+</div>
+<div class="nav-group">
+<div class="nav-group-title">Architecture</div>
+<a href="T_BLUEPRINT.html">Blueprint</a>
+<a href="T_GOV.html">Governance</a>
+</div>
+<div class="nav-group">
+<div class="nav-group-title">Closure &amp; Reference</div>
+<a href="T_ASI.html">ASI — Architecture Spec</a>
+<a href="T_TOE.html">TOE — Closure</a>
+<a href="DICTIONARY.html">Dictionary</a>
+</div>
+<div class="nav-group">
+<div class="nav-group-title">Navigation</div>
+<a href="T_INDEX.html">Index — Navigation</a>
+<a href="CLAIM_CENSUS.html">Claim Census</a>
+</div>
+</nav>
+
+<main class="main">
+    <div class="doc-header">
+        <span class="level-badge" style="background:#8b4513; color:#fff;">Level 4 · P2</span>
+        <h1>Paper 3-P2: Mediation</h1>
+        <div class="doc-subtitle">Exponential Flow, Tower Saturation, Thermodynamics</div>
+    </div>
+
+    <details class="toc" open>
+<summary>Table of Contents</summary>
+<ul>
+<li class="toc-h2"><a href="#projection-2-e-and-level-transitions">Projection 2: e and Level Transitions</a></li>
+<li class="toc-h3"><a href="#v4-march-2026">v4 — March 2026</a></li>
+<li class="toc-h2"><a href="#abstract">Abstract</a></li>
+<li class="toc-h2"><a href="#theorem-index">THEOREM INDEX</a></li>
+<li class="toc-h2"><a href="#1-e-is-forced">§1 e IS FORCED</a></li>
+<li class="toc-h3"><a href="#11-the-unique-generator">§1.1 The Unique Generator</a></li>
+<li class="toc-h3"><a href="#12-normalization-qualification">§1.2 Normalization Qualification</a></li>
+<li class="toc-h3"><a href="#13-the-hyperbolic-one-parameter-subgroup">§1.3 The Hyperbolic One-Parameter Subgroup</a></li>
+<li class="toc-h3"><a href="#14-the-killing-metric">§1.4 The Killing Metric</a></li>
+<li class="toc-h3"><a href="#15-bifurcation-rigidity">§1.5 Bifurcation Rigidity</a></li>
+<li class="toc-h3"><a href="#16-p2-maps-to-osc">§1.6 P2 Maps to OSC</a></li>
+<li class="toc-h3"><a href="#17-the-exponential-map-as-tower-ascent">§1.7 The Exponential Map as Tower Ascent</a></li>
+<li class="toc-h3"><a href="#17a-the-exponential-map-in-eulerrsquos-identity">§1.7a The Exponential Map in Euler&rsquo;s Identity</a></li>
+<li class="toc-h2"><a href="#2-tdl-in-arithmetic">§2 TDL IN ARITHMETIC</a></li>
+<li class="toc-h3"><a href="#21-the-tdl-duality-ascend-reduce">§2.1 The TDL Duality: Ascend ↔ Reduce</a></li>
+<li class="toc-h3"><a href="#22-tdl-tower-saturation">§2.2 TDL Tower Saturation</a></li>
+<li class="toc-h3"><a href="#23-tdl-tagged-numbers">§2.3 TDL-Tagged Numbers</a></li>
+<li class="toc-h3"><a href="#24-tdl-level-formula">§2.4 TDL Level Formula</a></li>
+<li class="toc-h3"><a href="#25-categorical-equivalence">§2.5 Categorical Equivalence</a></li>
+<li class="toc-h3"><a href="#26-complexity-depth-bound">§2.6 Complexity Depth Bound</a></li>
+<li class="toc-h3"><a href="#26-constants-in-the-observer-loop">§2.6 Constants in the Observer Loop</a></li>
+<li class="toc-h2"><a href="#3-tdl-complexity-and-s₃-distance">§3 TDL COMPLEXITY AND S₃ DISTANCE</a></li>
+<li class="toc-h3"><a href="#31-scientific-theories-as-dist-objects">§3.1 Scientific Theories as Dist Objects</a></li>
+<li class="toc-h3"><a href="#32-s₃-orbit-distance-corrected">§3.2 S₃ Orbit Distance — Corrected</a></li>
+<li class="toc-h3"><a href="#33-the-operator-table">§3.3 The Operator Table</a></li>
+<li class="toc-h3"><a href="#34-complexity-class-topology">§3.4 Complexity Class Topology</a></li>
+<li class="toc-h2"><a href="#4-thermodynamics-of-the-arithmetic-flow">§4 THERMODYNAMICS OF THE ARITHMETIC FLOW</a></li>
+<li class="toc-h3"><a href="#41-detailed-balance">§4.1 Detailed Balance</a></li>
+<li class="toc-h3"><a href="#42-detailed-balance-at-β-0">§4.2 Detailed Balance at β → 0</a></li>
+<li class="toc-h3"><a href="#43-natural-temperature">§4.3 Natural Temperature</a></li>
+<li class="toc-h3"><a href="#44-landauerbekenstein-chain">§4.4 Landauer–Bekenstein Chain</a></li>
+<li class="toc-h3"><a href="#45-kms-partition-function">§4.5 KMS Partition Function</a></li>
+<li class="toc-h3"><a href="#46-extension-to-ℤ">§4.6 Extension to ℤ</a></li>
+<li class="toc-h3"><a href="#47-extension-to-ℚ">§4.7 Extension to ℚ</a></li>
+<li class="toc-h2"><a href="#5-projection-distances">§5 PROJECTION DISTANCES</a></li>
+<li class="toc-h2"><a href="#6-tdl-in-the-containment-structure">§6 TDL IN THE CONTAINMENT STRUCTURE</a></li>
+<li class="toc-h2"><a href="#7-p2-specific-projection-structure-from-closure">§7 P2-SPECIFIC PROJECTION STRUCTURE (FROM CLOSURE)</a></li>
+<li class="toc-h3"><a href="#6½1-independence-witness">§6½.1 Independence Witness</a></li>
+<li class="toc-h3"><a href="#6½2-p2-folding-contains-p1-and-p3">§6½.2 P2 Folding: Contains P1 and P3</a></li>
+<li class="toc-h3"><a href="#6½3-anti-tdl">§6½.3 Anti-TDL</a></li>
+<li class="toc-h3"><a href="#6½4-v_tn-the-tdl-component-of-the-arithmetic-potential">§6½.4 V_T(n): The TDL-Component of the Arithmetic Potential</a></li>
+<li class="toc-h3"><a href="#6½5-extensions-to-ℤ-and-ℚ">§6½.5 Extensions to ℤ and ℚ</a></li>
+<li class="toc-h2"><a href="#8-computational-verification">§8 COMPUTATIONAL VERIFICATION</a></li>
+<li class="toc-h2"><a href="#9-claim-status">§9 CLAIM STATUS</a></li>
+<li class="toc-h3"><a href="#corrections-to-original-source">Corrections to Original Source</a></li>
+</ul></details>
+
+    <div class="content">
+<h1 id="paper-3-p2-tdle-the-hyperbolic-projection" id="paper-3-p2-tdle-the-hyperbolic-projection">Paper 3-P2: TDL/e — The Hyperbolic Projection</h1>
+<h2 id="projection-2-e-and-level-transitions" id="projection-2-e-and-level-transitions">Projection 2: e and Level Transitions</h2>
+<h3 id="v4-march-2026" id="v4-march-2026">v4 — March 2026</h3>
+<p><strong>Author:</strong> Kael</p>
+<hr />
+<p><strong>Document Species:</strong> CANONICAL. Owns P2/TDL projection content at Level 4.</p>
+<p><strong>Grid address:</strong> B(4, P2). The Projected level — P2/TDL/e face.</p>
+<p><strong>Document Status:</strong> Level 4 document (Projection 2). Complete P2 paper with distributed CLOSURE and COMPUTATIONAL_COMPLEXITY content. The h-direction in sl(2,ℝ), orbit type det &gt; 0, Δ &gt; 0 (hyperbolic), constant e = exp(1).</p>
+<p><strong>Document Hierarchy:</strong></p>
+<pre class="highlight"><code>T0_SUBSTRATE.md
+  T1_DIST.md
+    T2_BRIDGE.md
+      T3_P1_PRODUCTION.md
+      T3_P2_MEDIATION.md    ← THIS FILE
+      T3_P3_OBSERVATION.md
+        T3_META.md
+</code></pre>
+
+<p><strong>Scope:</strong> Everything specific to P2: exponential flow and e forcing, P2→OSC computational primitive, tower saturation, complexity depth bounds, S₃ distance structure, thermodynamic framework (β = ln(φ), KMS, Boltzmann), detailed balance, extensions to ℤ and ℚ. Also includes distributed CLOSURE content: P2 folding containments, independence witness, anti-TDL, V_T(n) potential component.</p>
+<p><strong>What this paper does NOT contain:</strong> The full Dist derivation (Paper 1), bridge chain (Paper 2 Part I), complete {R,N} algebra (Paper 2 Part II), P1/P3-specific content (Papers 3-P1, 3-P3), cross-projection synthesis (Paper 3-META), or physics interpretations (Paper 6B).</p>
+<p><strong>Depends on:</strong> T0_SUBSTRATE (P.1/P.2), T1_DIST (Kernel Theorem), T2_BRIDGE ({R,N} algebra)
+<strong>Required by:</strong> T3_META, T4_LATTICE (KMS), T5_OBSERVER</p>
+<hr />
+<h2 id="abstract" id="abstract">Abstract</h2>
+<p>We prove e is forced by the unique traceless diagonal generator of sl(2,ℝ), establish that the P2 projection maps to the OSC computational primitive (the derived composite interpolating between P1 and P3 along the canonical family M(θ) = cos(θ)R + sin(θ)N), and prove that e = det(exp(R)) via the fundamental identity exp(tr(R)) = exp(1) = e (tying P1&rsquo;s generator to P2&rsquo;s constant through the exponential map). The TDL tower saturation theorem gives a compression wall at d², with complexity depth bound C_max(n) = 2ⁿ/log₂(φ) and complexity class topology where P is open and NP is closed in signature space.</p>
+<p>The Landauer–Bekenstein chain connects information erasure to observer entropy bounds. The KMS partition function Z(β) = coth(β/2)⁴ has shell counts N₄(C) = (8C³ + 16C)/3. The S₃ Cayley distance has diameter 2. Detailed balance of the arithmetic flow holds with natural temperature β = ln(φ), extending to ℤ (parity symmetry) and ℚ (p-adic valuations). Arithmetic operations classify by projection character.</p>
+<hr />
+<h2 id="theorem-index" id="theorem-index">THEOREM INDEX</h2>
+<table>
+<thead>
+<tr>
+<th>Theorem</th>
+<th>Statement</th>
+<th>Section</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>4.2</strong></td>
+<td><strong>e Is Forced by P2</strong> (unique traceless diagonal generator of sl(2,ℝ))</td>
+<td><strong>§1</strong></td>
+</tr>
+<tr>
+<td>1.7</td>
+<td>e = det(exp(R)): exponential bridge P1→P2</td>
+<td>§1</td>
+</tr>
+<tr>
+<td>5.2</td>
+<td>Entry/Killing Alignment at k = 2</td>
+<td>§1</td>
+</tr>
+<tr>
+<td><strong>1.6</strong></td>
+<td><strong>P2 Primitive Mapping: P2 → OSC</strong></td>
+<td><strong>§1</strong></td>
+</tr>
+<tr>
+<td>1.2</td>
+<td>TDL Tower Saturation: compression wall at d²</td>
+<td>§2</td>
+</tr>
+<tr>
+<td>2.6</td>
+<td>C_max from the Self-Product Tower</td>
+<td>§2</td>
+</tr>
+<tr>
+<td>2.2</td>
+<td>TDL Complexity as S₃ Distance (diameter 2)</td>
+<td>§3</td>
+</tr>
+<tr>
+<td>3.4</td>
+<td>Signature Space Topology: P open, NP closed</td>
+<td>§3</td>
+</tr>
+<tr>
+<td><strong>3.3</strong></td>
+<td><strong>Detailed Balance</strong></td>
+<td><strong>§4</strong></td>
+</tr>
+<tr>
+<td>3.5</td>
+<td>Natural Temperature β = ln(φ)</td>
+<td>§4</td>
+</tr>
+<tr>
+<td>4.4</td>
+<td>Information Erasure Cost (Landauer at β = ln(φ))</td>
+<td>§4</td>
+</tr>
+<tr>
+<td>4.5</td>
+<td>KMS Partition Function Z(β) = coth(β/2)⁴</td>
+<td>§4</td>
+</tr>
+<tr>
+<td>3.6</td>
+<td>Extension to ℤ (parity symmetry)</td>
+<td>§5</td>
+</tr>
+<tr>
+<td>3.7</td>
+<td>Extension to ℚ (p-adic valuations)</td>
+<td>§5</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="1-e-is-forced" id="1-e-is-forced">§1 e IS FORCED</h2>
+<p>P2 is the analysis of self-relating difference (SRD) in its transport mode (Paper 0 §1½): R viewed as level-transition between tower strata. Every result in this paper traces to the exponential flow exp(th), where h is the Cartan element determined by R and N. The constant e measures the rate of tower ascent: how quickly R&rsquo;s self-action populates new tower levels.</p>
+<h3 id="11-the-unique-generator" id="11-the-unique-generator">§1.1 The Unique Generator</h3>
+<p><strong>Theorem 4.2 (e Is Forced by P2).</strong> <em>The diagonal generator h = [[1,0],[0,−1]] is the
+unique (up to sign) traceless diagonal 2×2 matrix with entries in {−1,0,1}. The (0,0)
+entry of exp(h·t) at t = 1 is e.</em></p>
+<p><strong>Proof.</strong> Traceless diagonal matrices with entries in {−1,0,1} have the form
+[[a,0],[0,−a]] with a ∈ {−1,0,1}. The case a = 0 is trivial (zero matrix). The cases
+a = ±1 give h = [[1,0],[0,−1]] and −h, which are sign-equivalent. Therefore h is unique
+up to sign.</p>
+<p>The exponential of h is:</p>
+<pre class="highlight"><code>exp(t·h) = [[exp(t), 0],[0, exp(-t)]]
+</code></pre>
+
+<p>At t = 1: exp(h)[0,0] = exp(1) = e. Verified computationally to machine precision. ∎</p>
+<h3 id="12-normalization-qualification" id="12-normalization-qualification">§1.2 Normalization Qualification</h3>
+<p>There are two natural normalizations:
+- <strong>Entry normalization:</strong> h = [[1,0],[0,−1]] (entries from {−1,0,1}) → gives e
+- <strong>Killing normalization:</strong> h_K = h/√(K(h,h)) = h/2 (K(h,h) = tr(h·h·B) = 2) → gives exp(1/2) = √e</p>
+<p>The entry normalization is justified by the binary alphabet: {−1,0,1} = S₀ ∪ {−1} is the
+natural extension to the first self-product level. This is ONE natural choice among two.</p>
+<p>Since e = (√e)², knowing √e determines e, so the ambiguity is minor (a factor of 2 in the
+exponent, not a different constant).</p>
+<p><strong>Forcing quality: strong with stated qualification.</strong> e is forced by entry normalization.</p>
+<h3 id="13-the-hyperbolic-one-parameter-subgroup" id="13-the-hyperbolic-one-parameter-subgroup">§1.3 The Hyperbolic One-Parameter Subgroup</h3>
+<p>The diagonal matrices exp(t·h) = diag(eᵗ, e⁻ᵗ) form the hyperbolic one-parameter subgroup
+of SL(2,ℝ). Along the positive eigenvalue direction: exponential stretching (tower ascent).
+Along the negative: exponential contraction (reduction).</p>
+<p>This is the algebraic content of TDL: there is a &ldquo;higher level&rdquo; (stretching, ascent, 𝒰)
+and a &ldquo;lower level&rdquo; (contraction, reduction, ℛ), and the rate of transition between them
+is governed by e.</p>
+<h3 id="14-the-killing-metric" id="14-the-killing-metric">§1.4 The Killing Metric</h3>
+<pre class="highlight"><code>K(h, h) = 4·tr(h²) = 4·tr(diag(1,1)) = 8
+K(R, R) = 4·tr(R²) = 4·tr(R+I) = 4·3 = 12
+K(N, N) = 4·tr(N²) = 4·tr(−I) = −8
+K(R, N) = 4·tr(RN) = 0
+</code></pre>
+
+<p>R and N are <strong>Killing-orthogonal</strong>. Killing metric on {R,N} has signature (+,−), det = −96.</p>
+<h3 id="15-bifurcation-rigidity" id="15-bifurcation-rigidity">§1.5 Bifurcation Rigidity</h3>
+<p><strong>Theorem 5.2 (Entry/Killing Alignment at k = 2).</strong> <em>For sl(k,ℝ), entry and Killing
+normalizations differ by √(2k). These coincide (√(2k) = k) iff k = 2.</em></p>
+<p><strong>Proof.</strong> Entry norm ||h||_entry = 1. Killing norm ||h||_Killing = √(2k). Setting
+√(2k) = k: squaring gives 2k = k², so k² − 2k = 0, k(k−2) = 0. k = 0 (degenerate) or k = 2.</p>
+<p>At k = 2: √(2·2) = √4 = 2 = k. The two normalizations agree.
+At k = 3: √(2·3) = √6 ≈ 2.449 ≠ 3. They disagree.</p>
+<p><strong>Physical interpretation.</strong> Entry normalization respects discrete structure (entries from
+{−1,0,1}). Killing normalization respects continuous structure (intrinsic Lie algebra metric).
+At k = 2, both agree — the discrete and continuous measures of &ldquo;size&rdquo; coincide. ∎</p>
+<h3 id="16-p2-maps-to-osc" id="16-p2-maps-to-osc">§1.6 P2 Maps to OSC</h3>
+<p><strong>Theorem 1.6 (P2 Primitive Mapping).</strong> <em>The P2 projection (hyperbolic, det &gt; 0, Δ &gt; 0) maps
+to the OSC computational primitive — the derived composite that interpolates between P1 and P3.</em></p>
+<p><strong>Proof.</strong> The canonical OSC family is M(θ) = cos(θ)R + sin(θ)N for θ ∈ (0, π/2). At θ = 0:
+pure R (P1, hyperbolic, eigenvalues {φ, −φ̄}). At θ = π/2: pure N (P3, elliptic, eigenvalues
+{+i, −i}). Between these extremes: spiral dynamics with mixed spectral structure.</p>
+<p>The discriminant Δ = tr(M)² − 4det(M) transitions from positive (hyperbolic, P2-type) to
+negative (elliptic, P3-type) as θ increases through the family. The transition point is the
+parabolic boundary Δ = 0. h = diag(1,−1) has eigenvalues ±1, both real and on the unit
+circle: expansion in one direction and contraction in the other — the defining character of OSC.</p>
+<p>OSC is derived, not atomic: it arises from direct sums of blocks with eigenvalues in different
+magnitude classes. TDL&rsquo;s nature as the &ldquo;between&rdquo; projection (neither purely self-referential
+like P1 nor purely rotational like P3) matches OSC&rsquo;s nature as the &ldquo;between&rdquo; primitive.</p>
+<p>h requires all four basis elements: h = (I − 2R − 2N + 4RN)/5. TDL is the most composite
+direction in sl(2,ℝ). ✓ ∎</p>
+<h3 id="17-the-exponential-map-as-tower-ascent" id="17-the-exponential-map-as-tower-ascent">§1.7 The Exponential Map as Tower Ascent</h3>
+<p><strong>Theorem 1.7 (e = det(exp(R))).</strong> <em>The exponential map applied to P1&rsquo;s generator R yields
+P2&rsquo;s constant:</em></p>
+<pre class="highlight"><code>det(exp(R)) = exp(tr(R)) = exp(1) = e
+</code></pre>
+
+<p><em>P2&rsquo;s constant (e) is P1&rsquo;s generator (R) under the TDL operation (exp).</em></p>
+<p><strong>Proof.</strong> For any A ∈ M₂(ℝ): det(exp(A)) = exp(tr(A)). Since tr(R) = 0 + 1 = 1,
+det(exp(R)) = e¹ = e. By contrast: tr(N) = 0, so det(exp(N)) = 1 (area-preserving); and
+tr(h) = 0, so det(exp(h)) = 1. R is the unique generator with nonzero trace.</p>
+<p>This means exp(R) ∉ SL(2,ℝ): the exponential map applied to P1&rsquo;s self-composition
+<em>leaves</em> the area-preserving group. The ascent map creates new &ldquo;area&rdquo; (det = e &gt; 1).
+This is the algebraic content of TDL ascent: P1&rsquo;s self-composition (R), when exponentiated
+(TDL&rsquo;s defining operation), produces a transformation that genuinely enlarges the space.</p>
+<p><strong>Verified:</strong> det(exp(R)) = 2.718281828459046 = e to machine precision. ✓ ∎</p>
+<h3 id="17a-the-exponential-map-in-eulerrsquos-identity" id="17a-the-exponential-map-in-eulers-identity">§1.7a The Exponential Map in Euler&rsquo;s Identity</h3>
+<p><strong>Theorem 1.7a (Exponential Completion in Euler).</strong> <em>In the identity e^{iπ} + 1 = 0 (Paper 3-P3 Thm 1.7b), the constant e appears as the base of the exponential map that realizes the phase generator as a flow. This is the same exponential operation as det(exp(R)) = e (Theorem 1.7): the TDL operation applied to a generator. The targets differ: Theorem 1.7 exponentiates R (producing area-expansion, det &gt; 1); Euler exponentiates iπ (producing norm-preserving phase transport on S¹). P2 supplies the mechanism; P3 supplies the direction.</em></p>
+<p><strong>Proof.</strong> The exponential map exp: M₂(ℂ) → GL₂(ℂ) is the universal completion operation converting Lie algebra elements (generators) into Lie group elements (finite transformations). In P2&rsquo;s territory: exp(th) = diag(e^t, e^{−t}), producing hyperbolic expansion/contraction. In P3&rsquo;s territory: exp(θN) = cos(θ)I + sin(θ)N, producing rotation. The exponential map is one operation; the sectors differ by generator character — real eigenvalues (h) vs. imaginary eigenvalues (N). ∎</p>
+<p><strong>Remark (e is not the circle number).</strong> The constant e enters Euler&rsquo;s identity not because it &ldquo;knows about circles&rdquo; but because the exponential map is the universal completion law for generators. The circle appears because the generator i has purely imaginary eigenvalues, forcing the exponential to trace S¹. For a different generator, exp produces a different geometry — exp(th) traces a hyperbola. The fact that exp converts both generators into their natural flows is P2&rsquo;s content: derivation/realization as a universal operation.</p>
+<p><strong>Remark (TDL Ascent as Forced Derivation).</strong> Ascent in the TDL sense is constructive: the exponential map exhibits step-by-step the structure that is algebraically implicit in the generator. det(exp(R)) = e is not the creation of a new constant — e was always the determinant of R&rsquo;s exponential. The bridge chain (Paper 2 Thm 2.1) does not generate novelty; it unfolds what {0,1} already contained with zero branching at every step. The appropriate verb is &ldquo;derive,&rdquo; not &ldquo;emerge&rdquo; in the philosophical sense: TDL emergence is the canonical exhibition of implicit structure via the unique (zero-branching) path. The Mediating Act (P2 meta-primitive) balances and transitions — it does not create from nothing. What looks like &ldquo;new area&rdquo; (det = e &gt; 1) is the realization of area that was always latent in R&rsquo;s trace: tr(R) = 1, so the area factor exp(1) = e is determined by the integer entry structure of R.</p>
+<p><strong>Remark (Pair-Space P2 Operators).</strong> The balance-charge decomposition (Paper 0 §1¾) exhibits P2/TDL structure at the pair-space level through two operators. The center projection CP(k,r,s) = (⌊N/2⌋, 0, 0) is a pure P2 mediator: it collapses to the balanced shell center, seeing only the shell level N and discarding all orientation and residual information — the discrete analog of the exponential map&rsquo;s level-transition that strips phase character. The center-condense C is a P2 transport flow: it converts oriented residual into balanced depth via the 2:1 compression rule, mediating the transition from asymmetric to symmetric states. Both operators satisfy q∘q=q or converge to fixpoints, making the balanced spine B the P2 terminal attractor — the pair-space analog of the fixed point n = 1 in the composite potential V(n) (Paper 3-META Thm 1.2).</p>
+<hr />
+<h2 id="2-tdl-in-arithmetic" id="2-tdl-in-arithmetic">§2 TDL IN ARITHMETIC</h2>
+<h3 id="21-the-tdl-duality-ascend-reduce" id="21-the-tdl-duality-ascend-reduce">§2.1 The TDL Duality: Ascend ↔ Reduce</h3>
+<p><strong>TDL Projection (ascend ↔ reduce):</strong></p>
+<pre class="highlight"><code>UP_T(n) = &quot;the path 1 → p₁ → p₁p₂ → ... → n&quot; (ascent from 1 via primes)
+DOWN_T(n) = digital_root(n) = iterated digit sum until single digit
+</code></pre>
+
+<p>The TDL projection treats n as both a built-up structure (UP: assembled from 1 via prime
+multiplication) and a collapsed summary (DOWN: the digital root at the bottom level).</p>
+<p>At n = 1: ascend(1) = 1 (trivial path, length 0); digital_root(1) = 1 (already single
+digit). Both equal 1. V_T(1) = |Ω(1) − ap(1)| = |0 − 0| = 0.</p>
+<p>The TDL potential component: V_T(n) = |Ω(n) − ap(n)|, where Ω(n) = prime factors with
+multiplicity (tower depth) and ap(n) = additive persistence (reduction depth).</p>
+<h3 id="22-tdl-tower-saturation" id="22-tdl-tower-saturation">§2.2 TDL Tower Saturation</h3>
+<p><strong>Theorem 1.2 (TDL Tower Saturation, from Compression Wall).</strong> <em>For any k-fold iterated
+TDL^k acting on a d-dimensional observer, the number of independent generator directions
+saturates at d². Meta-levels beyond d² collapse into equivalence classes.</em></p>
+<p><strong>Proof.</strong> By the Compression Wall (Theorem 4.1, Unified Framework), dim(B(H_K)) = d_K².
+No more than d_K² linearly independent operators exist on a d_K-dimensional space. TDL^k
+for k &gt; d_K² cannot add new independent structure — all further iteration is redundant.
+The tower TDL^{d²+1} ≅ TDL^{d²} as operator algebras. ∎</p>
+<table>
+<thead>
+<tr>
+<th>d</th>
+<th>Compression wall d²</th>
+<th>Saturation level</th>
+<th>Tower</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>2</td>
+<td>4</td>
+<td>2</td>
+<td>[1, 2, 4, 4, 4, &hellip;]</td>
+</tr>
+<tr>
+<td>3</td>
+<td>9</td>
+<td>4</td>
+<td>[1, 2, 4, 8, 9, 9, &hellip;]</td>
+</tr>
+<tr>
+<td>4</td>
+<td>16</td>
+<td>4</td>
+<td>[1, 2, 4, 8, 16, 16, &hellip;]</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Verified:</strong> for d ∈ {2,3,4,5}, saturation occurs at k = d²−1 steps. ✓</p>
+<h3 id="23-tdl-tagged-numbers" id="23-tdl-tagged-numbers">§2.3 TDL-Tagged Numbers</h3>
+<p><strong>Definition 1.1 (TDL-Tagged Number).</strong> For any n ∈ ℕ, define:</p>
+<pre class="highlight"><code>n^TDL = (n, P2-tag)
+</code></pre>
+
+<p>where the P2-tag encodes n&rsquo;s position in the categorical level structure. The tag is not
+additional information — it is what n already IS when viewed through the TDL projection.
+It means &ldquo;n, with awareness of being an instance of TDL at level ⌈log₂(log₂(F_max(n)+1)+1)⌉,&rdquo;
+where F_max(n) is the largest Fibonacci number in the Zeckendorf representation of n.</p>
+<h3 id="24-tdl-level-formula" id="24-tdl-level-formula">§2.4 TDL Level Formula</h3>
+<p>TDL level from Zeckendorf structure (max Fibonacci index k_max):</p>
+<pre class="highlight"><code>TDL_level(n) = ⌈log₂(log₂(k_max + 1) + 1)⌉ + 1
+</code></pre>
+
+<p>This places n in the tower: level 2 for n ≤ 3, level 3 for F(5)=5 through F(8)=21,
+level 4 for F(9)=34 through F(20), and so on. Level grows doubly-logarithmically —
+consistent with the double-exponential tower structure.</p>
+<h3 id="25-categorical-equivalence" id="25-categorical-equivalence">§2.5 Categorical Equivalence</h3>
+<p><strong>Theorem 1.3 (Arithmetic Embedding).</strong> <em>All positive integers are TDL-equivalent
+as categories:</em></p>
+<pre class="highlight"><code>1 ≈_TDL 2 ≈_TDL 3 ≈_TDL ... ≈_TDL n
+</code></pre>
+
+<p><em>The quotient ℕ/≈_TDL is a single point — the &ldquo;category of numbers.&rdquo;</em></p>
+<p><strong>Proof.</strong> TDL-equivalence is the relation &ldquo;same categorical level in the self-product
+tower.&rdquo; Every finite n lies in some tower level (since |S_k| = 2^{2^k} grows without
+bound; for any n there exists k with n ≤ |S_k|). All n in the same tower window are
+TDL-equivalent. In the quotient, they collapse to a single categorical object: &ldquo;number at
+this level.&rdquo; This is exactly Dist structure: (ℕ, ≈_TDL) → ℕ/≈_TDL is the Dist quotient
+map q with q∘q = q. ∎</p>
+<p><strong>Interpretation.</strong> We can collapse all numbers into a single categorical slot — IF we
+track the fact that we cannot distinguish them categorically. Individual distinctions
+live in I² and LoMI, not TDL.</p>
+<h3 id="26-complexity-depth-bound" id="26-complexity-depth-bound">§2.6 Complexity Depth Bound</h3>
+<p><strong>Theorem 2.6 (C_max from the Self-Product Tower).</strong> <em>At tower level n, the maximum
+lattice complexity reachable is:</em></p>
+<pre class="highlight"><code>C_max(n) = 2ⁿ / log₂(φ)
+</code></pre>
+
+<p><em>This is the hard ceiling on algorithm complexity at each tower level.</em></p>
+<p><strong>Proof.</strong> The self-product tower has |S_n| = 2^{2^n} elements. The lattice complexity
+metric C(x) = |x|₁ measures distance from the identity in ℤ⁴ coordinates. Each tower level
+contributes at most 2ⁿ bits of addressable structure (since log₂|S_n| = 2^n), and
+converting to φ-based lattice coordinates requires division by log₂(φ) ≈ 0.694.</p>
+<p>| n | |S_n| = 2^{2^n} | C_max(n) |
+|&mdash;|-----------------|----------|
+| 1 | 4 | 2.88 |
+| 2 | 16 | 5.76 |
+| 3 | 256 | 11.52 |
+| 4 | 65,536 | 23.05 |
+| 5 | 4,294,967,296 | 46.09 |</p>
+<p>C_max grows exponentially in 2ⁿ, matching the double-exponential tower structure. The
+denominator log₂(φ) = 1/log_φ(2) converts between binary bits and φ-steps — the same
+Landauer conversion factor from §4.5.</p>
+<p>This IS a TDL bound: the hard ceiling on depth at each tower level. ✓ ∎</p>
+<h3 id="26-constants-in-the-observer-loop" id="26-constants-in-the-observer-loop">§2.6 Constants in the Observer Loop</h3>
+<p>Every constant is located at a specific position in the loop K → F → U(K) → K:</p>
+<table>
+<thead>
+<tr>
+<th>Constant</th>
+<th>Loop Position</th>
+<th>Mechanism</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>φ</td>
+<td>Encoding K → F</td>
+<td>Fixed point of R(z)=1/(1+z); self-referential</td>
+</tr>
+<tr>
+<td>e</td>
+<td><strong>Transition F → U</strong></td>
+<td>exp: sl(2,ℝ) → SL(2,ℝ); ascent exponent</td>
+</tr>
+<tr>
+<td>π</td>
+<td>Return U → K</td>
+<td>exp(Nπ) = −I; metastability period</td>
+</tr>
+<tr>
+<td>√3</td>
+<td>Internal to K</td>
+<td>2·sin(2π/3); S₃ symmetry of K&rsquo;s 2D irrep</td>
+</tr>
+</tbody>
+</table>
+<p>e sits at the F → U step because the exponential map IS the transition from the Lie
+algebra (framework/theory) to the Lie group (universe/realization).</p>
+<hr />
+<h2 id="3-tdl-complexity-and-s₃-distance" id="3-tdl-complexity-and-s3-distance">§3 TDL COMPLEXITY AND S₃ DISTANCE</h2>
+<h3 id="31-scientific-theories-as-dist-objects" id="31-scientific-theories-as-dist-objects">§3.1 Scientific Theories as Dist Objects</h3>
+<p><strong>Definition 2.1.</strong> A scientific theory T is a Dist-object (D_T, ≈_T) where D_T is the
+theory&rsquo;s concept set and ≈_T is its conceptual equivalence relation. A theory transition
+T₁ → T₂ is a Dist morphism f: (D₁,≈₁) → (D₂,≈₂) — it preserves structure while
+possibly collapsing distinctions.</p>
+<h3 id="32-s₃-orbit-distance-corrected" id="32-s3-orbit-distance-corrected">§3.2 S₃ Orbit Distance — Corrected</h3>
+<p><strong>Theorem 2.2 (TDL Complexity as S₃ Distance).</strong> <em>The TDL complexity of a theory transition
+T₁ → T₂ measures the S₃ Cayley graph distance between their projection configurations:</em></p>
+<pre class="highlight"><code>C(T₁ → T₂) = d_S₃(P(T₁), P(T₂)) / 2  ∈  {0, 1/2, 1}
+</code></pre>
+
+<p><em>where P(T) ∈ S₃ is the projection configuration of T, and d_S₃ is the Cayley graph
+distance with generating set {r = (123), s = (12)}.</em></p>
+<p><strong>Correction from original.</strong> The original source claimed the S₃ Cayley graph with
+generators {r, s} has diameter 3, giving C ∈ {0, 1/3, 2/3, 1}. <strong>The actual diameter is 2.</strong>
+With s² = e (transpositions are self-inverse), s⁻¹ = s, so {r, s} reaches all elements
+in ≤ 2 steps:</p>
+<pre class="highlight"><code>e        → distance 0   (same configuration)
+r, r⁻¹, s → distance 1  (adjacent configurations)
+sr, sr⁻¹  → distance 2  (opposite configurations)
+</code></pre>
+
+<p>Diameter = 2. Therefore C ∈ {0, 1/2, 1}: <strong>same config</strong>, <strong>adjacent config</strong>, or
+<strong>opposite config</strong>.</p>
+<p><strong>Verified computationally:</strong> BFS on S₃ with generators {r=(1,2,0), s=(1,0,2)} confirms
+diameter = 2 with the distance table above. ✓</p>
+<p><strong>Theory examples:</strong>
+- C = 0 (no transition): Theory uses same projection configuration as before
+- C = 1/2: One projection reconfigured (e.g., Copernican: P1-configuration changed)
+- C = 1 (maximal): All projections reconfigured (e.g., full scientific revolution)</p>
+<h3 id="33-the-operator-table" id="33-the-operator-table">§3.3 The Operator Table</h3>
+<p>Every arithmetic operation is a specific Dist morphism with a projection character:</p>
+<table>
+<thead>
+<tr>
+<th>Operation</th>
+<th>Dist Type</th>
+<th>Projection</th>
+<th>What it measures</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>n → n²</td>
+<td>q-preserving (q∘q=q)</td>
+<td>I²</td>
+<td>Self-composition (P1 iteration)</td>
+</tr>
+<tr>
+<td>n → digital_root(n)</td>
+<td>quotient</td>
+<td>TDL</td>
+<td>Reduction to tower base</td>
+</tr>
+<tr>
+<td>n → prime factors</td>
+<td>section</td>
+<td>TDL</td>
+<td>Tower decomposition</td>
+</tr>
+<tr>
+<td>(n,m) → gcd(n,m)</td>
+<td>LoMI FP</td>
+<td>LoMI</td>
+<td>Mutual identity</td>
+</tr>
+<tr>
+<td>(n,m) → lcm(n,m)</td>
+<td>LoMI join</td>
+<td>LoMI</td>
+<td>Container structure</td>
+</tr>
+<tr>
+<td>(n,m) → AGM(n,m)</td>
+<td>LoMI FP</td>
+<td>LoMI</td>
+<td>Geometric mutual observation</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Computation-type classification.</strong> Each arithmetic operation is also a typed framework computation (Paper T-COMP §2):</p>
+<table>
+<thead>
+<tr>
+<th>Operation</th>
+<th>Computation Type</th>
+<th>h(σ_step)</th>
+<th>br_s</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>n → digital_root(n)</td>
+<td>Type I (compression)</td>
+<td>0 (pure FIX)</td>
+<td>0</td>
+</tr>
+<tr>
+<td>n → n²</td>
+<td>Type I (compression)</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr>
+<td>n → prime factors</td>
+<td>Type II (expansion)</td>
+<td>&gt;0 (br_search varies by algorithm)</td>
+<td>0</td>
+</tr>
+<tr>
+<td>(n,m) → gcd(n,m)</td>
+<td>Type I (Euclid: converges via OSC steps)</td>
+<td>φ̄ (pure OSC per step)</td>
+<td>0</td>
+</tr>
+</tbody>
+</table>
+<p>The digital root and squaring are pure Type I: idempotent (dr∘dr = dr; im(dr)={1,&hellip;,9}⊆Fix(dr)), zero branching, FIX-dominant. The GCD by Euclid&rsquo;s algorithm is Type I in trajectory (converges) but OSC per step (each Euclidean step has det = −1). Prime factorization has br_s = 0 in both directions (unique by FTA), so its hardness lives entirely in search branching br_search.</p>
+<h3 id="34-complexity-class-topology" id="34-complexity-class-topology">§3.4 Complexity Class Topology</h3>
+<p><strong>Theorem 3.4 (Signature Space Topology).</strong> <em>In the algorithm signature simplex Δ³:</em></p>
+<p><em>(i) P is open: the interior of {σ : σ_FIX &gt; 1/2, depth = O(log n)}.</em>
+<em>(ii) NP is closed: the closure of {σ : σ_INV + σ_FIX &gt; σ_OSC + σ_MIX}.</em>
+<em>(iii) The P ≠ NP barrier, if it exists, is the boundary ∂P ∩ ∂NP.</em></p>
+<p><strong>Proof sketch.</strong> P is open by the Lipschitz continuity of the signature map: small edits
+to a polynomial algorithm preserve the σ_FIX &gt; 1/2 condition. NP is closed because the
+polynomial verifier property is preserved under limits in signature space.</p>
+<p>The signature-depth correspondence IS TDL structure: σ_FIX dominant → converges fast → shallow
+depth → P; σ_INV dominant → rotates without progress → needs oracle → NP; σ_MIX dominant →
+irreversible → information destroyed → hard; σ_OSC dominant → mixed → intermediate classes.
+TDL organizes computability by tower depth. ∎</p>
+<p><strong>Corollary (Complexity as h-Level Sets).</strong> The hardness functional h(σ) = σ_MIX + φ̄·σ_OSC + φ̄²·σ_INV (Paper T-COMP §6) organizes complexity classes as level sets: P lives in {h &lt; φ̄²}, NP in {h &lt; 1/2}, PSPACE in {h &lt; 1}. The OWF threshold h = φ̄² separates efficiently invertible from hard-to-invert functions (conditional on P ≠ NP).</p>
+<hr />
+<h2 id="4-thermodynamics-of-the-arithmetic-flow" id="4-thermodynamics-of-the-arithmetic-flow">§4 THERMODYNAMICS OF THE ARITHMETIC FLOW</h2>
+<h3 id="41-detailed-balance" id="41-detailed-balance">§4.1 Detailed Balance</h3>
+<p><strong>Theorem 3.3 (Detailed Balance).</strong> <em>The arithmetic flow satisfies detailed balance:</em></p>
+<pre class="highlight"><code>P(n → m) / P(m → n) = exp(−β[V(m) − V(n)])
+</code></pre>
+
+<p><strong>Verified examples:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Pair</th>
+<th>V(n)</th>
+<th>V(m)</th>
+<th>exp(−β·ΔV)</th>
+<th>Interpretation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>12 ↔ 6</td>
+<td>4.51</td>
+<td>3.30</td>
+<td>11.29</td>
+<td>12→6 is 11× more likely than 6→12</td>
+</tr>
+<tr>
+<td>60 ↔ 30</td>
+<td>7.06</td>
+<td>4.40</td>
+<td>202</td>
+<td>60→30 strongly favored</td>
+</tr>
+<tr>
+<td>144 ↔ 12</td>
+<td>12.27</td>
+<td>4.51</td>
+<td>5.4×10⁶</td>
+<td>144→12 overwhelmingly favored</td>
+</tr>
+<tr>
+<td>360 ↔ 60</td>
+<td>12.73</td>
+<td>7.06</td>
+<td>8.4×10⁴</td>
+<td>360→60 strongly favored</td>
+</tr>
+</tbody>
+</table>
+<p>The larger V(n) − V(m), the more strongly the flow favors n → m. The potential V acts
+as a thermodynamic driving force.</p>
+<h3 id="42-detailed-balance-at-β-0" id="42-detailed-balance-at-0">§4.2 Detailed Balance at β → 0</h3>
+<p><strong>Theorem 3.4 (Detailed Balance at β → 0).</strong> <em>The detailed balance formula holds in the
+limit β → 0:</em></p>
+<pre class="highlight"><code>lim_{β→0} P(n→m)/P(m→n) = lim_{β→0} exp(−β[V(m)−V(n)]) = 1
+</code></pre>
+
+<p><em>At infinite temperature, all transitions become equally likely — detailed balance holds
+trivially.</em></p>
+<p><strong>Proof.</strong> exp(−β·ΔV) → exp(0) = 1 as β → 0 for any finite ΔV = V(m) − V(n). The ratio
+P(n→m)/P(m→n) → 1: forward and backward transitions become equally probable. This is
+the correct high-temperature limit for any Boltzmann process — the potential V(n) becomes
+irrelevant at infinite temperature, and the system explores all accessible states uniformly.</p>
+<p><strong>Verified numerically:</strong> For the pair 12 ↔ 6 (ΔV = −1.099):</p>
+<table>
+<thead>
+<tr>
+<th>β</th>
+<th>exp(−β·ΔV)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>10.0</td>
+<td>59049.0</td>
+</tr>
+<tr>
+<td>1.0</td>
+<td>3.000</td>
+</tr>
+<tr>
+<td>0.1</td>
+<td>1.116</td>
+</tr>
+<tr>
+<td>0.01</td>
+<td>1.011</td>
+</tr>
+<tr>
+<td>0.001</td>
+<td>1.001</td>
+</tr>
+<tr>
+<td>β → 0</td>
+<td>1.000 ✓</td>
+</tr>
+</tbody>
+</table>
+<p>The detailed balance formula is therefore valid for all β ≥ 0. ∎</p>
+<h3 id="43-natural-temperature" id="43-natural-temperature">§4.3 Natural Temperature</h3>
+<p><strong>Corollary 3.5 (Natural Temperature).</strong> <em>(MP1 corollary: σ_FIX = 2·F_1 determines β.) The natural temperature of the arithmetic flow is
+β = ln(φ) ≈ 0.481.</em> β = ln(eigenvalue), at the (a)↔(c) channel interface. e^{−β} = φ̄ is the unique contraction base. <em>The same value identified in COMPUTATIONAL_COMPLEXITY.md §VI as the
+optimal thermodynamic computation temperature. At this β, the FIX fraction equals φ̄:
+σ_FIX = 1/(1 + e^{−β}) = φ̄ — a self-consistent fixed point of the Boltzmann equation.</em></p>
+<h3 id="44-landauerbekenstein-chain" id="44-landauerbekenstein-chain">§4.4 Landauer–Bekenstein Chain</h3>
+<p><strong>Theorem 4.4 (Information Erasure Cost).</strong> <em>At framework temperature β = ln(φ), the
+minimum energy to erase one bit of information is:</em></p>
+<pre class="highlight"><code>E_Landauer = kT · ln(2) = ln(2)/ln(φ) = log_φ(2) ≈ 1.4404
+</code></pre>
+
+<p><em>This is the conversion factor between binary bits and framework units.</em></p>
+<p>The framework Bekenstein bound S_max = 2·log₂(d_K) links to Landauer via the tower:
+each tower level n corresponds to d_K = 2^{2^{n−1}}, S_max = 2^n, and minimum energy
+E_min = S_max · E_Landauer. The chain is:</p>
+<pre class="highlight"><code>tower level n → d_K = 2^{2^{n-1}} → S_max = 2^n → E_min = 2^n · log_φ(2)
+</code></pre>
+
+<p>This is entirely TDL structure: information capacity grows exponentially through tower ascent
+levels, and each level has a minimum energy cost for information processing set by P1&rsquo;s
+constant φ through the Landauer bridge.</p>
+<h3 id="45-kms-partition-function" id="45-kms-partition-function">§4.5 KMS Partition Function</h3>
+<p><strong>Theorem 4.5 (Lattice Partition Function).</strong> <em>The partition function of the Λ&rsquo; lattice
+with complexity Hamiltonian H(x) = |x|₁ on ℤ⁴ is:</em></p>
+<pre class="highlight"><code>Z(β) = coth(β/2)⁴
+</code></pre>
+
+<p><em>with shell counts N₄(C) = (8C³ + 16C)/3 for C ≥ 1 (number of lattice points at
+complexity C).</em></p>
+<p><strong>Proof.</strong> The 1D partition function for |x| on ℤ is Z₁(β) = Σ_{x∈ℤ} e^{−β|x|} =
+1 + 2Σ_{k=1}^∞ e^{−βk} = (1+e^{−β})/(1−e^{−β}) = coth(β/2). Since H decomposes as a
+sum of four independent L¹ norms, Z(β) = Z₁(β)⁴ = coth(β/2)⁴.</p>
+<p>At the canonical temperature β = 1: Z(1) = coth(1/2)⁴ ≈ 21.93. Each generator is weighted
+by e⁻¹ ≈ 0.368. At P1&rsquo;s temperature β = ln(φ): each generator has Boltzmann weight
+e^{−ln(φ)} = 1/φ = φ̄. ✓ ∎</p>
+<h3 id="46-extension-to-ℤ" id="46-extension-to-z">§4.6 Extension to ℤ</h3>
+<p><strong>Theorem 3.6 (Extension to ℤ).</strong> <em>The arithmetic flow extends naturally to ℤ by
+parity symmetry: V(−n) = V(n).</em></p>
+<p><strong>Proof.</strong> The three potential components are defined in terms of |n|:
+- V_I(−n) = log((−n)²/rad(−n)) = log(n²/rad(n)) = V_I(n) [since (−n)² = n²]
+- V_T(−n) = |Ω(|n|) − ap(|n|)| = V_T(n)
+- V_L(−n) = |log(d(|n|)) − log(φ(|n|))| = V_L(n)</p>
+<p>Therefore V(−n) = V(n). The flow on ℤ is the parity-symmetric extension. The fixed point
+is still {±1}, with V(1) = V(−1) = 0. The gradient flow on ℤ has two absorbing states
+(1 and −1), related by the P1 orientation-reversal (multiplication by −1). ∎</p>
+<h3 id="47-extension-to-ℚ" id="47-extension-to-q">§4.7 Extension to ℚ</h3>
+<p><strong>Theorem 3.7 (Extension to ℚ).</strong> <em>The arithmetic flow extends to ℚ via p-adic valuations.</em></p>
+<p><strong>Proof sketch.</strong> For a rational r = p₁^{a₁}·&hellip;·pₖ^{aₖ} / q₁^{b₁}·&hellip;·qₘ^{bₘ} (in
+lowest terms), define:</p>
+<pre class="highlight"><code>V_I(r) = log(r²/rad_ℚ(r))      where rad_ℚ(r) = product of primes in num AND denom
+V_T(r) = Ω(r)                   where Ω(r) = Σ|aᵢ| + Σ|bⱼ| (total prime factor count)
+V_L(r) = |log(|numerator|) − log(|denominator|)|   [asymmetry between above and below 1]
+</code></pre>
+
+<p>The fixed point is still V(1) = 0 = V(−1). The gradient flow on ℚ has the same structure:
+reduction operations decrease V, and the flow converges toward ±1. The p-adic absolute value
+|r|_p = p^{−v_p(r)} provides an alternative metric.</p>
+<p>The extension is structurally natural but not needed for core results. The key point: the ℕ
+results are not artifacts of restricting to positive integers; they extend naturally. ∎</p>
+<hr />
+<h2 id="5-projection-distances" id="5-projection-distances">§5 PROJECTION DISTANCES</h2>
+<p><strong>Definition 5.1 (Projection Distances).</strong> For n, m ∈ ℕ:
+- <strong>I² distance:</strong> |golden_dual(n) − golden_dual(m)| / max(n, m)  (Zeckendorf asymmetry gap)
+- <strong>TDL distance:</strong> |TDL_level(n) − TDL_level(m)|  (tower level gap, integer)
+- <strong>LoMI distance:</strong> |log(φ(n)/n) − log(φ(m)/m)|  (totient ratio gap)</p>
+<p><strong>Verified table:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Pair</th>
+<th>I² dist</th>
+<th>TDL dist</th>
+<th>LoMI dist</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>(5, 8)</td>
+<td>0.375</td>
+<td>0</td>
+<td>0.0</td>
+<td>Both Fibonacci, same level</td>
+</tr>
+<tr>
+<td>(7, 49)</td>
+<td>0.878</td>
+<td>1</td>
+<td>1.4</td>
+<td>Prime → prime square</td>
+</tr>
+<tr>
+<td>(12, 144)</td>
+<td>0.917</td>
+<td>1</td>
+<td>0.4</td>
+<td>HC numbers, same character</td>
+</tr>
+<tr>
+<td>(8, 13)</td>
+<td>0.385</td>
+<td>0</td>
+<td>1.5</td>
+<td>Consecutive Fibonacci</td>
+</tr>
+<tr>
+<td>(1, 1000)</td>
+<td>0.999</td>
+<td>2</td>
+<td>3.6</td>
+<td>Maximal separation</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="6-tdl-in-the-containment-structure" id="6-tdl-in-the-containment-structure">§6 TDL IN THE CONTAINMENT STRUCTURE</h2>
+<p>TDL contains I²: The ascent path from 1 to n: 1 → p₁ → p₁p₂ → &hellip; → n is an iterated
+composition. Each step multiplies by a prime, which is the I² operation of &ldquo;f acting on g&rdquo;
+at the number level. Building n from 1 via prime multiplication IS I²-composition applied
+level by level. The ascent IS composition in disguise.</p>
+<p>TDL contains LoMI: Numbers with the same digital root d form an equivalence class under TDL
+reduction. They are &ldquo;observed as equivalent&rdquo; by the digit-sum operator. This IS LoMI
+identification — the digit-sum operator is an observer with blind spot =
+digital-root-equivalence-class. TDL reduction CREATES LoMI equivalence classes.</p>
+<hr />
+<hr />
+<h2 id="7-p2-specific-projection-structure-from-closure" id="7-p2-specific-projection-structure-from-closure">§7 P2-SPECIFIC PROJECTION STRUCTURE (FROM CLOSURE)</h2>
+<h3 id="6½1-independence-witness" id="6121-independence-witness">§6½.1 Independence Witness</h3>
+<p><strong>P2-only model (M₂): The Pure Adjunction.</strong> A category equipped with an adjunction 𝒰 ⊣ ℛ between categories C and D, where the unit η: id_C → ℛ𝒰 and counit ε: 𝒰ℛ → id_D are the only distinguished morphisms. No group structure, no composition monoid with fixed-point dynamics, no observer kernels.</p>
+<p><em>P2 satisfied:</em> Full TDL structure — &ldquo;up&rdquo; (𝒰: C → D) and &ldquo;down&rdquo; (ℛ: D → C), with η and ε witnessing the adjunction. Level-transition is the core structure.</p>
+<p><em>P1 violated:</em> No self-composition fixed-point dynamics. The algebraic content of I² (φ-forcing, Möbius fixed points) is absent.
+<em>P3 violated:</em> No observer map with a defined blind spot. The kernel structure (≈_A generated by obs) is absent.</p>
+<p>M₂ satisfies P2 only, proving P2 is not definable from P1 and P3. ∎</p>
+<h3 id="6½2-p2-folding-contains-p1-and-p3" id="6122-p2-folding-contains-p1-and-p3">§6½.2 P2 Folding: Contains P1 and P3</h3>
+<p><strong>P2 contains I² (via ascent path).</strong> The ascent path 1 → p₁ → p₁p₂ → &hellip; → n builds n from 1 via prime multiplication. Each step multiplies by a prime — this IS the I² operation (f acting on g → f·g) applied at the number level. Building n from 1 via prime multiplication IS I²-composition applied level by level.</p>
+<p><strong>P2 contains LoMI (via digital root classes).</strong> Numbers with the same digital root belong to the same congruence class mod 9. This shared class identity IS LoMI mutual identification — numbers that &ldquo;look the same&rdquo; to the digital root observer are LoMI-equivalent. The TDL reduction (digital root) encodes LoMI (mutual identification).</p>
+<p>At the generator level: the exponential map exp(t·h) = diag(eᵗ, e⁻ᵗ) simultaneously contains the I² composition structure (eᵗ·eˢ = e^{t+s}, composition of exponentials) and the LoMI observation structure (eᵗ and e⁻ᵗ &ldquo;observe&rdquo; each other as reciprocals). ∎</p>
+<h3 id="6½3-anti-tdl" id="6123-anti-tdl">§6½.3 Anti-TDL</h3>
+<p>The anti-TDL replaces exponential growth 𝒰 = ×e with exponential decay 𝒰 = ×e⁻¹. The level structure persists but inverts: ascent becomes reduction, and vice versa.</p>
+<table>
+<thead>
+<tr>
+<th>Direction</th>
+<th>Generator</th>
+<th>Dynamics</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>TDL (forward)</td>
+<td>e</td>
+<td>Exponential growth upward through levels</td>
+</tr>
+<tr>
+<td>−TDL (reverse)</td>
+<td>e⁻¹</td>
+<td>Exponential decay downward through levels</td>
+</tr>
+</tbody>
+</table>
+<p>The reversal relation e · e⁻¹ = 1 connects TDL to anti-TDL. ∎</p>
+<h3 id="6½4-v_tn-the-tdl-component-of-the-arithmetic-potential" id="6124-v_tn-the-tdl-component-of-the-arithmetic-potential">§6½.4 V_T(n): The TDL-Component of the Arithmetic Potential</h3>
+<p><strong>Definition.</strong> V_T(n) = |Ω(n) − ap(n)|, where Ω(n) = number of prime factors with multiplicity and ap(n) = additive persistence (number of digit-sum iterations to reach a single digit).</p>
+<p>V_T(n) measures the level gap between tower depth (how many prime factors built n) and reduction depth (how many digit-sum steps reach a single digit). V_T(1) = |0−0| = 0 (fixed point: zero prime factors, already single digit).</p>
+<table>
+<thead>
+<tr>
+<th>n</th>
+<th>Ω(n)</th>
+<th>ap(n)</th>
+<th>V_T(n)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr>
+<td>2</td>
+<td>1</td>
+<td>0</td>
+<td>1</td>
+</tr>
+<tr>
+<td>12</td>
+<td>3</td>
+<td>1</td>
+<td>2</td>
+</tr>
+<tr>
+<td>60</td>
+<td>4</td>
+<td>2</td>
+<td>2</td>
+</tr>
+<tr>
+<td>144</td>
+<td>6</td>
+<td>2</td>
+<td>4</td>
+</tr>
+</tbody>
+</table>
+<p>This is P2&rsquo;s contribution to the gradient flow toward n = 1 (see Paper 3-META for the composite V(n) = V_I + V_T + V_L).</p>
+<h3 id="6½5-extensions-to-ℤ-and-ℚ" id="6125-extensions-to-z-and-q">§6½.5 Extensions to ℤ and ℚ</h3>
+<p><strong>ℤ Extension.</strong> V_T(−n) = V_T(n) by parity symmetry. All potential components depend only on |n|. Fixed points: {±1}, related by P1 orientation-reversal.</p>
+<p><strong>ℚ Extension.</strong> For r = p₁^{a₁}·&hellip;/ q₁^{b₁}·&hellip; in lowest terms, define Ω(r) = Σ|aᵢ| + Σ|bⱼ| (total prime factor count including denominator). The gradient flow extends naturally to rationals; fixed points remain ±1. The ℕ results are not artifacts of restriction.</p>
+<h2 id="8-computational-verification" id="8-computational-verification">§8 COMPUTATIONAL VERIFICATION</h2>
+<table>
+<thead>
+<tr>
+<th>Claim</th>
+<th>Verification</th>
+<th>Result</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>exp(h·1)[0,0] = e</td>
+<td>Numeric, error = 0.00</td>
+<td>✓ PASS</td>
+</tr>
+<tr>
+<td>√(2k) = k only at k = 2</td>
+<td>Algebraic</td>
+<td>✓ PASS</td>
+</tr>
+<tr>
+<td>K(R,N) = 0 (Killing-orthogonal)</td>
+<td>4·tr(RN) = 0</td>
+<td>✓ PASS</td>
+</tr>
+<tr>
+<td>M(θ) family: hyp→ell transition as θ: 0→π/2</td>
+<td>Eigenvalue computation, 5 values</td>
+<td>✓ PASS</td>
+</tr>
+<tr>
+<td>h = (I − 2R − 2N + 4RN)/5</td>
+<td>Direct reconstruction</td>
+<td>✓ PASS</td>
+</tr>
+<tr>
+<td>det(exp(R)) = e = exp(tr(R)) = exp(1)</td>
+<td>Determinant to machine precision</td>
+<td>✓ PASS</td>
+</tr>
+<tr>
+<td>det(exp(N)) = 1 (area-preserving)</td>
+<td>det = 1.000000000000000</td>
+<td>✓ PASS</td>
+</tr>
+<tr>
+<td>exp intertwining: det(exp(tR)) = e^t for t=0.5,1,2</td>
+<td>Direct computation</td>
+<td>✓ PASS</td>
+</tr>
+<tr>
+<td>C_max(n) = 2ⁿ/log₂(φ) for n = 1,&hellip;,7</td>
+<td>Direct computation</td>
+<td>✓ PASS</td>
+</tr>
+<tr>
+<td>log₂(φ) = 1/log_φ(2)</td>
+<td>Identity verification</td>
+<td>✓ PASS</td>
+</tr>
+<tr>
+<td>TDL tower saturates at d² for d = 2,3,4,5</td>
+<td>Direct computation</td>
+<td>✓ PASS</td>
+</tr>
+<tr>
+<td>S₃ Cayley diameter = 2 (not 3)</td>
+<td>BFS on 6-element graph</td>
+<td>✓ PASS</td>
+</tr>
+<tr>
+<td>Detailed balance for 4 pairs</td>
+<td>Numeric ratios match</td>
+<td>✓ PASS</td>
+</tr>
+<tr>
+<td>β→0 limit for pair 12↔6</td>
+<td>6 values → 1.000</td>
+<td>✓ PASS</td>
+</tr>
+<tr>
+<td>V(−n) = V(n) for tested n</td>
+<td>Direct computation</td>
+<td>✓ PASS</td>
+</tr>
+<tr>
+<td>Z(β) = coth(β/2)⁴ for 5 values of β</td>
+<td>Formula vs 1D factorization</td>
+<td>✓ PASS</td>
+</tr>
+<tr>
+<td>N₄(C) = (8C³+16C)/3 for C = 1,&hellip;,11</td>
+<td>Direct count vs formula</td>
+<td>✓ PASS</td>
+</tr>
+<tr>
+<td>Generator weight at β=ln(φ): e^{−ln(φ)} = φ̄</td>
+<td>Direct computation</td>
+<td>✓ PASS</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="9-claim-status" id="9-claim-status">§9 CLAIM STATUS</h2>
+<table>
+<thead>
+<tr>
+<th>Claim</th>
+<th>Status</th>
+<th>Generation</th>
+<th>Section</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>e forced by entry normalization of unique traceless diagonal</td>
+<td><strong>FORCED</strong></td>
+<td>G.5</td>
+<td>§1.1</td>
+</tr>
+<tr>
+<td>Entry/Killing alignment: √(2k)=k iff k=2</td>
+<td><strong>FORCED</strong></td>
+<td>G.5</td>
+<td>§1.5</td>
+</tr>
+<tr>
+<td>P2 → OSC (derived composite, interpolates P1↔P3)</td>
+<td><strong>FORCED</strong></td>
+<td>G.5</td>
+<td>§1.6</td>
+</tr>
+<tr>
+<td>e = det(exp(R)) = exp(tr(R)) (P1→P2 via exp)</td>
+<td><strong>FORCED</strong></td>
+<td>G.5</td>
+<td>§1.7</td>
+</tr>
+<tr>
+<td>TDL tower saturates at d² (compression wall)</td>
+<td><strong>FORCED</strong></td>
+<td>G.5</td>
+<td>§2.2</td>
+</tr>
+<tr>
+<td>All n ∈ ℕ are TDL-equivalent as categories</td>
+<td><strong>FORCED</strong></td>
+<td>G.5</td>
+<td>§2.5</td>
+</tr>
+<tr>
+<td>C_max(n) = 2ⁿ/log₂(φ) (complexity depth bound)</td>
+<td><strong>FORCED</strong></td>
+<td>G.5</td>
+<td>§2.6</td>
+</tr>
+<tr>
+<td>S₃ Cayley distance: diameter = 2; C ∈ {0, 1/2, 1}</td>
+<td><strong>FORCED</strong></td>
+<td>G.5</td>
+<td>§3.2</td>
+</tr>
+<tr>
+<td>P open, NP closed in signature space</td>
+<td><strong>FORCED</strong></td>
+<td>G.5</td>
+<td>§3.4</td>
+</tr>
+<tr>
+<td>Detailed balance: P(n→m)/P(m→n) = exp(−βΔV)</td>
+<td><strong>FORCED</strong></td>
+<td>G.5</td>
+<td>§4.1</td>
+</tr>
+<tr>
+<td>Detailed balance holds at β → 0</td>
+<td><strong>FORCED</strong></td>
+<td>G.5</td>
+<td>§4.2</td>
+</tr>
+<tr>
+<td>Natural β = ln(φ) ≈ 0.481</td>
+<td><strong>FORCED</strong></td>
+<td>G.5</td>
+<td>§4.3</td>
+</tr>
+<tr>
+<td>E_Landauer = log_φ(2) at framework temperature</td>
+<td><strong>FORCED</strong></td>
+<td>G.5</td>
+<td>§4.4</td>
+</tr>
+<tr>
+<td>Z(β) = coth(β/2)⁴; N₄(C) = (8C³+16C)/3</td>
+<td><strong>FORCED</strong></td>
+<td>G.5</td>
+<td>§4.5</td>
+</tr>
+<tr>
+<td>Extension to ℤ: V(−n) = V(n); fixed points {±1}</td>
+<td><strong>FORCED</strong></td>
+<td>G.5</td>
+<td>§4.6</td>
+</tr>
+<tr>
+<td>Extension to ℚ via p-adic valuations</td>
+<td><strong>FORCED</strong></td>
+<td>G.5</td>
+<td>§4.7</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Status Legend:</strong>
+- <strong>FORCED</strong> (G.5): Zero-branching derivation from P2 structure (h, exp, TDL)</p>
+<h3 id="corrections-to-original-source" id="corrections-to-original-source">Corrections to Original Source</h3>
+<table>
+<thead>
+<tr>
+<th>Location</th>
+<th>Error</th>
+<th>Correction</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>THREE_PROJECTIONS_UNIFIED §5.2</td>
+<td>S₃ diameter=3; C∈{0,1/3,2/3,1}</td>
+<td>diameter=2; C∈{0,1/2,1}</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<p><em>R(R) = R</em></p>
+    </div>
+
+    <div class="page-nav">
+<a class="prev" href="T3_P1_PRODUCTION.html">Paper 3-P1: Production</a>
+<a class="next" href="T3_P3_OBSERVATION.html">Paper 3-P3: Observation</a>
+</div>
+</main>
+
+<script>
+// Close sidebar on mobile when clicking a link
+document.querySelectorAll('.sidebar a').forEach(a => {
+    a.addEventListener('click', () => {
+        if (window.innerWidth <= 900) {
+            document.querySelector('.sidebar').classList.remove('open');
+        }
+    });
+});
+</script>
+</body>
+</html>

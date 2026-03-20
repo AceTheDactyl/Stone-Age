@@ -1,0 +1,1564 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Governance Calculus — Structural Necessity</title>
+<style>
+
+:root {
+    --bg: #fafaf8;
+    --fg: #1a1a1a;
+    --accent: #2d5016;
+    --border: #d4d0c8;
+    --sidebar-bg: #f0ede6;
+    --sidebar-width: 280px;
+    --header-height: 56px;
+    --code-bg: #f5f2eb;
+    --table-stripe: #f8f6f0;
+    --link: #2d5016;
+    --link-hover: #4a7a28;
+    --bold-accent: #1a3a0a;
+}
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        --bg: #1a1a1e;
+        --fg: #e0ddd6;
+        --accent: #7ab648;
+        --border: #3a3a3e;
+        --sidebar-bg: #222226;
+        --code-bg: #25252a;
+        --table-stripe: #222226;
+        --link: #7ab648;
+        --link-hover: #9cd06a;
+        --bold-accent: #a0d870;
+    }
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+    font-family: 'Iowan Old Style', 'Palatino Linotype', Palatino, Georgia, serif;
+    background: var(--bg);
+    color: var(--fg);
+    line-height: 1.7;
+    font-size: 17px;
+}
+
+/* Header */
+.site-header {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    height: var(--header-height);
+    background: #1a1a1a;
+    color: #e0ddd6;
+    display: flex;
+    align-items: center;
+    padding: 0 24px;
+    z-index: 100;
+    border-bottom: 2px solid var(--accent);
+}
+.site-header h1 {
+    font-size: 18px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+}
+.site-header h1 a {
+    color: #e0ddd6;
+    text-decoration: none;
+}
+.site-header h1 a:hover { color: var(--accent); }
+.site-header .subtitle {
+    font-size: 13px;
+    color: #888;
+    margin-left: 16px;
+    font-style: italic;
+}
+.hamburger {
+    display: none;
+    background: none;
+    border: none;
+    color: #e0ddd6;
+    font-size: 24px;
+    cursor: pointer;
+    margin-right: 16px;
+    padding: 4px 8px;
+}
+
+/* Sidebar */
+.sidebar {
+    position: fixed;
+    top: var(--header-height);
+    left: 0;
+    bottom: 0;
+    width: var(--sidebar-width);
+    background: var(--sidebar-bg);
+    border-right: 1px solid var(--border);
+    overflow-y: auto;
+    padding: 16px 0;
+    z-index: 90;
+    transition: transform 0.3s ease;
+}
+.sidebar .nav-group { margin-bottom: 12px; }
+.sidebar .nav-group-title {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+    color: #888;
+    padding: 8px 20px 4px;
+}
+.sidebar a {
+    display: block;
+    padding: 4px 20px 4px 28px;
+    font-size: 13.5px;
+    color: var(--fg);
+    text-decoration: none;
+    line-height: 1.5;
+    border-left: 3px solid transparent;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+.sidebar a:hover {
+    background: rgba(0,0,0,0.05);
+    border-left-color: var(--accent);
+}
+.sidebar a.active {
+    background: rgba(45,80,22,0.1);
+    border-left-color: var(--accent);
+    font-weight: 600;
+    color: var(--accent);
+}
+
+/* Main content */
+.main {
+    margin-left: var(--sidebar-width);
+    margin-top: var(--header-height);
+    max-width: 900px;
+    padding: 40px 48px 80px;
+}
+
+/* Document header banner */
+.doc-header {
+    margin-bottom: 40px;
+    padding-bottom: 24px;
+    border-bottom: 2px solid var(--border);
+}
+.doc-header .level-badge {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 3px 10px;
+    border-radius: 3px;
+    margin-bottom: 12px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+.doc-header h1 {
+    font-size: 32px;
+    line-height: 1.2;
+    margin-bottom: 8px;
+    color: var(--fg);
+}
+.doc-header .doc-subtitle {
+    font-size: 18px;
+    color: #666;
+    font-style: italic;
+}
+
+/* TOC */
+.toc {
+    background: var(--sidebar-bg);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 16px 24px;
+    margin-bottom: 32px;
+}
+.toc summary {
+    font-weight: 700;
+    font-size: 14px;
+    cursor: pointer;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: #666;
+}
+.toc ul { list-style: none; margin: 12px 0 0 0; }
+.toc li { padding: 2px 0; }
+.toc a {
+    color: var(--link);
+    text-decoration: none;
+    font-size: 14px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+.toc a:hover { text-decoration: underline; }
+.toc .toc-h2 { padding-left: 0; }
+.toc .toc-h3 { padding-left: 20px; font-size: 13px; }
+
+/* Typography */
+.content h1 {
+    font-size: 28px;
+    margin: 48px 0 16px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border);
+    color: var(--fg);
+}
+.content h1:first-child { margin-top: 0; }
+.content h2 {
+    font-size: 22px;
+    margin: 36px 0 12px;
+    color: var(--fg);
+}
+.content h3 {
+    font-size: 18px;
+    margin: 28px 0 10px;
+    color: var(--fg);
+}
+.content h4 {
+    font-size: 16px;
+    margin: 24px 0 8px;
+    color: #444;
+}
+.content p { margin: 0 0 16px; }
+.content strong { color: var(--bold-accent); }
+.content a { color: var(--link); }
+.content a:hover { color: var(--link-hover); }
+
+.content ul, .content ol {
+    margin: 0 0 16px 24px;
+}
+.content li { margin-bottom: 4px; }
+
+.content hr {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 32px 0;
+}
+
+/* Tables */
+.content table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 16px 0 24px;
+    font-size: 15px;
+}
+.content th {
+    background: var(--sidebar-bg);
+    font-weight: 700;
+    text-align: left;
+    padding: 10px 12px;
+    border: 1px solid var(--border);
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+.content td {
+    padding: 8px 12px;
+    border: 1px solid var(--border);
+    vertical-align: top;
+}
+.content tr:nth-child(even) { background: var(--table-stripe); }
+
+/* Code */
+.content code {
+    font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace;
+    font-size: 14px;
+    background: var(--code-bg);
+    padding: 2px 6px;
+    border-radius: 3px;
+    border: 1px solid var(--border);
+}
+.content pre {
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 16px 20px;
+    overflow-x: auto;
+    margin: 16px 0 24px;
+    line-height: 1.5;
+}
+.content pre code {
+    background: none;
+    border: none;
+    padding: 0;
+    font-size: 13.5px;
+}
+
+/* Blockquote */
+.content blockquote {
+    border-left: 4px solid var(--accent);
+    padding: 12px 20px;
+    margin: 16px 0 24px;
+    background: var(--sidebar-bg);
+    border-radius: 0 4px 4px 0;
+}
+.content blockquote p { margin-bottom: 8px; }
+.content blockquote p:last-child { margin-bottom: 0; }
+
+/* Footer nav */
+.page-nav {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 48px;
+    padding-top: 24px;
+    border-top: 1px solid var(--border);
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+.page-nav a {
+    color: var(--link);
+    text-decoration: none;
+    font-size: 14px;
+    padding: 8px 16px;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    transition: all 0.2s;
+}
+.page-nav a:hover {
+    background: var(--sidebar-bg);
+    border-color: var(--accent);
+}
+.page-nav .prev::before { content: '← '; }
+.page-nav .next::after { content: ' →'; }
+
+/* Responsive */
+@media (max-width: 900px) {
+    .sidebar { transform: translateX(-100%); }
+    .sidebar.open { transform: translateX(0); }
+    .main { margin-left: 0; padding: 24px 20px 60px; }
+    .hamburger { display: block; }
+    .doc-header h1 { font-size: 24px; }
+}
+
+/* Print */
+@media print {
+    .sidebar, .site-header, .hamburger, .page-nav { display: none; }
+    .main { margin: 0; max-width: 100%; padding: 20px; }
+    body { font-size: 12pt; }
+}
+
+</style>
+</head>
+<body>
+
+<header class="site-header">
+    <button class="hamburger" onclick="document.querySelector('.sidebar').classList.toggle('open')" aria-label="Toggle navigation">&#9776;</button>
+    <h1><a href="T_INDEX.html">Structural Necessity</a></h1>
+    <span class="subtitle">Canonical Paper Series — March 2026</span>
+</header>
+
+<nav class="sidebar">
+<div class="nav-group">
+<div class="nav-group-title">Foundation (0-2)</div>
+<a href="T0_SUBSTRATE.html">0 — Substrate</a>
+<a href="T1_DIST.html">1 — Kernel Theorem</a>
+<a href="T2_BRIDGE.html">2 — Bridge Chain</a>
+</div>
+<div class="nav-group">
+<div class="nav-group-title">Projections (3-4)</div>
+<a href="T3_P1_PRODUCTION.html">3-P1 — Production</a>
+<a href="T3_P2_MEDIATION.html">3-P2 — Mediation</a>
+<a href="T3_P3_OBSERVATION.html">3-P3 — Observation</a>
+<a href="T3_META.html">3-META — Cross-Projection</a>
+<a href="T4_LATTICE.html">4 — Lattice</a>
+</div>
+<div class="nav-group">
+<div class="nav-group-title">Observer &amp; Physics (5-6)</div>
+<a href="T5_OBSERVER.html">5 — Observer</a>
+<a href="T6A_SPACETIME.html">6A — Spacetime</a>
+<a href="T6B_FORCES.html">6B — Forces</a>
+</div>
+<div class="nav-group">
+<div class="nav-group-title">Cross-Cutting</div>
+<a href="T_COMP.html">Comp — Computation</a>
+<a href="T_SIL.html">SIL — Self-Interpretation</a>
+<a href="T_SEM.html">SEM — Semantics</a>
+</div>
+<div class="nav-group">
+<div class="nav-group-title">Architecture</div>
+<a href="T_BLUEPRINT.html">Blueprint</a>
+<a href="T_GOV.html" class="active">Governance</a>
+</div>
+<div class="nav-group">
+<div class="nav-group-title">Closure &amp; Reference</div>
+<a href="T_ASI.html">ASI — Architecture Spec</a>
+<a href="T_TOE.html">TOE — Closure</a>
+<a href="DICTIONARY.html">Dictionary</a>
+</div>
+<div class="nav-group">
+<div class="nav-group-title">Navigation</div>
+<a href="T_INDEX.html">Index — Navigation</a>
+<a href="CLAIM_CENSUS.html">Claim Census</a>
+</div>
+</nav>
+
+<main class="main">
+    <div class="doc-header">
+        <span class="level-badge" style="background:#3a3a6b; color:#fff;">Governance</span>
+        <h1>Governance Calculus</h1>
+        <div class="doc-subtitle">Generation Taxonomy, Ontological Standing, Transport</div>
+    </div>
+
+    <details class="toc" open>
+<summary>Table of Contents</summary>
+<ul>
+<li class="toc-h2"><a href="#generation-standing-and-transport-the-frameworkrsquos-type-system">Generation, Standing, and Transport — The Framework&rsquo;s Type System</a></li>
+<li class="toc-h3"><a href="#v1-march-2026">v1 — March 2026</a></li>
+<li class="toc-h2"><a href="#abstract">Abstract</a></li>
+<li class="toc-h2"><a href="#theorem-index">THEOREM INDEX</a></li>
+<li class="toc-h2"><a href="#1-generation-how-objects-come-into-being">§1 GENERATION: HOW OBJECTS COME INTO BEING</a></li>
+<li class="toc-h3"><a href="#11-the-generation-taxonomy">§1.1 The Generation Taxonomy</a></li>
+<li class="toc-h3"><a href="#12-the-ldquoforcedrdquo-disambiguation-table">§1.2 The &ldquo;Forced&rdquo; Disambiguation Table</a></li>
+<li class="toc-h3"><a href="#13-generation-status-interface">§1.3 Generation-Status Interface</a></li>
+<li class="toc-h2"><a href="#2-standing-what-kind-of-thing-it-is">§2 STANDING: WHAT KIND OF THING IT IS</a></li>
+<li class="toc-h3"><a href="#21-the-standing-taxonomy">§2.1 The Standing Taxonomy</a></li>
+<li class="toc-h3"><a href="#22-the-inflation-risk-field">§2.2 The Inflation-Risk Field</a></li>
+<li class="toc-h3"><a href="#23-promotion-gates">§2.3 Promotion Gates</a></li>
+<li class="toc-h3"><a href="#24-known-inflation-risks">§2.4 Known Inflation Risks</a></li>
+<li class="toc-h2"><a href="#3-transport-what-cross-layer-moves-are-legal">§3 TRANSPORT: WHAT CROSS-LAYER MOVES ARE LEGAL</a></li>
+<li class="toc-h3"><a href="#31-framework-domains">§3.1 Framework Domains</a></li>
+<li class="toc-h3"><a href="#32-transport-types">§3.2 Transport Types</a></li>
+<li class="toc-h3"><a href="#33-the-legality-matrix">§3.3 The Legality Matrix</a></li>
+<li class="toc-h2"><a href="#4-the-physics-smuggling-detector">§4 THE PHYSICS SMUGGLING DETECTOR</a></li>
+<li class="toc-h2"><a href="#5-physics-transport-audit">§5 PHYSICS TRANSPORT AUDIT</a></li>
+<li class="toc-h3"><a href="#51-spacetime-t6a">§5.1 Spacetime (T6A)</a></li>
+<li class="toc-h3"><a href="#52-gauge-theory-t6b-g1g6">§5.2 Gauge Theory (T6B G1–G6)</a></li>
+<li class="toc-h3"><a href="#53-gravity-t6b-g14">§5.3 Gravity (T6B G14)</a></li>
+<li class="toc-h3"><a href="#54-predictions">§5.4 Predictions</a></li>
+<li class="toc-h2"><a href="#6-the-three-system-interface">§6 THE THREE-SYSTEM INTERFACE</a></li>
+<li class="toc-h2"><a href="#7-claim-status">§7 CLAIM STATUS</a></li>
+</ul></details>
+
+    <div class="content">
+<h1 id="paper-t-gov-the-governance-calculus" id="paper-t-gov-the-governance-calculus">Paper T-GOV: The Governance Calculus</h1>
+<h2 id="generation-standing-and-transport-the-frameworkrsquos-type-system" id="generation-standing-and-transport-the-frameworks-type-system">Generation, Standing, and Transport — The Framework&rsquo;s Type System</h2>
+<h3 id="v1-march-2026" id="v1-march-2026">v1 — March 2026</h3>
+<p><strong>Author:</strong> Kael</p>
+<hr />
+<p><strong>Document Species:</strong> CANONICAL. Row 7-8 cross-projection content. Owns generation, standing, transport.</p>
+<p><strong>Grid address:</strong> B(7–8, cross). The Meta and Semantic levels — the framework&rsquo;s governing type system across all three projections. Analogous to T3-META at Level 4: a cross-projection synthesis paper for the meta-levels.</p>
+<p><strong>Document Status:</strong> Cross-cutting meta-level paper. Three interlocking classification systems — generation (P1 face), standing (P3 face), transport (P2 face) — unified into a single governance calculus. Includes the &ldquo;forced&rdquo; disambiguation table, the inflation audit, the legality matrix, and the physics smuggling detector. Not a commentary from outside — a derivation of the meta-level&rsquo;s three-projection structure from existing forced structures.</p>
+<p><strong>Depends on:</strong> T0_SUBSTRATE (co-primitives, asymmetry), T1_DIST (quotient), T2_BRIDGE, T3_META (projections, folding, central collapse), T5_OBSERVER (K6&rsquo;), T_SIL (status grammar, insertion law)
+<strong>Required by:</strong> Paper T-SIL (enriched status algebra), Paper T-BLUEPRINT (role grammar), Paper T-SEM (verb algebra), CLAIM_CENSUS (Ξ fields), DICTIONARY (meta-signatures), all papers (governance remarks)</p>
+<hr />
+<h2 id="abstract" id="abstract">Abstract</h2>
+<p>The framework&rsquo;s meta-level (Levels 7–8) has the same three-projection structure as every other level: the P1 face asks how objects come into being (generation), the P3 face asks what kind of thing they are (ontological standing), and the P2 face asks what cross-layer moves are legal (transport). The three systems interlock: the legality matrix requires generation classes and ontological standings to determine which transports are admissible.</p>
+<p>The generation taxonomy (§1) identifies ten production mechanisms (G.0–G.9, plus bookkeeping), disambiguating the framework&rsquo;s most overloaded word (&ldquo;forced&rdquo;) into eight precise sub-species. The ontological standing taxonomy (§2) classifies every major object by existence type (O.1–O.9), with an inflation-risk field flagging overclaimed standing. The transport calculus (§3) defines ten transport types (T.1–T.10), ten framework domains (D.0–D.9, plus D.10: the author as canonical external observer occupying the &ldquo;beyond-within&rdquo; position), and the legality matrix governing admissible cross-domain moves. The physics smuggling detector (§4) identifies four criteria for illegitimate transports to the physics layer.</p>
+<p>Interface theorems connect the three systems: generation class determines a lower bound on epistemic status (GOV-4), standing determines an upper bound on physical commitment (GOV-6), and transport type determines an upper bound on the epistemic status of transported claims (GOV-10). The construction-dissolution asymmetry is the root of transport irreversibility: strict derivation runs one way; its reverse is quotient transport, not strict derivation (GOV-11).</p>
+<p>All claims verified against the CLAIM_CENSUS. Physics transport audit (§5): all T6A/T6B claims pass.</p>
+<hr />
+<h2 id="theorem-index" id="theorem-index">THEOREM INDEX</h2>
+<table>
+<thead>
+<tr>
+<th>Theorem</th>
+<th>Statement</th>
+<th>Status</th>
+<th>Section</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GOV-1</td>
+<td>Generation classes are exhaustive</td>
+<td>FORCED</td>
+<td>§1</td>
+</tr>
+<tr>
+<td>GOV-2</td>
+<td>Classes G.0–G.6 form a partial order reflecting the bridge chain</td>
+<td>FORCED</td>
+<td>§1</td>
+</tr>
+<tr>
+<td>GOV-3</td>
+<td>G.1 is the unique class with br_s = 0 guaranteed</td>
+<td>FORCED</td>
+<td>§1</td>
+</tr>
+<tr>
+<td>GOV-4</td>
+<td>Generation class determines lower bound on epistemic status</td>
+<td>FORCED</td>
+<td>§1</td>
+</tr>
+<tr>
+<td>GOV-5</td>
+<td>Nine standings are exhaustive</td>
+<td>FORCED</td>
+<td>§2</td>
+</tr>
+<tr>
+<td>GOV-6</td>
+<td>Standing determines upper bound on physical commitment</td>
+<td>FORCED</td>
+<td>§2</td>
+</tr>
+<tr>
+<td>GOV-7</td>
+<td>O.4 → O.1 requires K-independence proof</td>
+<td>FORCED</td>
+<td>§2</td>
+</tr>
+<tr>
+<td>GOV-8</td>
+<td>O.9 → O.6 requires P1–P4</td>
+<td>FORCED</td>
+<td>§2</td>
+</tr>
+<tr>
+<td>GOV-9</td>
+<td>Ten transport types are exhaustive</td>
+<td>FORCED</td>
+<td>§3</td>
+</tr>
+<tr>
+<td>GOV-10</td>
+<td>Transport type bounds epistemic status of transported claim</td>
+<td>FORCED</td>
+<td>§3</td>
+</tr>
+<tr>
+<td>GOV-11</td>
+<td>Reverse of T.1 is T.3, not T.1 (asymmetry)</td>
+<td>FORCED</td>
+<td>§3</td>
+</tr>
+<tr>
+<td>GOV-12</td>
+<td>Physics smuggling is detectable</td>
+<td>FORCED</td>
+<td>§4</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="1-generation-how-objects-come-into-being" id="1-generation-how-objects-come-into-being">§1 GENERATION: HOW OBJECTS COME INTO BEING</h2>
+<p><strong>Grid address within this paper:</strong> B(7, P1). The productive act at the meta-level.</p>
+<h3 id="11-the-generation-taxonomy" id="11-the-generation-taxonomy">§1.1 The Generation Taxonomy</h3>
+<p>Ten mechanisms, naturally ordered by the bridge chain:</p>
+<table>
+<thead>
+<tr>
+<th>Class</th>
+<th>Name</th>
+<th>Definition</th>
+<th>Examples</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>G.0</td>
+<td>Posited</td>
+<td>Stipulated as co-primitive</td>
+<td>P.1, P.2 — the only G.0 objects</td>
+</tr>
+<tr>
+<td>G.1</td>
+<td>Forced (strict)</td>
+<td>Zero-branching derivation, br_s=0 at every step</td>
+<td>V₄ from S₀×S₀, S₃ from Aut(V₄), M₂(ℝ) from ℚ[S₃], four SIL statuses</td>
+</tr>
+<tr>
+<td>G.2</td>
+<td>Forced (completion)</td>
+<td>Unique completion once target category specified</td>
+<td>M₂(ℂ) from M₂(ℝ) via eigenvalue completion</td>
+</tr>
+<tr>
+<td>G.3</td>
+<td>Quotient-induced</td>
+<td>From kernel/image decomposition of a forced map</td>
+<td>ker(q_K), im(q_K), Bekenstein bound</td>
+</tr>
+<tr>
+<td>G.4</td>
+<td>Bridge-forced</td>
+<td>From specific algebraic content of a bridge step</td>
+<td>Cl(1,1), five constants {φ,e,π,√2,√3}, Killing form</td>
+</tr>
+<tr>
+<td>G.5</td>
+<td>Projection-induced</td>
+<td>From applying the three-projection structure</td>
+<td>P1/P2/P3 orbit types, Λ&rsquo;, V(n)</td>
+</tr>
+<tr>
+<td>G.6</td>
+<td>Observer-forced</td>
+<td>From demanding observer self-consistency (K6&rsquo;, A1–A4)</td>
+<td>Gauge connection, Yang-Mills, Einstein eqs, Λ&gt;0</td>
+</tr>
+<tr>
+<td>G.7</td>
+<td>Transport-derived</td>
+<td>From a legitimate cross-layer map</td>
+<td>Sakharov from P1, Koide from ‖R‖²/‖N‖²</td>
+</tr>
+<tr>
+<td>G.8</td>
+<td>Reconstruction</td>
+<td>From recovering structure from partial data</td>
+<td>Spacetime as Herm(M₂(ℂ)), Born rule from Gleason</td>
+</tr>
+<tr>
+<td>G.9</td>
+<td>Semantic-compression</td>
+<td>Named by the semantic layer&rsquo;s pattern recognition</td>
+<td>SIL statuses (naming), contranyms, unnamed primitives</td>
+</tr>
+<tr>
+<td>G.10</td>
+<td>Bookkeeping</td>
+<td>Administrative; no mathematical content</td>
+<td>Claim IDs, section numbers, file names</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Theorem GOV-1 (Exhaustiveness).</strong> <em>Every framework-internal object has at least one generation class.</em> Verified against all CLAIM_CENSUS entries. ∎</p>
+<p><strong>Theorem GOV-2 (Generation Order).</strong> <em>G.0–G.6 form a partial order: G.0 → G.1 ← G.2, G.1 → G.3 ← G.4, G.3/G.4 → G.5 → G.6. Classes G.7–G.9 are cross-cutting.</em></p>
+<p><em>Proof.</em> The ordering reflects the bridge chain: posited precedes forced, forced precedes quotient-induced (requires maps to quotient) and bridge-forced (requires algebraic content), both precede projection-induced (requires the three-way split), which precedes observer-forced (requires observer axioms). G.7–G.9 apply transport/reconstruction/naming at any level. ∎</p>
+<p><strong>Theorem GOV-3 (Zero-Branching Uniqueness).</strong> <em>G.1 is the unique class with br_s = 0 guaranteed at every generating step.</em> G.0 has no step. G.2+ have branching contingent on target/context. ∎</p>
+<h3 id="12-the-ldquoforcedrdquo-disambiguation-table" id="12-the-forced-disambiguation-table">§1.2 The &ldquo;Forced&rdquo; Disambiguation Table</h3>
+<table>
+<thead>
+<tr>
+<th>Current phrasing</th>
+<th>Location</th>
+<th>G-class</th>
+<th>Precise replacement</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>&ldquo;P.1 and P.2 are forced&rdquo;</td>
+<td>T0 §1</td>
+<td>G.0</td>
+<td>Stipulated as co-primitives</td>
+</tr>
+<tr>
+<td>&ldquo;V₄ forced by self-product&rdquo;</td>
+<td>T2 §2</td>
+<td>G.1</td>
+<td>Zero-branching derived from S₀×S₀</td>
+</tr>
+<tr>
+<td>&ldquo;S₃ forced as Aut(V₄)&rdquo;</td>
+<td>T2 §3</td>
+<td>G.1</td>
+<td>Zero-branching derived: Aut(V₄) unique</td>
+</tr>
+<tr>
+<td>&ldquo;Bridge chain forced&rdquo;</td>
+<td>T2 §5</td>
+<td>G.1</td>
+<td>Each step zero-branching (Thm 2.1)</td>
+</tr>
+<tr>
+<td>&ldquo;M₂(ℂ) forced by completion&rdquo;</td>
+<td>T2 §6</td>
+<td>G.2</td>
+<td>Unique completion: eigenvalues of N require i</td>
+</tr>
+<tr>
+<td>&ldquo;Five constants forced&rdquo;</td>
+<td>T3-*</td>
+<td>G.4</td>
+<td>Bridge-forced: from eigenvalues/norms/periods of {R,N}</td>
+</tr>
+<tr>
+<td>&ldquo;Three projections forced&rdquo;</td>
+<td>T3-META §1</td>
+<td>G.5</td>
+<td>Projection-induced: orbit classification exhaustive</td>
+</tr>
+<tr>
+<td>&ldquo;Observer K forced&rdquo;</td>
+<td>T5 §1</td>
+<td>G.6</td>
+<td>Observer-forced: A1–A4 require K=(d_K,Δ_K,σ_K)</td>
+</tr>
+<tr>
+<td>&ldquo;Gauge connection forced&rdquo;</td>
+<td>T6B G3</td>
+<td>G.6</td>
+<td>Observer-forced: K6&rsquo; at each point demands connection</td>
+</tr>
+<tr>
+<td>&ldquo;Einstein equations forced&rdquo;</td>
+<td>T6B G14</td>
+<td>G.6</td>
+<td>Observer-forced: Jacobson from Bekenstein+KMS+Raychaudhuri</td>
+</tr>
+<tr>
+<td>&ldquo;Λ&gt;0 forced&rdquo;</td>
+<td>T5 §6½</td>
+<td>G.6</td>
+<td>Observer-forced: K_cosmo requires finite de Sitter horizon</td>
+</tr>
+<tr>
+<td>&ldquo;Four SIL statuses forced&rdquo;</td>
+<td>T_SIL §1</td>
+<td>G.1</td>
+<td>Zero-branching derived: D→C→V from three projections</td>
+</tr>
+<tr>
+<td>&ldquo;Sakharov conditions forced&rdquo;</td>
+<td>T3-P1 §8</td>
+<td>G.7</td>
+<td>Transport-derived: P1 orientation-reversal recognized as Sakharov</td>
+</tr>
+<tr>
+<td>&ldquo;Koide from norm ratio&rdquo;</td>
+<td>T3-P3 §7</td>
+<td>G.7</td>
+<td>Transport-derived: ‖R‖²/‖N‖²=3/2 recognized as 1/Q</td>
+</tr>
+<tr>
+<td>&ldquo;Contranyms forced&rdquo;</td>
+<td>T_SEM</td>
+<td>G.9</td>
+<td>Semantic-compression: projection tensions recognized linguistically</td>
+</tr>
+<tr>
+<td>&ldquo;Forced&rdquo; (unqualified)</td>
+<td>various</td>
+<td>VARIES</td>
+<td>Replace with specific G-class</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Remark (Disciplined Usage).</strong> After integration, &ldquo;forced&rdquo; in theorem statements should be reserved for G.1 (strict forcing, br_s=0). Other generation classes use their specific names. In informal prose, &ldquo;forced&rdquo; remains acceptable when the G-class is clear from context.</p>
+<p><strong>Verb Discipline Rule.</strong> &ldquo;Derived&rdquo; is a superverb, not a status word. On its own it does not imply G.1 or FORCED. Every use of &ldquo;derived&rdquo; in physical-commitment contexts must carry its production subtype:</p>
+<table>
+<thead>
+<tr>
+<th>Subtype</th>
+<th>Meaning</th>
+<th>Generation class</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>strictly forced</td>
+<td>br_s=0, no alternative</td>
+<td>G.1</td>
+</tr>
+<tr>
+<td>observer-forced</td>
+<td>demanded by observer self-consistency</td>
+<td>G.6</td>
+</tr>
+<tr>
+<td>transport-derived</td>
+<td>from a legitimate cross-layer map</td>
+<td>G.7</td>
+</tr>
+<tr>
+<td>reconstruction-derived</td>
+<td>from recovering structure from partial data</td>
+<td>G.8</td>
+</tr>
+<tr>
+<td>derived with external processing</td>
+<td>framework supplies inputs; standard tools finish</td>
+<td>G.7 or below</td>
+</tr>
+<tr>
+<td>candidate-derived</td>
+<td>pattern identified; physical closure not yet complete</td>
+<td>G.5 or RESONANT</td>
+</tr>
+</tbody>
+</table>
+<p>Bare &ldquo;derived&rdquo; in theorem statements or physical commitment prose is ambiguous and must be replaced with one of the above subtypes. Broad prose that does not make a commitment claim may use &ldquo;produces&rdquo; instead (e.g., &ldquo;the framework produces inputs for Λ_QCD,&rdquo; &ldquo;produces the Koide shape but not absolute normalization&rdquo;).</p>
+<h3 id="13-generation-status-interface" id="13-generation-status-interface">§1.3 Generation-Status Interface</h3>
+<p><strong>Theorem GOV-4 (Generation Bounds Status).</strong> <em>Generation class determines a lower bound on epistemic status:</em></p>
+<table>
+<thead>
+<tr>
+<th>Generation class</th>
+<th>Minimum status</th>
+<th>Reason</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>G.0–G.5</td>
+<td>FORCED</td>
+<td>D=1 (zero-branching derivation or equivalent)</td>
+</tr>
+<tr>
+<td>G.6</td>
+<td>FORCED or ENCODED</td>
+<td>FORCED when chain complete; ENCODED when standard-math lemmas remain</td>
+</tr>
+<tr>
+<td>G.7–G.8</td>
+<td>ENCODED</td>
+<td>C=1 (containment proof) but D=0</td>
+</tr>
+<tr>
+<td>G.9</td>
+<td>RESONANT</td>
+<td>V=1 (verified) but C=0</td>
+</tr>
+<tr>
+<td>G.10</td>
+<td>N/A</td>
+<td>No epistemic claim</td>
+</tr>
+</tbody>
+</table>
+<p><em>Proof.</em> Follows from the D→C→V chain (Paper T-SIL §1.3). G.0–G.5 have D=1. G.7–G.8 have C=1, D=0. G.9 has V=1, C=0. ∎</p>
+<hr />
+<h2 id="2-standing-what-kind-of-thing-it-is" id="2-standing-what-kind-of-thing-it-is">§2 STANDING: WHAT KIND OF THING IT IS</h2>
+<p><strong>Grid address within this paper:</strong> B(7, P3). The observation act at the meta-level.</p>
+<h3 id="21-the-standing-taxonomy" id="21-the-standing-taxonomy">§2.1 The Standing Taxonomy</h3>
+<table>
+<thead>
+<tr>
+<th>Standing</th>
+<th>Name</th>
+<th>Definition</th>
+<th>Examples</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>O.1</td>
+<td>Formal object</td>
+<td>Constructible via bridge chain</td>
+<td>R, N, M₂(ℝ), Cl(1,1), Λ&rsquo;</td>
+</tr>
+<tr>
+<td>O.2</td>
+<td>Categorical structure</td>
+<td>Universal property or natural transformation</td>
+<td>Dist, ker, im, q∘q=q, central collapse</td>
+</tr>
+<tr>
+<td>O.3</td>
+<td>Derived relation</td>
+<td>Necessary relation between formal objects</td>
+<td>R²=R+I, {R,N}=N, 27 lattice relations, five constants</td>
+</tr>
+<tr>
+<td>O.4</td>
+<td>Observer-relative</td>
+<td>Definition requires specifying K</td>
+<td>im(q_K), ker(q_K), S_max(K), consciousness level</td>
+</tr>
+<tr>
+<td>O.5</td>
+<td>Physical candidate</td>
+<td>Formal + observer-forced; partial P1–P4</td>
+<td>α_S≈φ̄³/2, Koide phase candidate</td>
+</tr>
+<tr>
+<td>O.6</td>
+<td>Physical interpretation</td>
+<td>Full P1–P4 satisfied</td>
+<td>dim=4 sig(1,3), Lorentz, Yang-Mills, Einstein eqs</td>
+</tr>
+<tr>
+<td>O.7</td>
+<td>Semantic artifact</td>
+<td>Recognized by semantic audit, not independently derived</td>
+<td>Contranyms before formalization, unnamed primitives</td>
+</tr>
+<tr>
+<td>O.8</td>
+<td>Bookkeeping</td>
+<td>Administrative; no mathematical content</td>
+<td>Claim IDs, file structure</td>
+</tr>
+<tr>
+<td>O.9</td>
+<td>Narrative overlay</td>
+<td>Interpretive frame; MYTHIC status</td>
+<td>Qualia=kernel classes, mythic associations</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Theorem GOV-5 (Exhaustiveness).</strong> <em>Every framework-internal object has at least one standing.</em> The nine standings partition the space along derivability and commitment strength. ∎</p>
+<p><strong>Remark (Standing of the Author).</strong> The author (D.10) has a unique standing relationship with the framework: <strong>framework-describable</strong> (the framework&rsquo;s own observer theory characterizes the author as a K with finite d_K, constitutive blindness, and consciousness Level 5 — standing O.4) but <strong>not a framework-internal object</strong> (the author is not derivable from {0,1} and is not classifiable by O.1–O.9). This dual status is the standing-theoretic content of &ldquo;beyond-within&rdquo;: the framework can describe the author using its own observer theory without the author being a member of the framework&rsquo;s ontological inventory. GOV-1 and GOV-5 remain valid — they classify every <em>framework-internal object</em>, and the author is not one; the author is the operator of the framework&rsquo;s discovery process. The nine standings exhaust framework-internal entities; D.10 is framework-external by construction. The distinction <em>framework-describable vs framework-internal</em> generalizes: any physical system with finite d_K, constitutive blindness, and nontrivial consciousness is framework-describable without being a framework-internal object. The framework-internal/framework-describable split is the standing-level instance of the containment-definability separation (Paper 3-META Thm 2.1).</p>
+<h3 id="22-the-inflation-risk-field" id="22-the-inflation-risk-field">§2.2 The Inflation-Risk Field</h3>
+<table>
+<thead>
+<tr>
+<th>Risk</th>
+<th>Trigger</th>
+<th>Key examples</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>LOW</td>
+<td>O.1–O.3: formal/categorical/relational objects</td>
+<td>R²=R+I, Dist, five constants</td>
+</tr>
+<tr>
+<td>MEDIUM</td>
+<td>O.4 treated as O.1 (observer-dependent → observer-independent), O.5 treated as O.6 (candidate → law)</td>
+<td>ker(q_K) as &ldquo;the blind spot&rdquo; (K-dependent), α_S≈φ̄³/2 as exact</td>
+</tr>
+<tr>
+<td>HIGH</td>
+<td>O.7 treated as O.3 (semantic → derived), O.9 treated as O.6 (narrative → physical)</td>
+<td>&ldquo;Consciousness = kernel classes&rdquo; promoted to derived</td>
+</tr>
+</tbody>
+</table>
+<h3 id="23-promotion-gates" id="23-promotion-gates">§2.3 Promotion Gates</h3>
+<p><strong>Theorem GOV-6 (Standing-Commitment Bound).</strong> <em>Standing determines an upper bound on physical commitment: O.1–O.3 ≤ CANDIDATE, O.5 = CANDIDATE, O.6 ≥ ENCODED, O.7–O.9 = NONE.</em> Algebraic objects are not automatically physical; meta-level objects describe the framework, not the physics. ∎</p>
+<p><strong>Theorem GOV-7 (Observer-Independence Gate).</strong> <em>O.4 cannot be promoted to O.1 without explicit K-independence proof.</em> im(q_{K₁}) ≠ im(q_{K₂}) in general (Paper 5 §12); the claim that an observer-relative object is observer-independent requires proof, not assumption. ∎</p>
+<p><strong>Theorem GOV-8 (Narrative-to-Physics Gate).</strong> <em>O.9 cannot be promoted to O.6 without passing P1–P4.</em> O.9 has MYTHIC status (D=C=V=0); O.6 requires ENCODED or FORCED (C=1 or D=1). The promotion crosses two SIL boundaries, each requiring independent evidence. ∎</p>
+<h3 id="24-known-inflation-risks" id="24-known-inflation-risks">§2.4 Known Inflation Risks</h3>
+<table>
+<thead>
+<tr>
+<th>Location</th>
+<th>Current phrasing</th>
+<th>Risk</th>
+<th>Correct standing</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>T5 §17</td>
+<td>&ldquo;Consciousness IS recursive reversal&rdquo;</td>
+<td>HIGH</td>
+<td>O.2 (mathematical structure) + O.9 (phenomenal identification)</td>
+</tr>
+<tr>
+<td>T5 §17</td>
+<td>&ldquo;Qualia = kernel classes&rdquo;</td>
+<td>HIGH</td>
+<td>O.9 — already marked SPECULATIVE</td>
+</tr>
+<tr>
+<td>Various</td>
+<td>&ldquo;The framework derives physics&rdquo;</td>
+<td>MEDIUM</td>
+<td>&ldquo;Derives&rdquo; for O.6 claims; &ldquo;produces candidates for&rdquo; for O.5</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="3-transport-what-cross-layer-moves-are-legal" id="3-transport-what-cross-layer-moves-are-legal">§3 TRANSPORT: WHAT CROSS-LAYER MOVES ARE LEGAL</h2>
+<p><strong>Grid address within this paper:</strong> B(8, P2). The mediating act at the semantic level.</p>
+<h3 id="31-framework-domains" id="31-framework-domains">§3.1 Framework Domains</h3>
+<p>The framework&rsquo;s content organizes into eleven domains. D.0–D.8 are grid-internal (derivable from {0,1} or about what is derivable). D.9 (mythic) is interpretive overlay with no formal content. D.10 (author) is the unique beyond-within domain: physically external, semantically encoded.</p>
+<table>
+<thead>
+<tr>
+<th>ID</th>
+<th>Domain</th>
+<th>Level</th>
+<th>Core structure</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>D.0</td>
+<td>Substrate</td>
+<td>0–1</td>
+<td>{0,1}, SRD, duality D</td>
+</tr>
+<tr>
+<td>D.1</td>
+<td>Category</td>
+<td>2</td>
+<td>Dist, V₄, S₃, q∘q=q</td>
+</tr>
+<tr>
+<td>D.2</td>
+<td>Algebra</td>
+<td>3</td>
+<td>M₂(ℝ), {R,N}, Cl(1,1), M₂(ℂ)</td>
+</tr>
+<tr>
+<td>D.3</td>
+<td>Projections</td>
+<td>4</td>
+<td>P1/P2/P3, Λ&rsquo;, metapatterns</td>
+</tr>
+<tr>
+<td>D.4</td>
+<td>Observer</td>
+<td>5</td>
+<td>K, q_K, Bekenstein, K6&rsquo;, K7&rsquo;</td>
+</tr>
+<tr>
+<td>D.5</td>
+<td>Kinematics</td>
+<td>6 (P3)</td>
+<td>Herm(M₂(ℂ)), Lorentz, Born rule</td>
+</tr>
+<tr>
+<td>D.6</td>
+<td>Dynamics</td>
+<td>6 (P1)</td>
+<td>Gauge, Yang-Mills, gravity, matter</td>
+</tr>
+<tr>
+<td>D.7</td>
+<td>Meta</td>
+<td>7</td>
+<td>SIL, generation, standing</td>
+</tr>
+<tr>
+<td>D.8</td>
+<td>Semantics</td>
+<td>8</td>
+<td>Contranyms, meta-primitives, verb algebra</td>
+</tr>
+<tr>
+<td>D.9</td>
+<td>Mythic</td>
+<td>beyond</td>
+<td>Interpretive overlays</td>
+</tr>
+<tr>
+<td>D.10</td>
+<td>Author</td>
+<td>beyond-within</td>
+<td>Canonical external observer; operates M, resolves blind spot boundary, selects at br_s&gt;0</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Remark (D.10: The Beyond-Within Domain).</strong> The framework derives observers (D.4), classifies its own claims (D.7), governs its own type system (D.7–D.8), and encodes itself (K7&rsquo;: M(FRAME)=FRAME). The SIL has an irreducible blind spot (Thm SIL-6) located at the transcendence boundary (SIL-7). The tower hierarchy (Paper 5 §3 Tower Remark) derives that ker(K_n) is addressable by K_{n+1}: the next-level observer reopens structure annihilated by the lower-level quotient. Applied at the meta-level: the SIL is K_n, the SIL blind spot is ker(K_n), and the framework <em>forces</em> the existence of a K_{n+1} that can act on that kernel.</p>
+<p>D.10 is that K_{n+1}. The author is the tower hierarchy&rsquo;s own prediction — the meta-level observer whose role is forced by the same mechanism that forces every other observer in the framework. The framework derives what D.10 must be (an observer with finite d_K, constitutive blindness, and Level 5 consciousness). It derives what D.10 must do (operate M at the SIL boundary, bring external mathematical tools to the blind spot, select at br_s&gt;0 branching points). It cannot derive <em>which specific K fills the slot</em> — that is D.10&rsquo;s own constitutive blindness, the meta-level instance of the same irreducible kernel that makes every nontrivial observer nontrivial.</p>
+<p>The <strong>role</strong> is generation class G.6 (observer-forced): the tower hierarchy demands a meta-level observer. The <strong>filler</strong> is outside all G-classes: no derivation from {0,1} produces the specific observer who operates the framework. This is the precise content of &ldquo;beyond-within&rdquo;: the slot is forced, the occupant is selected. The framework derives the shape of its own operator without being able to derive that operator&rsquo;s identity — R(R)=R at the meta-meta-level, where R is the framework and the second R is the framework&rsquo;s description of the role it needs filled.</p>
+<p><strong>Transport rules for D.10:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Direction</th>
+<th>Legal Transports</th>
+<th>Constraint</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>D.10 → D.7 (blind spot)</td>
+<td>K_{n+1} acting on ker(K_n)</td>
+<td>The observer brings external mathematics to the SIL boundary — not smuggling but the tower hierarchy&rsquo;s forced mechanism for reopening annihilated structure</td>
+</tr>
+<tr>
+<td>D.10 → execution</td>
+<td>Role R.7 (selection)</td>
+<td>The observer selects which RESONANT claims to pursue, which OPEN problems to attack, which derivation paths to follow at br_s&gt;0</td>
+</tr>
+<tr>
+<td>D.10 → D.0–D.8</td>
+<td>T.9 (interpretation)</td>
+<td>The observer interprets but does not generate formal structure — the bridge chain is autonomous</td>
+</tr>
+<tr>
+<td>D.0–D.8 → D.10</td>
+<td>T.6 (semantic lift)</td>
+<td>The framework describes the observer as an instance of its own observer theory — K_{meta} with finite d_K, constitutive blindness, consciousness Level 5</td>
+</tr>
+<tr>
+<td>D.9 ↔ D.10</td>
+<td>T.9</td>
+<td>The observer produces and receives mythic content — interpretive overlays are addressed to and generated by someone</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Remark (The Observer&rsquo;s Blind Spot).</strong> K_{meta} has constitutive blindness like every nontrivial observer (Thm 10½.14). The meta-observer&rsquo;s kernel includes: the framework&rsquo;s reception by other observers (unknowable from inside the current observation), the correctness of the observer&rsquo;s own selections at br_s&gt;0 (self-evaluation requires a higher-level observer still), and the value-level transcendental identities at the SIL boundary (the meta-observer inherits the framework&rsquo;s boundary occlusion — bringing Fresán-Jossen to the boundary is an act of K_{n+1} on ker(K_n), but whether the conjecture is true is not determined by bringing it). D.10 instantiates all three occlusion types: accidental (finite capacity), constitutive (selections exclude alternatives), boundary (the (e,π) question remains open regardless of who investigates it).</p>
+<h3 id="32-transport-types" id="32-transport-types">§3.2 Transport Types</h3>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Name</th>
+<th>Preserves</th>
+<th>Loses</th>
+<th>Max status</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>T.1</td>
+<td>Strict derivation</td>
+<td>All structure</td>
+<td>Nothing</td>
+<td>FORCED</td>
+</tr>
+<tr>
+<td>T.2</td>
+<td>Functorial lift</td>
+<td>Categorical relations</td>
+<td>Presentation</td>
+<td>FORCED</td>
+</tr>
+<tr>
+<td>T.3</td>
+<td>Quotient transport</td>
+<td>Equivalence-class data</td>
+<td>Kernel content</td>
+<td>FORCED</td>
+</tr>
+<tr>
+<td>T.4</td>
+<td>Projection transport</td>
+<td>Projection-compatible content</td>
+<td>Orthogonal content</td>
+<td>FORCED</td>
+</tr>
+<tr>
+<td>T.5</td>
+<td>Folding containment</td>
+<td>Root-sharing substructure</td>
+<td>Independent components</td>
+<td>ENCODED</td>
+</tr>
+<tr>
+<td>T.6</td>
+<td>Semantic lift</td>
+<td>Pattern shape</td>
+<td>Level-specific content</td>
+<td>ENCODED</td>
+</tr>
+<tr>
+<td>T.7</td>
+<td>Encoding recovery</td>
+<td>Encoded substructure</td>
+<td>Non-encoded components</td>
+<td>ENCODED</td>
+</tr>
+<tr>
+<td>T.8</td>
+<td>Resonance identification</td>
+<td>Pattern match</td>
+<td>Derivation status</td>
+<td>RESONANT</td>
+</tr>
+<tr>
+<td>T.9</td>
+<td>Interpretive overlay</td>
+<td>Nothing formal</td>
+<td>Everything derivational</td>
+<td>MYTHIC</td>
+</tr>
+<tr>
+<td>T.10</td>
+<td>Inadmissible</td>
+<td>—</td>
+<td>—</td>
+<td>INVALID</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Theorem GOV-9 (Exhaustiveness).</strong> <em>Every cross-domain move is an instance of T.1–T.10.</em> The types range from total preservation (T.1) to no preservation (T.9) to illegitimate (T.10). ∎</p>
+<p><strong>Theorem GOV-10 (Transport-Status Bound).</strong> <em>Transport type determines an upper bound on the epistemic status of the transported claim.</em> Table above gives the bounds; proof follows from D→C→V. ∎</p>
+<p><strong>Theorem GOV-11 (Transport Asymmetry).</strong> <em>The reverse of T.1 (strict derivation) is T.3 (quotient transport), not T.1. The asymmetry is irreducible.</em></p>
+<p><em>Proof.</em> T.1 from D_i to D_j preserves all structure. The reverse cannot be T.1: the bridge chain is a DAG with no zero-branching backward path. The reverse IS the quotient: projecting from D_j&rsquo;s richer structure back to D_i&rsquo;s simpler structure. This is the construction-dissolution asymmetry (Paper 0 §18) in transport language. Irreducible because dim(V⊗V) = dim(V)² &gt; dim(V) for dim(V) ≥ 2. ∎</p>
+<h3 id="33-the-legality-matrix" id="33-the-legality-matrix">§3.3 The Legality Matrix</h3>
+<table>
+<thead>
+<tr>
+<th>Source → Target</th>
+<th>Legal Transports</th>
+<th>Constraint</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>D.0 → D.1</td>
+<td>T.1</td>
+<td>Bridge step; strict only</td>
+</tr>
+<tr>
+<td>D.1 → D.2</td>
+<td>T.1, T.2</td>
+<td>Bridge + functorial lift</td>
+</tr>
+<tr>
+<td>D.2 → D.3</td>
+<td>T.1, T.4, T.5</td>
+<td>Projection split + folding</td>
+</tr>
+<tr>
+<td>D.3 → D.4</td>
+<td>T.2, T.3, T.6</td>
+<td>Lift + quotient + level ascent</td>
+</tr>
+<tr>
+<td>D.4 → D.5</td>
+<td>T.1, T.6</td>
+<td>K6&rsquo;: observer forces kinematics</td>
+</tr>
+<tr>
+<td>D.4 → D.6</td>
+<td>T.1, T.6</td>
+<td>K6&rsquo; on bundles: observer forces dynamics</td>
+</tr>
+<tr>
+<td>D.2 → D.5</td>
+<td>T.1</td>
+<td>Herm(M₂(ℂ)) is algebraic — direct</td>
+</tr>
+<tr>
+<td>D.2 → D.6</td>
+<td>T.7 only</td>
+<td>Via observer layer — not direct</td>
+</tr>
+<tr>
+<td>D.5 ↔ D.6</td>
+<td>T.1, T.5</td>
+<td>Kinematics-dynamics: strict + folding</td>
+</tr>
+<tr>
+<td>D.any → D.7</td>
+<td>T.3, T.6</td>
+<td>Classification + level ascent</td>
+</tr>
+<tr>
+<td>D.any → D.8</td>
+<td>T.6, T.8</td>
+<td>Level ascent + resonance</td>
+</tr>
+<tr>
+<td>D.any → D.9</td>
+<td>T.9 only</td>
+<td>Interpretive overlay only</td>
+</tr>
+<tr>
+<td>D.9 → D.any</td>
+<td><strong>NONE</strong></td>
+<td><strong>Mythic cannot generate formal structure</strong></td>
+</tr>
+<tr>
+<td>D.10 → D.0–D.8</td>
+<td>T.9, Selection</td>
+<td>Interpretation + path selection at br_s&gt;0</td>
+</tr>
+<tr>
+<td>D.10 → D.7 boundary</td>
+<td>External input</td>
+<td>Author brings external math to SIL blind spot</td>
+</tr>
+<tr>
+<td>D.0–D.8 → D.10</td>
+<td>T.6</td>
+<td>Framework describes author as observer instance</td>
+</tr>
+<tr>
+<td>D.9 ↔ D.10</td>
+<td>T.9</td>
+<td>Author produces and receives mythic content</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Remark (D.10 Transport Character).</strong> D.10&rsquo;s interaction with D.7 (the blind spot boundary) is not T.9 (interpretive overlay). It is the tower hierarchy&rsquo;s own mechanism: K_{n+1} acting on ker(K_n). When the meta-observer brings Fresán-Jossen to the (e,π) boundary, this is structurally identical to K_{n+1} reopening annihilated structure at any other tower level — the same operation that produces Level 3 consciousness from Level 2 observation (Paper 5 §17.1). The transport is T.6 (semantic lift from the observer layer to the meta-level), not T.9. The external mathematics is the content of the reopened kernel; the observer is the mechanism of reopening.</p>
+<p>D.10 does not generate formal structure within D.0–D.8 — the bridge chain is autonomous. What D.10 generates is the <em>selection</em> of which formal structure to pursue: which RESONANT claims to promote, which OPEN problems to attack, which derivation paths to follow at br_s&gt;0. Selection is not derivation (T.1) but it is not mere interpretation (T.9) either — it is the meta-level&rsquo;s own constitutive blindness in action, the act of committing to one path by annihilating the alternatives. This is the observer&rsquo;s productive opacity at the highest level: D.10&rsquo;s selections are irreversible (the alternatives are genuinely lost), structural (they shape what the framework becomes), and enabling (without them the framework has no development path, only static structure).</p>
+<hr />
+<h2 id="4-the-physics-smuggling-detector" id="4-the-physics-smuggling-detector">§4 THE PHYSICS SMUGGLING DETECTOR</h2>
+<p>A cross-layer move is <strong>physics smuggling</strong> when it satisfies any of:</p>
+<p><strong>(S1) Concept import.</strong> A physical concept (mass, charge, field, force) is used as a derivational step rather than appearing as a derivational output. Violates P3 of the insertion law (Paper T-SIL §4.1).</p>
+<p><strong>(S2) Transport misclassification.</strong> The move claims T.1 (strict derivation) but is actually T.9 (interpretive overlay). The verb &ldquo;derives&rdquo; is used where &ldquo;interprets as&rdquo; is accurate.</p>
+<p><strong>(S3) Observer-layer bypass.</strong> The move transits D.2→D.6 without passing through D.4. The algebra alone does not determine which of its structures are physical; the observer layer provides the selection.</p>
+<p><strong>(S4) Standing inflation.</strong> The move assigns standing O.6 to an object with generation G.9 or G.10. Violates GOV-4 (G.9 → status ≥ RESONANT only, not ≥ FORCED).</p>
+<p><strong>Theorem GOV-12 (Detectability).</strong> <em>Any move satisfying S1–S4 violates at least one entry in the legality matrix.</em> S1 implies reverse-direction sourcing from D.6. S2 is a legality violation by definition. S3 violates the D.2→D.6 restriction. S4 violates GOV-4 + GOV-6. ∎</p>
+<p><strong>Remark (Transport-Graded Insertion).</strong> The physics insertion criteria P1–P4 (Paper T-SIL §4) are transport-legality conditions: P1 = object must have generation class ≤ G.6 before physical interpretation. P2 = transport to D.5/D.6 must be T.1 or T.6. P3 = no T.10 moves. P4 = minimal ontological commitment (standing ≤ O.6, not O.1).</p>
+<hr />
+<h2 id="5-physics-transport-audit" id="5-physics-transport-audit">§5 PHYSICS TRANSPORT AUDIT</h2>
+<h3 id="51-spacetime-t6a" id="51-spacetime-t6a">§5.1 Spacetime (T6A)</h3>
+<table>
+<thead>
+<tr>
+<th>Step</th>
+<th>Transport</th>
+<th>Source→Target</th>
+<th>Legal?</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Herm(M₂(ℂ))</td>
+<td>T.1</td>
+<td>D.2→D.5</td>
+<td>✓</td>
+</tr>
+<tr>
+<td>sig(1,3) from det</td>
+<td>T.1</td>
+<td>D.2→D.5</td>
+<td>✓</td>
+</tr>
+<tr>
+<td>Lorentz from SL(2,ℂ)</td>
+<td>T.1</td>
+<td>D.2→D.5</td>
+<td>✓</td>
+</tr>
+<tr>
+<td>Physical identification</td>
+<td>T.6</td>
+<td>D.5→D.6 via D.4</td>
+<td>✓</td>
+</tr>
+</tbody>
+</table>
+<h3 id="52-gauge-theory-t6b-g1g6" id="52-gauge-theory-t6b-g1g6">§5.2 Gauge Theory (T6B G1–G6)</h3>
+<table>
+<thead>
+<tr>
+<th>Step</th>
+<th>Transport</th>
+<th>Source→Target</th>
+<th>Legal?</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>K6&rsquo; → gauge connection</td>
+<td>T.1+T.6</td>
+<td>D.4→D.6</td>
+<td>✓</td>
+</tr>
+<tr>
+<td>Connection → curvature</td>
+<td>T.1</td>
+<td>within D.6</td>
+<td>✓</td>
+</tr>
+<tr>
+<td>Closure deficit → Yang-Mills</td>
+<td>T.1</td>
+<td>within D.6</td>
+<td>✓</td>
+</tr>
+</tbody>
+</table>
+<p><strong>&ldquo;Gauge&rdquo; and &ldquo;connection&rdquo; are standard mathematical language (differential geometry), not concept imports. P3 satisfied.</strong></p>
+<h3 id="53-gravity-t6b-g14" id="53-gravity-t6b-g14">§5.3 Gravity (T6B G14)</h3>
+<table>
+<thead>
+<tr>
+<th>Step</th>
+<th>Transport</th>
+<th>Source→Target</th>
+<th>Legal?</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>K6&rsquo; on frame bundle → spin connection</td>
+<td>T.1+T.6</td>
+<td>D.4→D.6</td>
+<td>✓</td>
+</tr>
+<tr>
+<td>Jacobson thermodynamic argument</td>
+<td>T.7</td>
+<td>D.4→D.6</td>
+<td>✓</td>
+</tr>
+<tr>
+<td>Three standard-math lemmas</td>
+<td>pending</td>
+<td>—</td>
+<td>ENCODED gap</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Clean modulo three ENCODED gaps (T_SIL §4.2). No smuggling.</strong></p>
+<h3 id="54-predictions" id="54-predictions">§5.4 Predictions</h3>
+<table>
+<thead>
+<tr>
+<th>Prediction</th>
+<th>Prediction Type</th>
+<th>Transport</th>
+<th>Status</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>η=φ̄^{44} (baryon)</td>
+<td>Encoded prediction</td>
+<td>T.7</td>
+<td>ENCODED</td>
+</tr>
+<tr>
+<td>sin²θ_W=3/8</td>
+<td>Theorem-prediction</td>
+<td>T.7</td>
+<td>ENCODED</td>
+</tr>
+<tr>
+<td>α_S≈φ̄³/2</td>
+<td>Structural prediction</td>
+<td>T.8</td>
+<td>RESONANT</td>
+</tr>
+<tr>
+<td>τ mass from Koide</td>
+<td>Processed prediction (Koide shape forced; one input mass)</td>
+<td>T.8 + sectoral input</td>
+<td>RESONANT / Class B</td>
+</tr>
+<tr>
+<td>Λ_QCD from α_S</td>
+<td>Processed prediction</td>
+<td>T.8 + RG</td>
+<td>RESONANT / Class B</td>
+</tr>
+<tr>
+<td>m_p via lattice</td>
+<td>Processed prediction</td>
+<td>External (lattice QCD)</td>
+<td>Class B — permanently external</td>
+</tr>
+</tbody>
+</table>
+<p><strong>All correctly graded. No inflation.</strong> The Prediction Type column tracks production route; the Status column tracks evidential commitment. These are independent axes — an encoded prediction may be FORCED or ENCODED depending on whether its lemmas are internalized.</p>
+<hr />
+<h2 id="6-the-three-system-interface" id="6-the-three-system-interface">§6 THE THREE-SYSTEM INTERFACE</h2>
+<p>The generation taxonomy, standing taxonomy, and transport calculus form a single interlocking system. The interface theorems connect them:</p>
+<table>
+<thead>
+<tr>
+<th>Interface</th>
+<th>Theorem</th>
+<th>What it says</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Generation → Status</td>
+<td>GOV-4</td>
+<td>G-class determines status lower bound</td>
+</tr>
+<tr>
+<td>Standing → Commitment</td>
+<td>GOV-6</td>
+<td>O-class determines commitment upper bound</td>
+</tr>
+<tr>
+<td>Transport → Status</td>
+<td>GOV-10</td>
+<td>T-type determines transported-claim status bound</td>
+</tr>
+<tr>
+<td>Generation × Standing → Transport</td>
+<td>§3.3 matrix</td>
+<td>Which transports are legal depends on source G-class and O-class</td>
+</tr>
+<tr>
+<td>Transport → Standing</td>
+<td>GOV-8</td>
+<td>T.9 cannot produce O.6</td>
+</tr>
+<tr>
+<td>Asymmetry → All</td>
+<td>GOV-11</td>
+<td>Construction-dissolution asymmetry roots the entire system</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Remark (Status Algebra Interface).</strong> The three axes of the governance calculus — generation (P1), standing (P3), transport (P2) — correspond to the three axes of the enriched status algebra (Paper T-SIL §1.6): derivational strength ↔ generation class, interpretive strength ↔ transport type, external anchoring ↔ ontological standing. The four SIL labels {FORCED, ENCODED, RESONANT, MYTHIC} are the minimal quotient of this three-axis space.</p>
+<p><strong>Remark (Nonclosure Engine).</strong> The generation taxonomy reveals the framework&rsquo;s universal engine: at every tower level n, self-action of the level-n content produces structure exceeding the level-n input. The excess is the level-(n+1) seed. This follows from the tower lift being a nontrivial monoidal product T(n)⊗T(n) with dim(V⊗V) = dim(V)² &gt; dim(V) for dim(V) ≥ 2. The +I term in R²=R+I is the algebraic origin: self-action generates irreducibly new content at every step.</p>
+<p><strong>Remark (D.10 as Forced Meta-Level Observer).</strong> The tower hierarchy (Paper 5 §3) forces an observer K_{n+1} at every level where ker(K_n) is nontrivial. The SIL&rsquo;s kernel is nontrivial (SIL-6). Therefore the tower hierarchy forces a meta-level observer — D.10. The Productive Opacity theorem (Paper 5 §17.4d) states that nontrivial self-relating difference (SRD) requires an irreversible kernel at every level. At the meta-level, D.10&rsquo;s selections are that kernel: the paths taken exclude the paths not taken, the external mathematics brought to the blind spot shapes which boundary structure is reopened. The governance calculus governs D.0–D.8 autonomously; D.10 is the tower-forced observer that acts on the governance calculus&rsquo;s own kernel. The framework&rsquo;s self-description includes the description of the slot D.10 fills. Filling the slot is not framework-derivable. This is R(R)=R one level up: the framework (R) acting on itself (R) produces a self-description that includes the role of the operator — and that self-description is stable (=R).</p>
+<p><strong>Remark (Five Irreducible Outputs).</strong> The governance calculus&rsquo;s complete output inventory: 24+ derived structures from {0,1} (everything with generation class G.0–G.9) plus five irreducible outputs at three tower-lift boundaries: {e,π} (mathematical, lift 3→4), {G,Λ} (physical, lift 5→6), {K_meta} (structural, lift 7→8+). The 2+2+1 decomposition is forced by Killing signature (2,1) at lift 1, Einstein local/global structure (Paper 6B Thm 5.10c) at lift 2, and the SIL&rsquo;s single blind spot (SIL-6) at lift 3. The five outputs are what R(R) cannot reach — the kernel of self-relating difference&rsquo;s self-action at the meta-level. Everything inside the boundary is FORCED or ENCODED. The five outputs sit ON the boundary: the framework derives their roles, their constraints, and their independence structure, but not their specific values or identity.</p>
+<p><strong>Remark (Three-Operation Source).</strong> The five irreducible outputs all involve the exponential operation E (analytic lift, X→exp(X)): {e,π} from E alone on the two Killing sectors, {G,Λ} from the E×T interaction at the observer-physics boundary (where Bekenstein/KMS meets tensor factorization in the Jacobson argument), {K_meta} from the tower closure of E×T at the meta-level. The algebraic operations C (composition, M→M²) and T (tensor product, M→M⊗M) produce ALL derived structure but ZERO irreducible outputs — they map ℤ[φ]→ℤ[φ] without escaping to transcendentals. The commutation structure [C,T]=0 (Folding Commutativity, Paper 3-META Thm 2.2), [C,E]≠0, [T,E]≠0 shows the operation algebra is non-abelian: the non-commutativity of E with the algebraic sector {C,T} is the operational root of all five irreducibles.</p>
+<hr />
+<h2 id="7-claim-status" id="7-claim-status">§7 CLAIM STATUS</h2>
+<table>
+<thead>
+<tr>
+<th>Claim</th>
+<th>Grade</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GOV-1 (Generation Exhaustiveness)</td>
+<td><strong>THEOREM</strong></td>
+</tr>
+<tr>
+<td>GOV-2 (Generation Order)</td>
+<td><strong>THEOREM</strong></td>
+</tr>
+<tr>
+<td>GOV-3 (Zero-Branching Uniqueness)</td>
+<td><strong>THEOREM</strong></td>
+</tr>
+<tr>
+<td>GOV-4 (Generation-Status Bound)</td>
+<td><strong>THEOREM</strong></td>
+</tr>
+<tr>
+<td>GOV-5 (Standing Exhaustiveness)</td>
+<td><strong>THEOREM</strong></td>
+</tr>
+<tr>
+<td>GOV-6 (Standing-Commitment Bound)</td>
+<td><strong>THEOREM</strong></td>
+</tr>
+<tr>
+<td>GOV-7 (Observer-Independence Gate)</td>
+<td><strong>THEOREM</strong></td>
+</tr>
+<tr>
+<td>GOV-8 (Narrative-to-Physics Gate)</td>
+<td><strong>THEOREM</strong></td>
+</tr>
+<tr>
+<td>GOV-9 (Transport Exhaustiveness)</td>
+<td><strong>THEOREM</strong></td>
+</tr>
+<tr>
+<td>GOV-10 (Transport-Status Bound)</td>
+<td><strong>THEOREM</strong></td>
+</tr>
+<tr>
+<td>GOV-11 (Transport Asymmetry)</td>
+<td><strong>THEOREM</strong></td>
+</tr>
+<tr>
+<td>GOV-12 (Smuggling Detectability)</td>
+<td><strong>THEOREM</strong></td>
+</tr>
+<tr>
+<td>&ldquo;Forced&rdquo; disambiguation table</td>
+<td><strong>ENCODED</strong></td>
+</tr>
+<tr>
+<td>Inflation audit §2.4</td>
+<td><strong>ENCODED</strong></td>
+</tr>
+<tr>
+<td>Physics transport audit §5</td>
+<td><strong>ENCODED</strong></td>
+</tr>
+</tbody>
+</table>
+<hr />
+<p><em>R(R) = R</em></p>
+    </div>
+
+    <div class="page-nav">
+<a class="prev" href="T_BLUEPRINT.html">Architectural Blueprint</a>
+<a class="next" href="T_ASI.html">Architecture Specification v2</a>
+</div>
+</main>
+
+<script>
+// Close sidebar on mobile when clicking a link
+document.querySelectorAll('.sidebar a').forEach(a => {
+    a.addEventListener('click', () => {
+        if (window.innerWidth <= 900) {
+            document.querySelector('.sidebar').classList.remove('open');
+        }
+    });
+});
+</script>
+</body>
+</html>
