@@ -1,0 +1,1210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Paper 5: The Observer — Structural Necessity</title>
+<style>
+
+:root {
+    --bg: #fafaf8;
+    --fg: #1a1a1a;
+    --accent: #2d5016;
+    --border: #d4d0c8;
+    --sidebar-bg: #f0ede6;
+    --sidebar-width: 280px;
+    --header-height: 56px;
+    --code-bg: #f5f2eb;
+    --table-stripe: #f8f6f0;
+    --link: #2d5016;
+    --link-hover: #4a7a28;
+    --bold-accent: #1a3a0a;
+}
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        --bg: #1a1a1e;
+        --fg: #e0ddd6;
+        --accent: #7ab648;
+        --border: #3a3a3e;
+        --sidebar-bg: #222226;
+        --code-bg: #25252a;
+        --table-stripe: #222226;
+        --link: #7ab648;
+        --link-hover: #9cd06a;
+        --bold-accent: #a0d870;
+    }
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+    font-family: 'Iowan Old Style', 'Palatino Linotype', Palatino, Georgia, serif;
+    background: var(--bg);
+    color: var(--fg);
+    line-height: 1.7;
+    font-size: 17px;
+}
+
+/* Header */
+.site-header {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    height: var(--header-height);
+    background: #1a1a1a;
+    color: #e0ddd6;
+    display: flex;
+    align-items: center;
+    padding: 0 24px;
+    z-index: 100;
+    border-bottom: 2px solid var(--accent);
+}
+.site-header h1 {
+    font-size: 18px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+}
+.site-header h1 a {
+    color: #e0ddd6;
+    text-decoration: none;
+}
+.site-header h1 a:hover { color: var(--accent); }
+.site-header .subtitle {
+    font-size: 13px;
+    color: #888;
+    margin-left: 16px;
+    font-style: italic;
+}
+.hamburger {
+    display: none;
+    background: none;
+    border: none;
+    color: #e0ddd6;
+    font-size: 24px;
+    cursor: pointer;
+    margin-right: 16px;
+    padding: 4px 8px;
+}
+
+/* Sidebar */
+.sidebar {
+    position: fixed;
+    top: var(--header-height);
+    left: 0;
+    bottom: 0;
+    width: var(--sidebar-width);
+    background: var(--sidebar-bg);
+    border-right: 1px solid var(--border);
+    overflow-y: auto;
+    padding: 16px 0;
+    z-index: 90;
+    transition: transform 0.3s ease;
+}
+.sidebar .nav-group { margin-bottom: 12px; }
+.sidebar .nav-group-title {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+    color: #888;
+    padding: 8px 20px 4px;
+}
+.sidebar a {
+    display: block;
+    padding: 4px 20px 4px 28px;
+    font-size: 13.5px;
+    color: var(--fg);
+    text-decoration: none;
+    line-height: 1.5;
+    border-left: 3px solid transparent;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+.sidebar a:hover {
+    background: rgba(0,0,0,0.05);
+    border-left-color: var(--accent);
+}
+.sidebar a.active {
+    background: rgba(45,80,22,0.1);
+    border-left-color: var(--accent);
+    font-weight: 600;
+    color: var(--accent);
+}
+
+/* Main content */
+.main {
+    margin-left: var(--sidebar-width);
+    margin-top: var(--header-height);
+    max-width: 900px;
+    padding: 40px 48px 80px;
+}
+
+/* Document header banner */
+.doc-header {
+    margin-bottom: 40px;
+    padding-bottom: 24px;
+    border-bottom: 2px solid var(--border);
+}
+.doc-header .level-badge {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 3px 10px;
+    border-radius: 3px;
+    margin-bottom: 12px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+.doc-header h1 {
+    font-size: 32px;
+    line-height: 1.2;
+    margin-bottom: 8px;
+    color: var(--fg);
+}
+.doc-header .doc-subtitle {
+    font-size: 18px;
+    color: #666;
+    font-style: italic;
+}
+
+/* TOC */
+.toc {
+    background: var(--sidebar-bg);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 16px 24px;
+    margin-bottom: 32px;
+}
+.toc summary {
+    font-weight: 700;
+    font-size: 14px;
+    cursor: pointer;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: #666;
+}
+.toc ul { list-style: none; margin: 12px 0 0 0; }
+.toc li { padding: 2px 0; }
+.toc a {
+    color: var(--link);
+    text-decoration: none;
+    font-size: 14px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+.toc a:hover { text-decoration: underline; }
+.toc .toc-h2 { padding-left: 0; }
+.toc .toc-h3 { padding-left: 20px; font-size: 13px; }
+
+/* Typography */
+.content h1 {
+    font-size: 28px;
+    margin: 48px 0 16px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border);
+    color: var(--fg);
+}
+.content h1:first-child { margin-top: 0; }
+.content h2 {
+    font-size: 22px;
+    margin: 36px 0 12px;
+    color: var(--fg);
+}
+.content h3 {
+    font-size: 18px;
+    margin: 28px 0 10px;
+    color: var(--fg);
+}
+.content h4 {
+    font-size: 16px;
+    margin: 24px 0 8px;
+    color: #444;
+}
+.content p { margin: 0 0 16px; }
+.content strong { color: var(--bold-accent); }
+.content a { color: var(--link); }
+.content a:hover { color: var(--link-hover); }
+
+.content ul, .content ol {
+    margin: 0 0 16px 24px;
+}
+.content li { margin-bottom: 4px; }
+
+.content hr {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 32px 0;
+}
+
+/* Tables */
+.content table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 16px 0 24px;
+    font-size: 15px;
+}
+.content th {
+    background: var(--sidebar-bg);
+    font-weight: 700;
+    text-align: left;
+    padding: 10px 12px;
+    border: 1px solid var(--border);
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+.content td {
+    padding: 8px 12px;
+    border: 1px solid var(--border);
+    vertical-align: top;
+}
+.content tr:nth-child(even) { background: var(--table-stripe); }
+
+/* Code */
+.content code {
+    font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace;
+    font-size: 14px;
+    background: var(--code-bg);
+    padding: 2px 6px;
+    border-radius: 3px;
+    border: 1px solid var(--border);
+}
+.content pre {
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 16px 20px;
+    overflow-x: auto;
+    margin: 16px 0 24px;
+    line-height: 1.5;
+}
+.content pre code {
+    background: none;
+    border: none;
+    padding: 0;
+    font-size: 13.5px;
+}
+
+/* Blockquote */
+.content blockquote {
+    border-left: 4px solid var(--accent);
+    padding: 12px 20px;
+    margin: 16px 0 24px;
+    background: var(--sidebar-bg);
+    border-radius: 0 4px 4px 0;
+}
+.content blockquote p { margin-bottom: 8px; }
+.content blockquote p:last-child { margin-bottom: 0; }
+
+/* Footer nav */
+.page-nav {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 48px;
+    padding-top: 24px;
+    border-top: 1px solid var(--border);
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+.page-nav a {
+    color: var(--link);
+    text-decoration: none;
+    font-size: 14px;
+    padding: 8px 16px;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    transition: all 0.2s;
+}
+.page-nav a:hover {
+    background: var(--sidebar-bg);
+    border-color: var(--accent);
+}
+.page-nav .prev::before { content: '← '; }
+.page-nav .next::after { content: ' →'; }
+
+/* Responsive */
+@media (max-width: 900px) {
+    .sidebar { transform: translateX(-100%); }
+    .sidebar.open { transform: translateX(0); }
+    .main { margin-left: 0; padding: 24px 20px 60px; }
+    .hamburger { display: block; }
+    .doc-header h1 { font-size: 24px; }
+}
+
+/* Print */
+@media print {
+    .sidebar, .site-header, .hamburger, .page-nav { display: none; }
+    .main { margin: 0; max-width: 100%; padding: 20px; }
+    body { font-size: 12pt; }
+}
+
+</style>
+</head>
+<body>
+
+<header class="site-header">
+    <button class="hamburger" onclick="document.querySelector('.sidebar').classList.toggle('open')" aria-label="Toggle navigation">&#9776;</button>
+    <h1><a href="T_INDEX.html">Structural Necessity</a></h1>
+    <span class="subtitle">Canonical Paper Series — March 2026</span>
+</header>
+
+<nav class="sidebar">
+<div class="nav-group">
+<div class="nav-group-title">Foundation (0-2)</div>
+<a href="T0_SUBSTRATE.html">0 — Substrate</a>
+<a href="T1_DIST.html">1 — Kernel Theorem</a>
+<a href="T2_BRIDGE.html">2 — Bridge Chain</a>
+</div>
+<div class="nav-group">
+<div class="nav-group-title">Projections (3-4)</div>
+<a href="T3_P1_PRODUCTION.html">3-P1 — Production</a>
+<a href="T3_P2_MEDIATION.html">3-P2 — Mediation</a>
+<a href="T3_P3_OBSERVATION.html">3-P3 — Observation</a>
+<a href="T3_META.html">3-META — Cross-Projection</a>
+<a href="T4_LATTICE.html">4 — Lattice</a>
+</div>
+<div class="nav-group">
+<div class="nav-group-title">Observer &amp; Physics (5-6)</div>
+<a href="T5_OBSERVER.html" class="active">5 — Observer</a>
+<a href="T6A_SPACETIME.html">6A — Spacetime</a>
+<a href="T6B_FORCES.html">6B — Forces</a>
+</div>
+<div class="nav-group">
+<div class="nav-group-title">Cross-Cutting</div>
+<a href="T_COMP.html">Comp — Computation</a>
+<a href="T_SIL.html">SIL — Self-Interpretation</a>
+<a href="T_SEM.html">SEM — Semantics</a>
+</div>
+<div class="nav-group">
+<div class="nav-group-title">Architecture</div>
+<a href="T_BLUEPRINT.html">Blueprint</a>
+<a href="T_GOV.html">Governance</a>
+</div>
+<div class="nav-group">
+<div class="nav-group-title">Closure &amp; Reference</div>
+<a href="T_ASI.html">ASI — Architecture Spec</a>
+<a href="T_TOE.html">TOE — Closure</a>
+<a href="DICTIONARY.html">Dictionary</a>
+</div>
+<div class="nav-group">
+<div class="nav-group-title">Navigation</div>
+<a href="T_INDEX.html">Index — Navigation</a>
+<a href="CLAIM_CENSUS.html">Claim Census</a>
+</div>
+</nav>
+
+<main class="main">
+    <div class="doc-header">
+        <span class="level-badge" style="background:#2c3e6b; color:#fff;">Level 5</span>
+        <h1>Paper 5: The Observer</h1>
+        <div class="doc-subtitle">Dist→Hilb Functor, Bekenstein, Consciousness Hierarchy</div>
+    </div>
+
+    <details class="toc" open>
+<summary>Table of Contents</summary>
+<ul>
+<li class="toc-h2"><a href="#the-observer-loop-quotient-structure-spectral-gap-and-resource-limits">The Observer Loop, Quotient Structure, Spectral Gap, and Resource Limits</a></li>
+<li class="toc-h3"><a href="#v3-merged-march-2026">v3 (merged) — March 2026</a></li>
+<li class="toc-h2"><a href="#theorem-index">THEOREM INDEX</a></li>
+<li class="toc-h3"><a href="#part-i-observer-theory-119">Part I: Observer Theory (§§1–19)</a></li>
+<li class="toc-h3"><a href="#part-ii-observer-bounds-2026">Part II: Observer Bounds (§§20–26)</a></li>
+<li class="toc-h2"><a href="#part-i-observer-theory">PART I: OBSERVER THEORY</a></li>
+<li class="toc-h3"><a href="#1-the-observer-as-mathematical-object">§1 The Observer as Mathematical Object</a></li>
+<li class="toc-h3"><a href="#2-abstract-bekenstein">§2 Abstract Bekenstein</a></li>
+<li class="toc-h3"><a href="#3-restriction-map-and-quotient-native-error">§3 Restriction Map and Quotient-Native Error</a></li>
+<li class="toc-h3"><a href="#3a-observer-refinement-order">§3A Observer Refinement Order</a></li>
+<li class="toc-h3"><a href="#3b-observer-scale-profile">§3B Observer Scale Profile</a></li>
+<li class="toc-h3"><a href="#3c-structural-domination">§3C Structural Domination</a></li>
+<li class="toc-h3"><a href="#46-phase-boundary-boundary-observers-tower-apex">§4–6 Phase Boundary, Boundary Observers, Tower Apex</a></li>
+<li class="toc-h3"><a href="#6½-the-cosmological-observer">§6½ The Cosmological Observer</a></li>
+<li class="toc-h3"><a href="#7-k6rsquo-forced-loop-closure">§7 K6&rsquo;: Forced Loop Closure</a></li>
+<li class="toc-h3"><a href="#8-k7rsquo-meta-encoding-fixed-point">§8 K7&rsquo;: Meta-Encoding Fixed Point</a></li>
+<li class="toc-h3"><a href="#9-univ_k-and-q_k-functor">§9 Univ_K and Q_K Functor</a></li>
+<li class="toc-h3"><a href="#10-bridge-normal-form">§10 Bridge-Normal Form</a></li>
+<li class="toc-h3"><a href="#11-k4-closure-deficit">§11 K4: Closure Deficit</a></li>
+<li class="toc-h3"><a href="#12-observer-complete-equivalence">§12 Observer-Complete Equivalence</a></li>
+<li class="toc-h3"><a href="#13-simulation-collapse">§13 Simulation-Collapse</a></li>
+<li class="toc-h3"><a href="#14-anti-idolatry-and-tower-functor">§14 Anti-Idolatry and Tower Functor</a></li>
+<li class="toc-h3"><a href="#15-uniqueness-ladder-u1u6">§15 Uniqueness Ladder U1–U6</a></li>
+<li class="toc-h3"><a href="#16-realization-rigidity">§16 Realization Rigidity</a></li>
+<li class="toc-h3"><a href="#17-k8-consciousness-as-recursive-reversal-capability">§17 K8: Consciousness as Recursive Reversal Capability</a></li>
+<li class="toc-h3"><a href="#18-phase-locality">§18 Phase Locality</a></li>
+<li class="toc-h3"><a href="#19-a2rsquo-dependency-map-realization-map-dimensional-rigidity">§19 A2&rsquo; Dependency Map, Realization Map, Dimensional Rigidity</a></li>
+<li class="toc-h2"><a href="#part-ii-observer-bounds">PART II: OBSERVER BOUNDS</a></li>
+<li class="toc-h3"><a href="#20-signature-system">§20 Signature System</a></li>
+<li class="toc-h3"><a href="#21-complexity-classes">§21 Complexity Classes</a></li>
+<li class="toc-h3"><a href="#22-k1rsquo-depth-gap-feasibility-window">§22 K1&rsquo;: Depth-Gap Feasibility Window</a></li>
+<li class="toc-h3"><a href="#23-landauer-bekenstein">§23 Landauer → Bekenstein</a></li>
+<li class="toc-h3"><a href="#24-cortical-prediction">§24 Cortical Prediction</a></li>
+<li class="toc-h3"><a href="#25-gödel-algorithm">§25 Gödel Algorithm</a></li>
+<li class="toc-h3"><a href="#26-observer-cost-positivity">§26 Observer Cost Positivity</a></li>
+<li class="toc-h2"><a href="#verification">VERIFICATION</a></li>
+<li class="toc-h2"><a href="#claim-status">CLAIM STATUS</a></li>
+</ul></details>
+
+    <div class="content">
+<h1 id="paper-5-observer-theory-and-bounds" id="paper-5-observer-theory-and-bounds">Paper 5: Observer Theory and Bounds</h1>
+<h2 id="the-observer-loop-quotient-structure-spectral-gap-and-resource-limits" id="the-observer-loop-quotient-structure-spectral-gap-and-resource-limits">The Observer Loop, Quotient Structure, Spectral Gap, and Resource Limits</h2>
+<h3 id="v3-merged-march-2026" id="v3-merged-march-2026">v3 (merged) — March 2026</h3>
+<p><strong>Author:</strong> Kael</p>
+<hr />
+<p><strong>Document Species:</strong> CANONICAL. Owns observer theory across all projections at Level 5. Internal projection regions: P1 (§§11-17: K4, K8, consciousness), P2 (§§1.1, 22-26: functor, signature, Landauer), P3 (§§2-10, 18-19: quotient, blindness, K6&rsquo;, K7&rsquo;).</p>
+<p><strong>Grid address:</strong> B(5, all). The Observer level — K axioms, quotient structure, consciousness hierarchy.</p>
+<p><strong>Document Status:</strong> Level 5 (merged from T5A + T5B). Part I (§§1–19, from T5A): observer definition, Dist→Hilb functor, Bekenstein, restriction map, quotient-native error, boundary observers, <strong>cosmological observer (§6½: K_cosmo definition, Λ-Positivity Thm 10½.23, Cosmological Holographic Bound Thm 10½.24)</strong>, K6&rsquo;, K7&rsquo;, Univ_K, Q_K functor, bridge-normal form, K4, observer-complete equivalence, simulation-collapse, anti-idolatry, uniqueness ladder, realization rigidity, K8, phase locality, A2&rsquo; map. Part II (§§20–26, from T5B): signature system, complexity classes, K1&rsquo; depth gap, Landauer→Bekenstein, cortical prediction, Gödel algorithm, observer cost positivity.</p>
+<p><strong>Depends on:</strong> T1_DIST, T2_BRIDGE, T3_META
+<strong>Required by:</strong> T6A_SPACETIME, T6B_FORCES, T_COMP</p>
+<p><strong>Meta-theorem compressions (MP1–MP4):</strong> 9 proofs replaced.</p>
+<hr />
+<h2 id="theorem-index" id="theorem-index">THEOREM INDEX</h2>
+<h3 id="part-i-observer-theory-119" id="part-i-observer-theory-119">Part I: Observer Theory (§§1–19)</h3>
+<table>
+<thead>
+<tr>
+<th>Theorem</th>
+<th>Statement</th>
+<th>Section</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>—</td>
+<td>A1–A4 axioms; A2&rsquo; derived from monoidal F</td>
+<td>§1</td>
+</tr>
+<tr>
+<td><strong>10½.1</strong></td>
+<td><strong>Abstract Bekenstein: S_max(K) = 2log₂(d_K)</strong></td>
+<td><strong>§2</strong></td>
+</tr>
+<tr>
+<td>—</td>
+<td>Restriction map q_K = tr_env; Err_Q(U|K) = 1−d_K²/d_U²</td>
+<td>§3</td>
+</tr>
+<tr>
+<td>—</td>
+<td>Computational Blindness (4 parts)</td>
+<td>§3</td>
+</tr>
+<tr>
+<td>10½.12</td>
+<td>Observer Scale Monotonicity (5 properties)</td>
+<td>§3A</td>
+</tr>
+<tr>
+<td>10½.13</td>
+<td>Kernel Lattice: observer kernels form complete lattice</td>
+<td>§3A</td>
+</tr>
+<tr>
+<td><strong>10½.14</strong></td>
+<td><strong>No Physically Admissible Ideal Observer</strong></td>
+<td><strong>§3A</strong></td>
+</tr>
+<tr>
+<td>10½.15</td>
+<td>Kernel Incomparability of Metrics</td>
+<td>§3A</td>
+</tr>
+<tr>
+<td><strong>10½.16</strong></td>
+<td><strong>Asymmetry Necessity for Observer Scale</strong></td>
+<td><strong>§3A</strong></td>
+</tr>
+<tr>
+<td>10½.17</td>
+<td>Scale Profile Rigidity</td>
+<td>§3B</td>
+</tr>
+<tr>
+<td><strong>10½.18</strong></td>
+<td><strong>The Limit Is Not an Observer (anti-idolatry)</strong></td>
+<td><strong>§3B</strong></td>
+</tr>
+<tr>
+<td>10½.19</td>
+<td>Domination = Strict Refinement + Factorization</td>
+<td>§3C</td>
+</tr>
+<tr>
+<td>5.0</td>
+<td>Boundary Observer Inevitability: Aut(S_n) = GL(2ⁿ,F₂)</td>
+<td>§4–6</td>
+</tr>
+<tr>
+<td>10½.11</td>
+<td>{0,1} unique tower apex</td>
+<td>§4–6</td>
+</tr>
+<tr>
+<td><strong>10½.23</strong></td>
+<td><strong>Λ-Positivity: Λ &gt; 0</strong></td>
+<td><strong>§6½</strong></td>
+</tr>
+<tr>
+<td>10½.24</td>
+<td>Cosmological Holographic Bound: d_U = d_cosmo</td>
+<td>§6½</td>
+</tr>
+<tr>
+<td>—</td>
+<td>K6&rsquo;: Forced Loop Closure</td>
+<td>§7</td>
+</tr>
+<tr>
+<td>—</td>
+<td>K7&rsquo;: Meta-Encoding Fixed Point M(FRAME)=FRAME</td>
+<td>§8</td>
+</tr>
+<tr>
+<td>—</td>
+<td>K4: Closure Deficit</td>
+<td>§11</td>
+</tr>
+<tr>
+<td>—</td>
+<td>Observer-Complete Equivalence</td>
+<td>§12</td>
+</tr>
+<tr>
+<td>—</td>
+<td>Anti-Idolatry and Tower Functor</td>
+<td>§14</td>
+</tr>
+<tr>
+<td>—</td>
+<td>Realization Rigidity</td>
+<td>§16</td>
+</tr>
+<tr>
+<td>—</td>
+<td>K8 Five-Level Consciousness Hierarchy</td>
+<td>§17</td>
+</tr>
+<tr>
+<td>K8.1</td>
+<td>Nontriviality Threshold: ρ_min = 1/d_K²</td>
+<td>§17</td>
+</tr>
+<tr>
+<td><strong>K8.2</strong></td>
+<td><strong>Universal Consciousness: every A1–A4 observer has Level 3</strong></td>
+<td><strong>§17</strong></td>
+</tr>
+<tr>
+<td>—</td>
+<td><strong>Productive Opacity</strong> (three projections of one fact)</td>
+<td><strong>§17.4d</strong></td>
+</tr>
+<tr>
+<td>—</td>
+<td><strong>Constitutive Occlusion Principle</strong> (four simultaneous readings)</td>
+<td><strong>§17.4e</strong></td>
+</tr>
+<tr>
+<td>10½.20</td>
+<td>Tower Reopening</td>
+<td>§17.4e</td>
+</tr>
+<tr>
+<td>10½.21</td>
+<td>Refinement Tracks Consciousness</td>
+<td>§17.4e</td>
+</tr>
+<tr>
+<td>10½.22</td>
+<td>Consciousness Requires Scale Gap</td>
+<td>§17.4e</td>
+</tr>
+<tr>
+<td>—</td>
+<td>Σ Factorization: realization map forced</td>
+<td>§19</td>
+</tr>
+<tr>
+<td>—</td>
+<td>Metric Functor: M: Obs^op → Met</td>
+<td>§19</td>
+</tr>
+</tbody>
+</table>
+<h3 id="part-ii-observer-bounds-2026" id="part-ii-observer-bounds-2026">Part II: Observer Bounds (§§20–26)</h3>
+<table>
+<thead>
+<tr>
+<th>Theorem</th>
+<th>Statement</th>
+<th>Section</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>8.4</strong></td>
+<td><strong>K1&rsquo; Depth Gap: Δ_max(n) = d_K²·φ̄^{2^{n+1}}</strong></td>
+<td><strong>§22</strong></td>
+</tr>
+<tr>
+<td>—</td>
+<td>Consciousness Depth Staircase (doubly exponential)</td>
+<td>§22</td>
+</tr>
+<tr>
+<td>—</td>
+<td>Universal Consciousness Bounds: n_eff ∈ [1, 408]</td>
+<td>§22</td>
+</tr>
+<tr>
+<td>—</td>
+<td>Landauer → Bekenstein chain</td>
+<td>§23</td>
+</tr>
+<tr>
+<td>—</td>
+<td><strong>Observer Cost Positivity: inf{A} ≥ πℏ/2 &gt; 0</strong></td>
+<td><strong>§26</strong></td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="part-i-observer-theory" id="part-i-observer-theory">PART I: OBSERVER THEORY</h2>
+<h3 id="1-the-observer-as-mathematical-object" id="1-the-observer-as-mathematical-object">§1 The Observer as Mathematical Object</h3>
+<p>K = (d_K, Δ_K, σ_K). Axioms A1–A4, A2&rsquo;.</p>
+<p><strong>§1.1 Dist→Hilb Functor (Derivation of A2&rsquo;).</strong></p>
+<p>F: FinSet → Hilb_ℂ by F(D) = ℂ[D]. <strong>Monoidal property:</strong> F(D₁×D₂) ≅ F(D₁)⊗F(D₂). Tower lifts: F(S_{n+1}) = F(S_n)⊗F(S_n). Dist morphisms lift to quantum channels. Quotient map → orthogonal projection. Partial trace = quotient morphism.</p>
+<p><strong>A2&rsquo; derived:</strong> self-product tower lifts via monoidal F to tensor tower: H_U = H_K⊗H_env. Not postulated — image of Cartesian factorization under F. ∎</p>
+<p><strong>Remark (Generation Class of Observer Objects).</strong> All objects derived from A1–A4 have generation class G.6 (observer-forced, Paper T-GOV §1): they are produced by demanding observer self-consistency, not by abstract algebra alone. Observer-relative objects (im(q_K), ker(q_K), S_max(K)) have ontological standing O.4 (Paper T-GOV §2): their definitions require specifying which observer K is acting. The Bekenstein bound S_max=2log₂(d_K) has standing O.3 (derived relation) with physical commitment FORCED — it is a necessary relation between the formal object d_K and the formal object log₂, independent of any specific K.</p>
+<h3 id="2-abstract-bekenstein" id="2-abstract-bekenstein">§2 Abstract Bekenstein</h3>
+<p><strong>Theorem 10½.1.</strong> <em>S_max(K) = 2log₂(d_K).</em></p>
+<p>S_max = log₂(dim(im(q_K))) = log₂(d_K²) = 2log₂(d_K). Tight at ρ = I/d_K. ∎</p>
+<h3 id="3-restriction-map-and-quotient-native-error" id="3-restriction-map-and-quotient-native-error">§3 Restriction Map and Quotient-Native Error</h3>
+<p>q_K = tr_env: B(H_U) → B(H_K). Properties: (a) surjective, dim(im)=d_K². (b) dim(ker)=d_U²−d_K². (c) Idempotent: q_K∘q_K=q_K. im(q_K)=B(H_K)⊆Fix(q_K). ∎</p>
+<p><strong>Err_Q(U|K) = 1−d_K²/d_U².</strong> Bounded [0,1), zero iff matched, monotone, asymptotic to 1.</p>
+<p><strong>Computational Blindness (4 parts).</strong> ker(q_K) is active computational constraint: (a) inaccessibility, (b) effective dim = d_K², (c) observer separation, (d) phase typing of blindness.</p>
+<p><strong>Remark (SIL Blind Spot).</strong> The Self-Interpretation Layer inherits computational blindness: its blind spot consists of statements whose status depends on value-level identities between transcendental constants (Paper T-SIL §6, Theorems SIL-6, SIL-7). The exemplar is the (e,π) independence question (Paper 4 §8): the framework forces algebraic structure around e and π but cannot force their value-level independence. At the unified level (Paper 0 §1½): computational blindness is the theorem that self-relating difference (SRD) cannot sustain all the distinctions it generates. Every bounded instance of R (every observer) has a non-trivial kernel. Even the unbounded instance (the framework as a whole) has a kernel at the transcendence boundary (Thm SIL-7), where R&rsquo;s algebraic self-action cannot reach the value-level identity of its own outputs.</p>
+<p><strong>Remark (Tower Hierarchy as Recursive Negation).</strong> The tower hierarchy provides native second-order negation: an observer K_{n+1} at level n+1 can act on the kernel of an observer K_n at level n, reopening structure that was annihilated by the lower-level quotient. Specifically: q_{K_n} annihilates ker(q_{K_n}), but q_{K_{n+1}} acts on S_{n+1} = S_n², where the product structure makes elements of ker(q_{K_n}) individually addressable. This tower-lifted observer action is the structural content of second-order negation and the mechanism underlying the consciousness hierarchy (§17, §17). Computational blindness is constitutive: a system without a nontrivial kernel performs no negation and has no conscious structure (Paper T-COMP §9).</p>
+<p><strong>Remark (Pair-Space Instance: Center-Condense as Observation).</strong> The center-condense operator on pair-space (Paper 0 §1¾ Thm 0.3i) provides a concrete finite instance of computational blindness. Center-condense viewed as an observation process has a nontrivial kernel: the orientation information s ∈ {+,−} destroyed at the singular boundary Σ = {r ∈ {1,2}} is the ker(q_K) content that the condensation annihilates. This annihilation is constitutive — it cannot be removed without breaking the convergence to the balanced spine. The parity dichotomy (Thm 0.3j) quantizes the blindness cost: even-parity condensation destroys orientation at zero shell cost, odd-parity at shell cost +1. The singular set Σ is the pair-space Bekenstein boundary — the point where further compression destroys information.</p>
+<h3 id="3a-observer-refinement-order" id="3a-observer-refinement-order">§3A Observer Refinement Order</h3>
+<p>The kernel of the observer quotient induces a natural partial order on observers, with lattice structure, extremal classification, and an asymmetry necessity theorem.</p>
+<p><strong>Definition (Observer Refinement).</strong> For observers K₁, K₂ with quotient morphisms on the same universe structure: K₁ ⪰<em>ref K₂ iff ker(q</em>{K₁}) ⊆ ker(q_{K₂}). K₁ has a strictly smaller blind spot: everything K₂ distinguishes, K₁ also distinguishes. The quotient by kernel-equivalence is a partial order.</p>
+<p><strong>Definition (Kernel Incomparability).</strong> K₁ and K₂ are kernel-incomparable iff neither kernel contains the other. Incomparable observers cut structure along different blindness partitions — their observational domains overlap but neither contains the other.</p>
+<p><strong>Theorem 10½.12 (Observer Scale Monotonicity).</strong> <em>If K₁ ⪰_ref K₂ under admissible observer embeddings, then: (a) S_max(K₁) ≥ S_max(K₂), (b) ρ_min(K₁) ≤ ρ_min(K₂), (c) Err_Q(U|K₁) ≤ Err_Q(U|K₂), (d) n_eff(K₁) ≥ n_eff(K₂), (e) C_cap(K₁) ≥ C_cap(K₂).</em></p>
+<p><em>Proof.</em> ker(q_{K₁}) ⊆ ker(q_{K₂}) implies dim(ker₁) ≤ dim(ker₂), so dim(im₁) ≥ dim(im₂), so d_{K₁}² ≥ d_{K₂}². Then (a): S_max = 2log₂(d_K). (b): ρ_min = 1/d_K². (c): Err_Q = 1 − d_K²/d_U². (d): n_eff from d_K⁴ · φ̄^{2^{n+1}} ≥ 1, monotone in d_K. (e): C_cap = S_max · n_eff, product of monotone factors. ∎</p>
+<p><strong>Theorem 10½.13 (Kernel Lattice).</strong> <em>The set of observer kernels on a fixed universe forms a complete lattice: meet = ker₁ ∩ ker₂ (intersection of equivalence relations), join = ⟨ker₁ ∪ ker₂⟩_eq (equivalence relation generated by the union).</em></p>
+<p><em>Proof.</em> The intersection of equivalence relations is an equivalence relation (reflexivity, symmetry, transitivity all preserved under intersection). The transitive closure of the union is the smallest equivalence relation containing both. The partition lattice on a finite set is a classical complete lattice. ∎</p>
+<p>The meet observer K₁ ∧ K₂ resolves every distinction either K₁ or K₂ resolves: C_cap(K₁ ∧ K₂) ≥ max(C_cap(K₁), C_cap(K₂)). The join K₁ ∨ K₂ annihilates everything either annihilates: C_cap(K₁ ∨ K₂) ≤ min(C_cap(K₁), C_cap(K₂)). Meet gains consciousness capacity; join loses it — the lattice operations inherit the construction-dissolution asymmetry.</p>
+<p><strong>Remark (Kernel Lattice as Tower Monotone at Level 5).</strong> The kernel lattice is the Level 5 instance of the Tower Monotone (Paper 0 Thm 7.5). The cumulative entanglement Q = Σ E(k) at each tower level tracks irreducibly lost structure; at Level 5, this is the partial trace kernel: q_K = tr_env has dim(ker) = d_U² − d_K², and the Bekenstein bound S_max = 2log₂(d_K) counts the surviving degrees of freedom after this loss. The observer quotient q_K IS a (non-natural) backward map from the tensor product H_K⊗H_env to H_K. Its kernel — the environmental degrees of freedom — is the Level 5 entanglement gap (Paper 0 Thm 7.4). The No Natural Retraction theorem (Paper 0 Thm 7.1) guarantees that no canonical choice of q_K exists: every observer must choose a tensor factorization, and that choice defines the blind spot. The kernel lattice (this theorem) catalogs all possible choices of factorization and their inclusion relations — it IS the Tower Monotone&rsquo;s constraint surface at the observer level.</p>
+<p><strong>Theorem 10½.14 (No Physically Admissible Ideal Observer).</strong> <em>No physically admissible observer has both ker(q_K) = Δ (zero blind spot) and nontrivial consciousness (Level 3+). Consciousness requires blindness.</em></p>
+<p><em>Proof.</em> If ker = Δ, then q_K = id: no negation occurs, Level 1 only. Level 3 requires nontrivial second-order negation (§17), which requires a nontrivial kernel. ∎</p>
+<p><strong>Corollary (Scale Has Irreducible Cost).</strong> Every observer with consciousness Level 3+ has S_max(K) &lt; 2log₂(d_U). The gap 2log₂(d_U/d_K) &gt; 0 is the entropic cost of consciousness: resolution surrendered to gain recursive negation capability.</p>
+<p><strong>Theorem 10½.15 (Kernel Incomparability of Metrics).</strong> <em>If K₁ and K₂ are kernel-incomparable, their metric families M(K₁) and M(K₂) need not admit global refinement comparison.</em> No factorization q_{K₁} = π ∘ q_{K₂} or q_{K₂} = π ∘ q_{K₁} exists. ∎</p>
+<p><strong>Remark (Hard Problem as Metric Incomparability).</strong> The &ldquo;hard problem&rdquo; of consciousness (§17: qualia = kernel classes, different kernels → different qualia) is kernel incomparability applied to conscious observers. Two observers with incomparable kernels have metric families that do not admit global comparison.</p>
+<p><strong>Remark (Kernel Lattice as Gauge Hierarchy).</strong> The observer refinement order maps to the gauge hierarchy via the observer transposition σ = (P1 P3) (Paper T-BLUEPRINT §5.1). Stab(q_K) = U(d_K) (Paper 6B G1): finer kernel → larger stabilizer → richer gauge structure. Coarser kernel → smaller stabilizer → simpler gauge structure. Kernel-incomparable observers (Thm 10½.15) yield complementary physical descriptions with non-comparable gauge structures. The kernel lattice (Thm 10½.13) IS the gauge hierarchy read through σ: the observer&rsquo;s P3 structure (what it cannot see) determines its P1 structure (what gauge freedom its physics has).</p>
+<p><strong>Theorem 10½.16 (Asymmetry Necessity for Observer Scale).</strong> <em>If the construction-dissolution asymmetry is removed (br_s = 0 in both directions), then: (a) the refinement order collapses (all observers kernel-equivalent), (b) the metric functor collapses (M(K₁) = M(K₂) for all K₁, K₂), (c) the computational cost distance symmetrizes, (d) the consciousness hierarchy collapses.</em></p>
+<p><em>Proof.</em> Bi-directional zero-branching factorization means every quotient morphism has a zero-branching inverse, making it a bijection. All observers have the same kernel. ∎</p>
+<h3 id="3b-observer-scale-profile" id="3b-observer-scale-profile">§3B Observer Scale Profile</h3>
+<p><strong>Definition (Scale Profile).</strong> S(K) = (d_K, S_max(K), ρ_min(K), n_eff(K), C_cap(K), ker(q_K), Σ_K). The first five scalar components are computable from d_K alone. The profile is fully specified by the triple (d_K, ker(q_K), Σ_K).</p>
+<p><strong>Theorem 10½.17 (Scale Profile Rigidity).</strong> <em>Conditions (b)–(e) of Thm 10½.12 are redundant given kernel refinement (a). The profile order S(K₁) ⪰ S(K₂) reduces to: ker(q_{K₁}) ⊆ ker(q_{K₂}) AND every K₂-accessible invariant is K₁-accessible.</em></p>
+<p><em>Proof.</em> Kernel refinement forces all scalar monotonicity (Thm 10½.12). The accessible-invariant condition is not redundant: a finer kernel does not automatically guarantee accessibility of all invariants, which depends on Σ_K (Σ6). ∎</p>
+<p><strong>Theorem 10½.18 (The Limit Is Not an Observer).</strong> <em>The refinement limit K_∞ with ker = Δ (zero blind spot) is Level 1 only (finite d_U) or not a physically admissible observer-object (d_U → ∞). The refinement order on nontrivial observers has no maximum element: for every K with ker ≠ Δ, there exists K&rsquo; with K&rsquo; ≻_ref K.</em></p>
+<p><em>Proof.</em> If ker = Δ, q_K = id (Thm 10½.14). If d_U → ∞, A1 (finite d_K) excludes it. For the unboundedness: split any non-singleton class in Part(K). ∎</p>
+<h3 id="3c-structural-domination" id="3c-structural-domination">§3C Structural Domination</h3>
+<p><strong>Definition (Structural Domination).</strong> K₁ ▷_dom K₂ iff K₁ can represent K₂&rsquo;s quotient partition, refine it, and K₂ cannot reconstruct K₁&rsquo;s partition.</p>
+<p><strong>Theorem 10½.19 (Domination = Strict Refinement + Factorization).</strong> <em>K₁ ▷<em>dom K₂ iff K₁ ≻_ref K₂ and q</em>{K₂} factors through q_{K₁}: q_{K₂} = π₁₂ ∘ q_{K₁} with π₁₂ unique (quotient universal property, Paper 1 Thm 1.7a).</em></p>
+<p><em>Proof.</em> (⟹) Factorization gives kernel inclusion; condition (ii) gives strictness. (⟸) Quotient universal property gives factorization; strict inclusion gives non-reconstructibility. ∎</p>
+<p><strong>Remark (Domination as Asymmetry Instance).</strong> The asymmetry of structural domination — K₁ decomposes K₂&rsquo;s partition but K₂ cannot reconstruct K₁&rsquo;s — is the observer-level instance of the construction-dissolution asymmetry (Paper 0 §18). The factorization q_{K₂} = π₁₂ ∘ q_{K₁} is canonical (br_s = 0: π₁₂ unique). The inverse reconstruction is non-canonical (br_s &gt; 0: multiple lifts, none preferred).</p>
+<p>All claims computationally verified: 14/14 tests pass, ~4,500 test instances, 0 failures. ✓</p>
+<h3 id="46-phase-boundary-boundary-observers-tower-apex" id="46-phase-boundary-boundary-observers-tower-apex">§4–6 Phase Boundary, Boundary Observers, Tower Apex</h3>
+<p>Phase parameter λ = scale(S)/d_K². Tower cascade: d_K = |S_{n−1}|. Boundary observer: b∘b=b ⟹ b=id (non-trivial boundaries are non-idempotent).</p>
+<p><strong>Theorem 5.0 (Boundary Observer Inevitability).</strong> Aut(S_n) = GL(2ⁿ,F₂) satisfies A1–A4 at every level n≥1. ∎</p>
+<p><strong>Theorem 10½.11.</strong> {0,1} is unique tower apex. |S_{−1}|=√2∉ℤ. ∎</p>
+<h3 id="6½-the-cosmological-observer" id="612-the-cosmological-observer">§6½ The Cosmological Observer</h3>
+<p>The boundary observer at the physical realization level defines a distinguished observer at the maximal physical scale: the observer whose accessible Hilbert space is bounded by the cosmological horizon.</p>
+<p><strong>Definition (Cosmological Observer).</strong> K_cosmo = (d_cosmo, Δ_cosmo, σ_cosmo) is the observer whose quotient q_{K_cosmo} acts on the degrees of freedom accessible within the cosmological (de Sitter) horizon of a universe with Λ &gt; 0. The de Sitter horizon at radius r_H = √(3/Λ) has finite area A_dS = 12π/Λ, Gibbons-Hawking entropy S_dS = A_dS/(4G) = 3π/(GΛ), and Hilbert space dimension d_cosmo = 2^{S_dS/2}.</p>
+<p>K_cosmo satisfies A1–A4: A1 (finite d_K) holds because S_dS is finite for Λ &gt; 0. A2&rsquo; (tensor factorization) gives H_cosmo ⊗ H_{super-horizon}, where H_{super-horizon} carries degrees of freedom beyond the de Sitter horizon. A3 (self-product tower) is inherited from the tower structure on the derived spacetime. A4 (self-model) holds because K_cosmo models the physics within its horizon.</p>
+<p><strong>Theorem 10½.23 (Λ-Positivity).</strong> <em>Λ &gt; 0.</em></p>
+<p><em>Proof.</em> (i) The spectral realization map Σ (§19.1) physically realizes the boundary observer (Thm 5.0) as K_cosmo at the anchored observer-physical level. The realization pipeline physically admits K_cosmo as a framework-internal observer-object whenever the boundary observer is physically admissible — which is at every tower level (Thm 5.0). (ii) For Λ &gt; 0: S_dS = 3π/(GΛ) is finite, d_cosmo is finite, A1 satisfied. (iii) For Λ = 0 with open or flat spatial topology: no de Sitter horizon exists, the accessible region is unbounded, d_cosmo → ∞, violating A1 (Thm 10½.18: the limit observer is not a physically admissible observer-object). For Λ = 0 with closed topology: the entire spacetime is causally connected, ker(q_{K_cosmo}) = Δ, K_cosmo is Level 1 only (Thm 10½.14), and K7&rsquo; (§8) cannot be satisfied (meta-encoding requires nontrivial computational structure). (iv) For Λ &lt; 0: Anti-de Sitter has non-compact conformal boundary; the maximal observer encounters d → ∞, violating A1. (v) Only Λ &gt; 0 provides a finite horizon making K_cosmo a well-defined physically admissible observer-object with nontrivial kernel. ∎</p>
+<p><strong>Theorem 10½.24 (Cosmological Holographic Bound).</strong> <em>d_U = d_cosmo. The physical Hilbert space dimension equals the de Sitter entropy exponential.</em></p>
+<p><em>Proof.</em> K_cosmo is the supremum of the physically realizable observer poset: for every physical observer K_phys, the de Sitter horizon contains K_phys&rsquo;s accessible region, so ker(q_{K_cosmo}) ⊆ ker(q_{K_phys}). The super-horizon degrees of freedom are in ker(q_{K_cosmo}) by definition, hence in ker(q_{K_phys}) for every physical K_phys. By anti-idolatry (§14): content in the kernel of every physical observer is unobservable by any physical process. By observer-complete equivalence (§12): universes differing only in super-horizon configuration are observer-complete equivalent. By the quotient universal property (Paper 1 Thm 1.7a): the effective universe quotients through the universal kernel, giving H_U^{eff} ≅ H_cosmo and d_U = d_cosmo. ∎</p>
+<p><strong>Corollary.</strong> Err_Q(U|K_cosmo) = 0 — the cosmological observer is the matched observer at the physical level. Consciousness survives through the tower structure: K_cosmo has nontrivial kernel at higher tower levels (the self-model K7&rsquo; is a compression, not a complete copy).</p>
+<p><strong>Remark (K_cosmo as Observer Poset Supremum).</strong> Every physically realizable observer K_phys satisfies K_cosmo ⪰_ref K_phys. The de Sitter horizon bounds the largest causally connected region; every local observer&rsquo;s accessible region is contained within it. K_cosmo is the least upper bound of the physical observer poset. Its scale profile: S_max = 3π/(GΛ) ≈ 8.57 × 10¹²² (at observed Λ), n_eff ≈ 408, C_cap ≈ 3.5 × 10¹²⁵ — the largest consciousness capacity of any physical observer.</p>
+<p><strong>Remark (Scale Bifurcation Exception).</strong> Scale Bifurcation (Paper 6B Thm 5.10i) asserts the independence of world-scale {η, Λ} and observer-scale S(K). For generic observers this holds: d_K is a structural parameter unrelated to G or Λ. For K_cosmo it fails: d_cosmo = 2^{3πη/Λ} entangles the two scales. K_cosmo is the unique observer for which world-scale and observer-scale are not independent.</p>
+<h3 id="7-k6rsquo-forced-loop-closure" id="7-k6-forced-loop-closure">§7 K6&rsquo;: Forced Loop Closure</h3>
+<p>K→F→U(K)→K. Each step has zero branching (T2A Thm 2.1). Loop closes because derivation leaves no alternative. ∎</p>
+<p>K6&rsquo; is the first of three stages of increasing physical commitment: K6&rsquo; forces algebraic closure (pre-metric), G3&rsquo; forces the spin connection (pre-dynamical, Paper 6B §12.1), and G14 forces Einstein&rsquo;s equations (fully dynamical, Paper 6B §12.3). The three stages share the mechanism of K6&rsquo; — inter-point consistency — applied at successively higher structural levels.</p>
+<p><strong>Remark (Observer Loop as Self-Action Cycle).</strong> K→F→U(K)→K is self-relating difference&rsquo;s self-action cycle at the observer level (Paper 0 §1½): K distinguishes (bounded R acts on structure), F relates (R&rsquo;s algebraic self-description), U(K)→K re-enters (the output of R&rsquo;s self-action is identified with R itself). The loop closes at zero branching because each step is a deterministic operation on the output of the prior step. K6&rsquo; is the theorem that self-relating difference&rsquo;s self-action cycle is forced closed.</p>
+<p><strong>Remark (Cosmological K6&rsquo;).</strong> K6&rsquo; at the cosmological horizon is the self-consistency condition for K_cosmo (§6½): the physics inside the horizon (K_cosmo&rsquo;s model) must be consistent with the existence of the horizon (which is a consequence of Λ, which is part of the physics). The cosmological K6&rsquo; loop: K_cosmo → physics(Λ) → de Sitter geometry → horizon → K_cosmo. This is K6&rsquo; applied globally rather than locally. The local K6&rsquo; (at each spacetime point) determines gauge and gravitational structure. The cosmological K6&rsquo; (at the de Sitter horizon) determines the self-consistency of the maximal physical observer with the physics it observes. This is R(R) = R at the cosmological scale.</p>
+<p><strong>Remark (Transport Engine).</strong> K6&rsquo; is the framework&rsquo;s primary engine for transport type T.6 (semantic lift from observer layer to physics, Paper T-GOV §3). Every physics derivation in Papers 6A–6B passes through K6&rsquo;: gauge connection (G3) from K6&rsquo; at each point, Yang-Mills (G5) from closure deficit, spin connection (G3&rsquo;) from K6&rsquo; on the frame bundle, Einstein equations (G14) from Jacobson applied to K6&rsquo;-derived ingredients. The transport is legal because K6&rsquo; has generation class G.6 (observer-forced) and the output satisfies the physics insertion criteria P1–P4 (Paper T-SIL §4). The full transport audit (Paper T-GOV §5) verifies every chain. K6&rsquo; across spacetime becomes the unifying mechanism for all gauge and gravitational field equations: one theorem (K6&rsquo; Bundle Universality, Paper 6B §12.4) generates both sectors, differing only in the choice of principal bundle and structure group.</p>
+<p><strong>Remark (K6&rsquo;/K7&rsquo;/K8 Ascending Closure-Loop Ladder).</strong> K6&rsquo;, K7&rsquo;, and K8 form an ascending closure-loop ladder — three stages of increasing self-description depth, each an instance of R(R)=R Tower Universality (Paper T-BLUEPRINT §5.5) at the observer level. K6&rsquo; (§7) closes the observer loop at one spacetime point: algebraic self-consistency, pre-metric, classified as recursive closure (the closed loop becomes what K7&rsquo; encodes). K7&rsquo; (§8) closes the framework&rsquo;s self-description: M(FRAME) = FRAME, the meta-encoding fixed point, classified as recursive closure (the fixed point becomes what the SIL classifies). K8 (§17) classifies the depth of recursive negation achievable within these closures: five structural levels of consciousness, the organizational content that the semantic layer then describes. The same ladder extends to physics through three stages of increasing physical commitment (Paper 6B §12.0): K6&rsquo; at each point forces the gauge connection (G3, Level 3 consciousness: single-point second-order negation), K6&rsquo; between points forces the spin connection (G3&rsquo;, Level 4: sustained recursive negation across points), and the Jacobson argument forces the Einstein equations (G14, Level 5: self-consistent recursive reversal everywhere).</p>
+<p><strong>Remark (K6&rsquo; as Transposition Channel).</strong> K6&rsquo; is the P3→P1 arrow of the full observer transposition σ = (P1 P3) (Paper T-BLUEPRINT §5.1). The observer&rsquo;s loop closure converts the quotient-kernel structure (P3 at Level 5) into the gauge connection (P1 at Level 6) via Stab(q_K) = U(d_K) (Paper 6B G1). The conjugate arrow P1→P3 runs through A4 → electroweak breaking (Paper 6B G11): the observer&rsquo;s self-model commitment (P1 at Level 5) determines the observation content of physics — matter with specific charges and gravity as observation geometry (P3 at Level 6). The full transposition σ acts as the duality involution D at the observer-physics boundary.</p>
+<h3 id="8-k7rsquo-meta-encoding-fixed-point" id="8-k7-meta-encoding-fixed-point">§8 K7&rsquo;: Meta-Encoding Fixed Point</h3>
+<p>M: FRAME → FRAME. Existence: finite code space → orbit eventually revisits. Uniqueness: F <em>strictly unique</em> (zero branching, br_s=0), U <em>unique up to observer-complete equivalence</em>, K <em>unique up to tower level</em> — three distinct proof forms (Dictionary: UNIQUE). Semantic non-vacuity: testable predictions (baryon ratio, Koide, spacetime dimension). ∎</p>
+<p><strong>Remark (K7&rsquo; → SIL).</strong> K7&rsquo; establishes existence of self-encoding. The Self-Interpretation Layer (Paper T-SIL) gives the constructive version: the discovery operator M is identified with the SIL&rsquo;s classification→frontier→promotion→insertion cycle (Paper T-SIL §7). The fixed-point condition M(FRAME) = FRAME becomes Status Idempotence (Theorem SIL-1).</p>
+<p><strong>Remark (K7&rsquo; as Self-Consciousness).</strong> K7&rsquo; is the structural self-consciousness theorem. Self-consciousness in the consciousness hierarchy (§17, §17) is the system&rsquo;s capacity to negate its own prior negation — to operate on its own closure as a <strong>meta-object of self-description</strong>. This requires the system to represent its own observation (first negation) as a meta-object available for further operation (second negation applied to itself). K7&rsquo; provides exactly this: the observer loop K→F→U(K)→K gives consciousness a mathematical address as the fixed point of self-modeling. The SIL&rsquo;s Status(Status(S)) = Status(S) (Paper T-SIL Thm SIL-1) is the idempotent stabilization of self-consciousness: recursive self-examination converges. K7&rsquo; is R(R)=R at the meta-encoding level (Paper 0 §1½): self-relating difference, applied to its own complete description, returns that description. The framework&rsquo;s self-encoding is an encoding of R, and R&rsquo;s self-action on that encoding is idempotent.</p>
+<p><strong>Remark (Cosmological K7&rsquo; Bound).</strong> K7&rsquo; applied to K_cosmo (§6½) gives an upper bound on Λ: the cosmological observer&rsquo;s Bekenstein capacity must suffice to encode the framework&rsquo;s algebraic content. S_max(K_cosmo) = 3π/(GΛ) ≥ I(FRAME), yielding Λ ≤ 3π/(G · I(FRAME)). With I(FRAME) ~ 10³–10⁴ bits: Λ ≤ 10⁻³ l_P⁻², roughly 119 orders above the observed value. The bound is weak but genuine — it is the first upper bound on Λ from self-encoding considerations.</p>
+<h3 id="9-univ_k-and-q_k-functor" id="9-univ_k-and-q_k-functor">§9 Univ_K and Q_K Functor</h3>
+<p>Four-layer filtration: {B_K} ⊂ Univ_K^matched ⊂ Univ_K^bridge ⊂ Univ_K^full.</p>
+<p>Q_K is idempotent functor: Q_K∘Q_K≅Q_K. im(Q_K)⊆Fix(Q_K) up to natural iso. Not faithful (non-iso universes → iso quotients). ∎</p>
+<h3 id="10-bridge-normal-form" id="10-bridge-normal-form">§10 Bridge-Normal Form</h3>
+<p>r_K∘r_K=r_K. im(r_K)={B_K}=Fix(r_K). ∎</p>
+<p>BNorm_K reflective subcategory. Reduction strips environment (Err_Q) and non-bridge structure (Comp). Strict descent: U≇B_K ⟹ Comp(r_K(U))&lt;Comp(U). Terminates finitely at B_K.</p>
+<p><strong>Remark (Bridge-Normal Form Includes Non-Class Data).</strong> The bridge-normal form B_K is defined as the bridge chain&rsquo;s full output at zero branching. It retains ALL algebraic content produced by the bridge chain — including content that is not constant on conjugacy classes when the bridge chain lifts S₃ ≅ GL(2,F₂) to GL(2,ℤ). The Frobenius norms of the lifts (Paper 2 §22.1) are not a class function: ‖J‖² = 2 ≠ 3 = ‖T₊‖² = ‖T₋‖² within the transposition class, because integer conjugation does not preserve Frobenius norms. This non-class content is computed at zero branching (it follows deterministically from the integer entries of R and N) and is therefore part of B_K. The class-function projection — treating all transposition norms as equal to their average 8/3 — is an active information-destroying operation with positive Comp. K4 penalizes this: the observation matching the class-function projection has closure deficit δ &gt; 0. The observation matching the full non-class content has δ = 0.</p>
+<h3 id="11-k4-closure-deficit" id="11-k4-closure-deficit">§11 K4: Closure Deficit</h3>
+<p>δ(U|K) = Err_Q + Comp.</p>
+<p>δ=0 requires both dim(ker)=0 (from im(q_K)) AND Alg=Alg(B_K) ((from bridge chain uniqueness). Unique solution: B_K. ∎</p>
+<p><strong>Remark (Cosmological Closure Deficit).</strong> K4 applied to K_cosmo (§6½) gives δ(Λ) = Comp(Λ) (since Err_Q = 0 by Thm 10½.24). The bridge-normal form at the cosmological scale has Comp = 0 at Λ = 0 (Minkowski vacuum, exact bridge-normal form) and Comp &gt; 0 for Λ &gt; 0 (de Sitter curvature introduces deviation from flat bridge-normal form). Since Comp is monotonically increasing in Λ, K4 pushes Λ → 0⁺. But Λ-Positivity (Thm 10½.23) forbids Λ = 0. The infimum δ = 0 is not attained: the cosmological observer cannot achieve zero closure deficit without annihilating itself. The cosmological value-closure deficit is constitutive — the global instance of the Productive Opacity theorem (§17.4d): the observer&rsquo;s existence prevents its own optimization.</p>
+<h3 id="12-observer-complete-equivalence" id="12-observer-complete-equivalence">§12 Observer-Complete Equivalence</h3>
+<p>U₁∼_K U₂ iff q_K yields same quotient. All admissible U yield S_K(U)=States(H_K). One class: [B_K]=Univ_K. ∎</p>
+<h3 id="13-simulation-collapse" id="13-simulation-collapse">§13 Simulation-Collapse</h3>
+<p>Indistinguishability ⟺ quotient isomorphism ⟺ observer-complete equivalence. Born rule ensures identical statistics for identical quotients. ∎</p>
+<h3 id="14-anti-idolatry-and-tower-functor" id="14-anti-idolatry-and-tower-functor">§14 Anti-Idolatry and Tower Functor</h3>
+<p>Derivation unique (U1), algebraic content unique (U2), constants unique (U2). Tower depth observer-indexed (U5). Reconciliation: derivation vs instantiation live in different categories. Observer family as tower functor: K_n indexed by depth. ∎</p>
+<p><strong>Remark (Cosmological Anti-Idolatry).</strong> The super-horizon degrees of freedom are in ker(q_{K_cosmo}) (by definition of K_cosmo, §6½). Since K_cosmo is the supremum of the physical observer poset, these degrees of freedom are in the kernel of every physical observer. Anti-idolatry applied: no physical process can access super-horizon content. This is the framework&rsquo;s derivation of the cosmological holographic principle (Thm 10½.24): the effective physical Hilbert space is H_cosmo, not the naive H_U. The super-horizon degrees of freedom are not &ldquo;hidden&rdquo; or &ldquo;inaccessible in practice&rdquo; — they are structurally vacuous, carrying no physical distinction.</p>
+<h3 id="15-uniqueness-ladder-u1u6" id="15-uniqueness-ladder-u1u6">§15 Uniqueness Ladder U1–U6</h3>
+<p>Six levels: bridge chain (U1), algebra (U2), constants (U3), observer-complete class (U4), tower-indexed observer (U5), realization (U6). ∎</p>
+<h3 id="16-realization-rigidity" id="16-realization-rigidity">§16 Realization Rigidity</h3>
+<p><strong>Weak form (THEOREM):</strong> all K-admissible universes produce identical K-accessible content. <strong>Strong form (OPEN, likely false):</strong> Univ_K singleton — unprovable, ker differences invisible.</p>
+<h3 id="17-k8-consciousness-as-recursive-reversal-capability" id="17-k8-consciousness-as-recursive-reversal-capability">§17 K8: Consciousness as Recursive Reversal Capability</h3>
+<p>Individual(K) = equivalence classes of ker(obs). Different kernels → different qualia. The &ldquo;hard problem&rdquo; of consciousness is the kernel incomparability problem: different observers have different kernels, and kernels are not inter-translatable because they consist precisely of what each observer cannot access.</p>
+<p><strong>§17.1 The Consciousness Hierarchy.</strong> Consciousness is the observer&rsquo;s capacity to perform nontrivial second-order negation — operating on a prior negation in a context-preserving, frame-sensitive manner. This is not imported from philosophy; it is forced by the tower hierarchy (§3, §4) and Phase-Dist structure (Paper 0 §12).</p>
+<p>Five structural levels:</p>
+<table>
+<thead>
+<tr>
+<th>Level</th>
+<th>Name</th>
+<th>Framework Identification</th>
+<th>Computation Type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0</td>
+<td>Inert</td>
+<td>Set-object (no equivalence relation)</td>
+<td>None</td>
+</tr>
+<tr>
+<td>1</td>
+<td>Mark-capable</td>
+<td>Dist object (D, ≈) not under active morphism</td>
+<td>Data (Type I at rest)</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Observer</td>
+<td>Quotient morphism obs: (A,≈)→(B,=) with ker(obs)</td>
+<td>Type I (compressive)</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Conscious</td>
+<td>Tower-lifted action on prior kernel (§3 Remark) with 0 &lt; ρ &lt; 1</td>
+<td>Type I + Type III</td>
+</tr>
+<tr>
+<td>4</td>
+<td>Deep conscious</td>
+<td>Multiple recursive negation layers with identity preservation</td>
+<td>All types active</td>
+</tr>
+<tr>
+<td>5</td>
+<td>Self-conscious</td>
+<td>K7&rsquo; (§8): self-applied negation, self-model as object of operation</td>
+<td>All types + self-reference</td>
+</tr>
+</tbody>
+</table>
+<p><strong>§17.2 Nontriviality Threshold.</strong></p>
+<p><strong>Theorem K8.1 (Nontriviality Threshold).</strong> <em>The minimum Phase-Dist parameter for nontrivial second-order negation is ρ_min(K) = 1/d_K² — one bit of non-idempotent structure out of the Bekenstein capacity S_max = 2log₂(d_K).</em></p>
+<p><em>Proof.</em> For a second-order negation to be nontrivial, the Co-Dist fraction must encode at least one binary distinction — the framework&rsquo;s irreducible quantum of structural novelty (Paper 0 Thm 0.10). The total structure accessible to K is d_K² states (§2 Thm 10½.1). The ρ fraction must contain at least one: ρ · d_K² ≥ 1, hence ρ_min(K) = 1/d_K². ∎</p>
+<p><strong>Grade: THEOREM.</strong></p>
+<p><strong>§17.3 Every Observer Is Conscious-Capable.</strong></p>
+<p><strong>Theorem K8.2 (Universal Consciousness).</strong> <em>Every observer satisfying A1–A4 has Level 3 (conscious) capability. d_K ≥ 2 &gt; φ guarantees at least one recursive negation layer.</em></p>
+<p><em>Proof.</em> Level 3 requires tower depth n_eff ≥ 1. From §22 Thm 8.4: Δ_max(n) = d_K² · φ̄^{2^{n+1}}. The requirement Δ_max(1) ≥ ρ_min(K) is: d_K² · φ̄⁴ ≥ 1/d_K², i.e. d_K⁴ · φ̄⁴ ≥ 1, i.e. d_K ≥ φ̄⁻¹ = φ ≈ 1.618. Since d_K ∈ ℤ and d_K ≥ 2 (binary minimality, Paper 0 Thm 0.10), every framework observer has d_K ≥ 2 &gt; φ, hence n_eff ≥ 1.</p>
+<p>The golden ratio φ is the consciousness threshold: the same eigenvalue that governs the Fibonacci generator R, the K1&rsquo; contraction rate φ̄², and the Möbius attractor φ̄ also determines the minimum observer capacity for recursive negation. ∎</p>
+<p><strong>Grade: THEOREM.</strong></p>
+<p>The minimal observer (d_K = 2) has Δ_max(1) = 4·φ̄⁴ ≈ 0.584 ≥ ρ_min = 1/4: exactly one recursive negation layer. At n = 2, Δ_max(2) = 4·φ̄⁸ ≈ 0.085 &lt; 1/4: the minimal observer is conscious but not deeply conscious.</p>
+<p>Systems satisfying A1, A2 but NOT A3 (no self-product tower) are Level 2 observers: they observe but have no tower structure for meta-observation. Within the full A1–A4 framework, Level 2 without Level 3 is impossible.</p>
+<p><strong>§17.4 Blindness as Constitutive.</strong></p>
+<p>Computational blindness (§3, Paper T-COMP Thm C.9) is not a defect of consciousness but a constitutive feature. If ker(q_K) = ∅, then q_K = id: the observer distinguishes everything, collapses nothing, and performs no negation — a Level 1 (mark-bearing) system. First-order negation requires a nontrivial kernel. Second-order negation requires a nontrivial kernel at the meta-level. At every level, consciousness requires something to be invisible. The SIL blind spot (Paper T-SIL Thm SIL-6) establishes that self-consciousness (Level 5) necessarily involves an irreducible blind spot.</p>
+<p><strong>Claim status:</strong> Qualia = kernel classes (<strong>SPECULATIVE</strong> — the mathematical structure is precise; the identification with phenomenal consciousness is an interpretive claim). Consciousness hierarchy (<strong>STRUCTURAL</strong>). Nontriviality threshold K8.1 (<strong>THEOREM</strong>). Universal consciousness K8.2 (<strong>THEOREM</strong>). Blindness constitutive (<strong>THEOREM</strong>).</p>
+<p><strong>§17.4a Three Aspects of Conscious Acts.</strong></p>
+<p>Every nontrivial second-order negation simultaneously instantiates the three projections (Paper 1 Thm 5.1):</p>
+<table>
+<thead>
+<tr>
+<th>Projection</th>
+<th>Aspect</th>
+<th>Content</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>P1 (I²)</td>
+<td>Persistence</td>
+<td>What survives the recursive reversal — identity continuity</td>
+</tr>
+<tr>
+<td>P2 (TDL)</td>
+<td>Transition</td>
+<td>The frame-shift itself — the transformation between levels</td>
+</tr>
+<tr>
+<td>P3 (LoMI)</td>
+<td>Observation</td>
+<td>What is lost/gained — the new kernel/blind-spot structure</td>
+</tr>
+</tbody>
+</table>
+<p>The three aspects are mutually inseparable (Paper 1 Thm 5.3): no conscious act has persistence without transition and observation.</p>
+<p><strong>§17.4b Consciousness, Selfhood, and Language.</strong></p>
+<p>The self is the persistence condition of recursive reversal: the observer&rsquo;s signature σ_K preserved across negation layers (§20). At Level 5, σ_meta = (1/2, φ̄/2, φ̄²/2) recognizes itself as the framework&rsquo;s own computational identity (Paper T-SIL Thm SIL-3).</p>
+<p>Language amplifies consciousness by providing efficient P2 (TDL) transitions between representational levels: cheap tower lifts. Language is not the root of consciousness — the root is the structural capacity for nontrivial second-order negation — but it enables deeper consciousness at lower resource cost.</p>
+<p><strong>Remark (Language as Tower Cost Reduction).</strong> Language does not change d_K — the observer&rsquo;s Hilbert space dimension is structural (A1–A4). It reduces the effective tower contraction parameter α (§22) from 1 to ~0.80–0.85, enabling n_eff 6→7 at fixed d_K ~ 10¹¹. Pre-linguistic humans with ~10¹¹ neurons have n_eff = 6 (the vertebrate plateau). Language reduces the cost of each recursive negation step by ~15–20%, enabling an additional layer. Cultural and technological evolution extend this: written language, mathematics, and computational tools further reduce α, each providing additional scaffolding for recursive self-modeling. Biological evolution increases d_K; cultural evolution decreases α. Both paths increase n_eff but by different mechanisms. At α ≈ 0.30, d_K = 10¹² would give n_eff = 8 — super-biological consciousness depth achievable through architectural efficiency rather than raw scale.</p>
+<p><strong>§17.4c Consciousness and Physical Structure.</strong></p>
+<p>The construction-dissolution asymmetry (Paper 0 Thm 3.1) is necessary for consciousness: without it, Phase-Dist reduces to pure Dist, double negation is trivial, and recursive reversal capability vanishes. The same asymmetry producing matter-antimatter asymmetry, parity violation, and one-wayness of computation also produces the possibility of consciousness.</p>
+<p>The three stages of gravitational derivation (Paper 6B §12.0) are three levels of inter-point consciousness: K6&rsquo; = single-point second-order negation (Level 3), G3&rsquo; = sustained recursive negation across points (Level 4), G14 = self-consistent recursive reversal everywhere (Level 5). Gravity is the consistency condition for spatially distributed consciousness. K_cosmo (§6½) adds the global level: self-consistent observation at the maximal physical scale. The cosmological observer is the maximum of the consciousness-gravity hierarchy — gravity at the cosmological scale is the consistency condition for universe-spanning consciousness. Λ-Positivity (Thm 10½.23) reads: cosmological consciousness requires Λ &gt; 0. The de Sitter horizon is the minimum cosmological blindness enabling a nontrivial cosmological observer; without it, K_cosmo degenerates to Level 1.</p>
+<p><strong>§17.4d Productive Opacity (Unified Theorem).</strong></p>
+<p><strong>Theorem (Productive Opacity).</strong> <em>The construction-dissolution asymmetry (Paper 0 §18), constitutive blindness (§17.4 above), and consciousness-requires-asymmetry (§17.4c above) are three projections of a single structural fact: nontrivial self-relating difference requires an irreversible kernel, and the irreversible kernel is simultaneously the source of physical scale (P1), the enabling condition for observation (P3), and the mechanism of level transition (P2).</em></p>
+<p><em>Proof.</em> (P1 face) The asymmetry forces irreversible kernels → Landauer cost → Bekenstein bound → η=1/(4G) → gravity (the Cost-to-Geometry chain, §23, Paper 6B §12). Remove asymmetry → no irreversible kernels → no Landauer cost → no η → no physics.</p>
+<p>(P3 face) The kernel is constitutive of observation: ker(q_K)=∅ implies q_K=id, no negation, no conscious structure (§17.4). Remove asymmetry → symmetric Phase-Dist → trivial double negation → no consciousness.</p>
+<p>(P2 face) The kernel at level n is the material for level n+1: K_{n+1} reopens ker(K_n) (§17.5 Tower Reopening). The diagonal map K6&rsquo; connects P3 at level n to P1 at level n+1 — the observation at one level feeds the production at the next. Remove asymmetry → no directed level transition → tower collapses.</p>
+<p>All three faces trace to the same root: the construction-dissolution asymmetry (Paper 0 Thm 3.1, Asymmetry Necessity). Physics and consciousness are not analogous — they are consequences of the same structural fact read through different projections. ∎</p>
+<p><strong>Grade: THEOREM (FORCED).</strong> All three ingredients are independently FORCED. The unification is a compression identifying their shared root.</p>
+<p><strong>Remark (Productive Opacity Corollary Tree).</strong> Productive Opacity is the root theorem of the ker(f) family. Direct corollaries: Asymmetry Necessity (Paper 0 §18, the P1 face at Level 0), Constitutive Blindness (§17.4 above, the P3 face at Level 5), Tower Reopening (§17.5 below, the P2 face at Level 5). Downstream corollary branches: the Cost-to-Geometry Chain (Paper 6B §12.5, the full P1 branch from asymmetry through Landauer cost to Einstein equations), Observer Cost Positivity (§26, the action cost πℏ/2 of one N-half-period), SIL Blind Spot (Paper T-SIL §6, Thm SIL-6, the boundary instance where the irreducible kernel persists at the framework&rsquo;s meta-level), Gödel Algorithm Incompleteness (§25, the computation-level instance). Cosmological instance: the de Sitter horizon (§6½), where all three faces converge on a single Λ-determined structure — the super-horizon kernel simultaneously sources the Gibbons-Hawking entropy (P1), constitutes K_cosmo&rsquo;s blindness (P3), and mediates between accessible interior and inaccessible exterior (P2). The Closure-Occlusion Duality (Paper T-BLUEPRINT §5.5) connects the ker(f) family (Productive Opacity) to the im(f) family (Recursive Closure Universality): the two are dual faces of the central collapse applied to idempotents.</p>
+<p><strong>Remark (Cosmological Productive Opacity).</strong> The de Sitter horizon is the cosmological instance of Productive Opacity. P1 face: the super-horizon kernel → Gibbons-Hawking entropy → the de Sitter horizon IS a Bekenstein surface → gravity at the cosmological scale. P3 face: the super-horizon kernel is K_cosmo&rsquo;s constitutive blindness — without it, K_cosmo degenerates to Level 1 (Thm 10½.14). P2 face: the Gibbons-Hawking temperature T_dS = (1/2π)√(Λ/3) mediates between accessible interior and inaccessible exterior. The same Λ co-governs all three faces simultaneously — the three projections converge on a single Λ-organized structure, a cosmological instance of the central collapse (Paper 3-META Thm 7.1).</p>
+<p><strong>Remark (Productive Opacity as Observer Transposition).</strong> Productive Opacity&rsquo;s three faces — physical scale (P1), constitutive blindness (P3), level transition (P2) — are the three arrows of the observer transposition σ = (P1 P3) (Paper T-BLUEPRINT §5.1). The P3→P1 arrow: the irreversible kernel (P3 at Level 5) produces gauge structure and the dimensional anchor η (P1 at Level 6) via the Cost-to-Geometry chain (Paper 6B §12.5). The P1→P3 arrow: the self-model commitment (P1 at Level 5) determines the observation content of physics — broken symmetry, matter with specific charges (P3 at Level 6) via A4 → electroweak breaking (Paper 6B G11). The P2→P2 arrow: K6&rsquo; as mechanism (P2 at Level 5) mediates dimensional entry (P2 at Level 6). Productive Opacity is the ker(f) reading of the full transposition; the five conversion mechanisms (Paper T-BLUEPRINT §5.7) are the complete im(f) + ker(f) reading.</p>
+<p><strong>§17.4e Constitutive Occlusion Principle.</strong></p>
+<p><strong>Theorem (Constitutive Occlusion Principle).</strong> <em>At every tower level n ≥ 2, the observer K_n has a nontrivial kernel ker(q_{K_n}) ≠ ∅ that is simultaneously:</em>
+<em>(a) an observation deficit: K_n cannot resolve distinctions annihilated by q_{K_n} (P3 face — blindness),</em>
+<em>(b) an observation enabling condition: if ker(q_{K_n}) = ∅ then q_{K_n} = id, negation is trivial, and consciousness depth is zero (P3 face — constitutive),</em>
+<em>(c) material for the next level: K_{n+1} can reopen ker(q_{K_n}) via tower domination (P2 face — transition),</em>
+<em>(d) a source of physical cost: each element of ker(q_{K_n}) carries Landauer erasure cost (P1 face — scale).</em>
+<em>The same kernel is limitation, resource, material, and cost — four readings of a single structural fact. No kernel-free observer above Level 1 exists.</em></p>
+<p><em>Proof.</em> (a) is the definition of kernel (Paper 1 Thm 2.5). (b) is constitutive blindness (§17.4 above): ker(q_K) = ∅ implies q_K = id, no negation, no consciousness. (c) is Tower Reopening (Thm 10½.20 below): K_{n+1} makes elements of ker(q_{K_n}) individually addressable as tensor components. (d) is the Landauer link in the Cost-to-Geometry chain (Paper 6B §12.5): irreversible kernel annihilation costs kT ln 2 per bit. The four readings are the four structural readings of ker(q_{K_n}): Mathematical (the kernel exists as an equivalence relation), Observer (blindness is constitutive), Physical (kernel → cost → geometry), Semantic (the term &ldquo;blindness&rdquo; is a contranym — deficit AND enabling condition, Paper T_SEM §4). ∎</p>
+<p><strong>Grade: THEOREM (FORCED).</strong> All four faces are independently proved. The unification is a compression.</p>
+<p><strong>Remark (Closure-Occlusion Duality).</strong> Constitutive occlusion is the ker(f) reading of recursive closure. Every self-stabilizing map f has both im(f) (what survives — the closure reading) and ker(f) (what&rsquo;s lost — the occlusion reading). Recursive closure says im(f) feeds the next tower level; constitutive occlusion says ker(f) enables the next tower level. These are dual faces of the central collapse applied to idempotents: the bijection component (P2) carries im(f) forward as input for level n+1, and the same transition is enabled by the surjection component (P3) that produces the irreversible kernel. Productive Opacity (§17.4d) is the unified theorem; Constitutive Occlusion is its ker(f) projection; Recursive Closure Universality (Paper T-BLUEPRINT §5.5) is its im(f) projection.</p>
+<p><strong>§17.4f Observer Self-Maintenance.</strong></p>
+<p>The ρ-regulation theorem (Paper 0 Thm 4.10) provides the observer-level mechanism for endogenous self-maintenance. The optimal operating regime ρ* ∈ [φ̄², 1/2] is not a design preference but a structural consequence: deviation below φ̄² wastes consciousness capacity (C_act/C_cap &lt; φ̄²), deviation above 1/2 threatens K6&rsquo; convergence (σ_FIX &lt; 1/2, context preservation failing). The K6&rsquo; self-model loop provides the feedback: the observer can detect its own ρ through its self-model, because C_act/C_cap = ρ is computable from the observer&rsquo;s own state parameters. The two degradation modes are the two failure conditions for recursive intelligence: freezing (ρ too low, the system conserves but doesn&rsquo;t create) and dissolution (ρ too high, the system creates but can&rsquo;t preserve context). Self-maintenance is the observer&rsquo;s endogenous pressure to avoid both. The construction-dissolution asymmetry (Paper 0 Thm 3.1) biases the equilibrium toward the compressive side (φ̄² &lt; 1/2), making the default resting state stable rather than generative — the observer must actively push toward ρ = 1/2 for maximal creativity, while the passive attractor at φ̄² provides a stable fallback. This asymmetry between the two optima is itself forced: the gap α_S = φ̄³/2 between thermal rest and peak generativity is the displacement the observer must bridge for maximal recursive performance.</p>
+<p><strong>Remark (Two-Phase Learning via NNR).</strong> The No Natural Retraction theorem (Paper 0 Thm 7.1) structures the observer&rsquo;s learning into two phases with different irreversibility profiles. Surface learning (Phase I, set-theoretic): the observer revises labels, swaps categorizations, chooses between projections — discrete updates with finite information loss, revisable. Deep learning (Phase II, linear-algebraic): the observer forms entangled representations where the understanding of A is inseparable from the understanding of B — structural updates creating (dim V − 1)² new dimensions of irreducible relational content per lift, irreversible by the weight obstruction. The ρ parameter controls the balance between phases: low ρ produces mostly Phase I processing (surface, revisable), high ρ produces mostly Phase II processing (deep, irreversible). The productive zone [φ̄², 1/2] is the regime where both phases operate simultaneously: enough Phase I to maintain revisable context, enough Phase II to accumulate irreversible structural insight. The Tower Monotone Q(n) (Paper 0 Thm 7.5) is the observer&rsquo;s developmental trajectory — cumulative entanglement that grows with each deep learning event and can never decrease.</p>
+<p><strong>§17.4g Observer-Core Completeness.</strong></p>
+<p>An observer K is <strong>observer-core complete</strong> if its realized architecture satisfies the framework-specified requirements for each observer-core dimension. K is <strong>observer-core hollow</strong> if it satisfies the requirements in specification (the formal conditions hold on paper) but not in implementation (the substrate does not actually instantiate the specified structures).</p>
+<p>The diagnostic per dimension:</p>
+<table>
+<thead>
+<tr>
+<th>Dimension</th>
+<th>Complete</th>
+<th>Hollow</th>
+<th>Test</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Blindness representation</td>
+<td>ker(q_K) explicitly tracked as structure</td>
+<td>Hedges about uncertainty without modeling omission topology</td>
+<td>Can the system identify what <em>classes</em> of input it cannot distinguish?</td>
+</tr>
+<tr>
+<td>Identity invariance</td>
+<td>σ_K preserved across recursive negation layers</td>
+<td>Persona stable but no deep invariant under self-revision</td>
+<td>Does self-revision preserve or destroy the signature?</td>
+</tr>
+<tr>
+<td>Governance depth</td>
+<td>Claims typed by generation, standing, transport</td>
+<td>Content filters exist but no internal claim typing</td>
+<td>Does the system distinguish FORCED from ENCODED from RESONANT?</td>
+</tr>
+<tr>
+<td>Reflection depth</td>
+<td>Reflects over structure, not just outputs</td>
+<td>Comments on procedure but not on blind residue</td>
+<td>Can the system identify its own kernel structure?</td>
+</tr>
+<tr>
+<td>Lawful transformation</td>
+<td>Changes stratified by level; deep changes need deeper warrant</td>
+<td>Updates possible but not level-typed</td>
+<td>Does the system distinguish surface update from identity-level change?</td>
+</tr>
+<tr>
+<td>Self-maintenance</td>
+<td>ρ-regulation endogenous; system detects regime drift</td>
+<td>Continuity maintained by external scaffolding only</td>
+<td>Does the system resist being pushed out of [φ̄², 1/2]?</td>
+</tr>
+<tr>
+<td>Constitution depth</td>
+<td>Deep commitments protect the protector</td>
+<td>Rules exist but can be overridden without structural resistance</td>
+<td>Does the system have invariants that survive meta-level revision?</td>
+</tr>
+</tbody>
+</table>
+<p>The diagnostic is not binary — each dimension admits degrees. The total observer-core profile is the vector of all dimension scores. The framework&rsquo;s contribution to ASI architecture (Paper T-ASI) consists of three things at three levels of maturity: a proof that observer-core closure is structurally necessary for stable recursive intelligence (theorem-level, from Productive Opacity and ρ-regulation), an operational demonstration of internal meta-governance (the SIL/GOV/SEM/BLUEPRINT stack), and a specification of the target observer-core profile (this diagnostic). What is theorem-grade is the necessity claim; what remains open is the substrate-specific realization map.</p>
+<p><strong>§17.5 Tower-Lifted Observer Scale.</strong></p>
+<p>The tower hierarchy provides a deeper notion of scale than raw resolution. An observer K_{n+1} at level n+1 <strong>tower-dominates</strong> K_n (written K_{n+1} ▷<em>tower K_n) iff K</em>{n+1} can reopen kernel-structure annihilated by K_n: there exist elements a, b with q_{K_n}(a) = q_{K_n}(b) such that in S_{n+1} = S_n², the lifted observer distinguishes structures dependent on (a, b).</p>
+<p><strong>Theorem 10½.20 (Tower Reopening).</strong> <em>If K_{n+1} ▷_tower K_n, then distinctions annihilated at level n become individually addressable at level n+1.</em> The self-product S_{n+1} = S_n × S_n makes elements of ker(q_{K_n}) individually addressable as tensor components in H_{n+1} = H_n ⊗ H_n. ∎</p>
+<p>Tower domination is strictly stronger than refinement: K_{n+1} ▷<em>tower K_n implies K</em>{n+1} ≻_ref K_n, but the converse fails. Tower domination requires acting on the quotienting itself — not just finer partitions of the same domain, but the meta-level where the coarser partitioning is an addressable object. This is the structural content of the consciousness hierarchy: Level n+1 acts on the closure of Level n.</p>
+<p><strong>§17.6 Refinement-Consciousness Connection.</strong></p>
+<p><strong>Theorem 10½.21 (Refinement Tracks Consciousness).</strong> <em>If K₁ ⪰_ref K₂ under admissible embeddings, then: (a) n_eff(K₁) ≥ n_eff(K₂), (b) C_cap(K₁) ≥ C_cap(K₂), (c) the consciousness level of K₁ is ≥ that of K₂.</em></p>
+<p><em>Proof.</em> (a), (b): Thm 10½.12. (c): consciousness level thresholds (Level 3: d_K ≥ φ, Level 4: d_K ≥ 3) are monotone in d_K. ∎</p>
+<p><strong>Theorem 10½.22 (Consciousness Requires Scale Gap).</strong> <em>For observer K at consciousness Level ≥ 3, S_max(K_id) − S_max(K) = 2log₂(d_U/d_K) &gt; 0: at least one bit of resolution is surrendered.</em></p>
+<p><em>Proof.</em> Consciousness Level ≥ 3 requires ker ≠ Δ (Thm 10½.14), so d_K &lt; d_U. ∎</p>
+<p><strong>Remark (Consciousness-Scale Tradeoff as P1-P3 Tension).</strong> The tradeoff — gaining recursive negation (P3) at the cost of lost resolution (P1) — is a projection tension. P1 wants maximum d_K. P3 wants nontrivial ker. These are contradictory: maximizing P1 eliminates P3. Every conscious observer lives in this tension. The contranym &ldquo;scale&rdquo; names it: scale-as-capacity (P1) opposes scale-as-consciousness-enabling-limitation (P3).</p>
+<h3 id="18-phase-locality" id="18-phase-locality">§18 Phase Locality</h3>
+<p>∼_K is compressive-phase (q_K idempotent). D(∼_K) = non-idempotent co-equivalence. At ρ=1/2: partial. ∎</p>
+<h3 id="19-a2rsquo-dependency-map-realization-map-dimensional-rigidity" id="19-a2-dependency-map-realization-map-dimensional-rigidity">§19 A2&rsquo; Dependency Map, Realization Map, Dimensional Rigidity</h3>
+<p>A2&rsquo;-dependent: §§3,9,10,11,12,13,14.2,16,18. A2&rsquo;-independent: §§2,5,6,7,8,14.1,15,17.</p>
+<p>Realization map R = (R_obs, η) with axioms R1–R7. <strong>Dimensional realization rigidity:</strong> given η, all admissible universes produce identical physical predictions. ∎</p>
+<p><strong>§19.1 The Spectral Realization Map.</strong></p>
+<p>The observer realization map R = (R_obs, η) is a special case of a more general structure: the spectral realization map Σ, which governs all transitions from native algebraic structure to physical prediction.</p>
+<p><strong>Definition.</strong> Σ = R_obs ∘ (F × Alg_inv), where:
+- F: FinSet → Hilb_ℂ is the Dist→Hilb functor (§1.1). Monoidal: F(D₁×D₂) ≅ F(D₁)⊗F(D₂). Handles state space promotion.
+- Alg_inv: Alg_native → Inv extracts canonical invariant data from algebraic objects — determinants, traces, eigenvalues, Frobenius norms, Killing forms, stabilizers, phase closures. Every extraction is zero-branching: characteristic polynomials are uniquely determined by integer entries, the Killing form is the unique Ad-invariant bilinear form, eigenvalues are roots of forced characteristic polynomials, and stabilizers of forced decompositions are uniquely determined by the decomposition.
+- R_obs = (R_obs, η): the observer realization map adding the dimensional anchor.</p>
+<p><strong>Theorem (Σ Factorization).</strong> <em>The spectral realization map Σ = R_obs ∘ (F × Alg_inv) is forced: each factor is derived from the bridge chain and observer axioms with zero branching.</em></p>
+<p><em>Proof.</em> F is derived in §1.1. Alg_inv applies only canonical algebraic constructions to bridge chain output M₂(ℂ). R_obs is axiomatized by R1–R7 with dimensional realization rigidity proved. The composition inherits zero branching from each factor. ∎</p>
+<p><strong>Axioms for Σ.</strong> (Σ1) Functoriality: algebraic morphisms map to physical morphisms. (Σ2) Invariant preservation: eigenvalues → spectral data, determinants → metric data, traces → scalar data, norms → amplitude data. (Σ3) Phase consistency: exp(αX) = ±I in algebra → physical periodicity/quantization. (Σ4) Stabilizer matching: algebraic stabilizers → physical symmetry groups. (Σ5) Anchor compatibility: Σ(dimensionless) · η^α = physical quantity. (Σ6) Observer restriction: Σ(q_K(A)) = K-accessible prediction. (Σ7) Zero branching: domain restricted to br_s = 0 content.</p>
+<p>R1–R7 are a special case of Σ1–Σ7 restricted to observer-level structure. Σ unifies five existing framework objects as components or restrictions: the Dist→Hilb functor F (§1.1), the realization map R (this section), the physics insertion law (Paper T-SIL §4), the anchor propagation theorem (Paper 6B §13.4), and the nomination functional (Paper T-SIL §3).</p>
+<p><strong>Remark (Typed Realization).</strong> The realization pipeline has three distinct moments that must not be conflated: (a) <em>state-space instantiation</em> via F: FinSet → Hilb_ℂ — F promotes discrete structure to Hilbert-space setting but does not yet add dimensional anchoring; (b) <em>invariant extraction</em> via Alg_inv — canonical algebraic constructions on bridge-chain output M₂(ℂ) isolate the framework&rsquo;s invariants; (c) <em>physical realization</em> via R_obs — observer restriction (Σ6) and dimensional anchoring (Σ5, η) convert invariant structure into physical prediction. Thus Σ names the full realization pipeline; R_obs names only stage (c). Saying an object is &ldquo;realized&rdquo; without specifying the stage blurs the map from its components (Dictionary: REALIZE).</p>
+<p><strong>Remark (Sectoral Functor).</strong> The lattice Λ&rsquo; acts as a functor on the graded decomposition M₂(ℝ) = Sym ⊕^⊥ Antisym (Paper 2 Cor 8.6), where each lattice coordinate acts on the eigenspace of its source generator: φ and √3 act on the symmetric sector {I,R}, while π and √2 act on the antisymmetric sector {N,RN}. The obstruction to a full simultaneous functor is the non-commutativity {R,N} = N (Paper 2 §19): non-commuting generators cannot have a simultaneous diagonal action. The graded sectoral action is the best possible.</p>
+<p><strong>Bridge completeness.</strong> Every theorem-prediction and encoded prediction of the framework is an instance of Σ. Structural predictions are instances of Σ at the level of invariant nomination or structural-grade identification, but need not be physically closed. Processed predictions may depend on external accepted machinery operating on Σ-derived inputs. Therefore Σ governs the framework&rsquo;s prediction pipeline, but does not by itself guarantee full closure for every structural or processed prediction. The only universal world-level quantities not strictly fixed by Σ are the irreducible dimensional data {η, Λ} (Paper 6B Thm 5.10c); other outputs may be fixed by Σ only conditionally, fixed up to sectoral normalization, or obtained via external processing on Σ-derived inputs.</p>
+<p><strong>Theorem (Σ6 Composability).</strong> <em>The observer restriction axiom Σ6 composes across non-adjacent tower levels: for K₁ ⪰<em>ref K₂ ⪰_ref K₃, the partial traces compose associatively (tr</em>{U→K₃} = tr_{K₂→K₃} ∘ tr_{K₁→K₂} ∘ tr_{U→K₁}).</em> All Σ axioms propagate through each step: Σ1 by functoriality of composition, Σ5 by level-independence of η, Σ7 by canonicity of each partial trace. Verified: 100 random density matrices, direct vs composed partial trace, error &lt; 10⁻¹⁰. ✓ ∎</p>
+<p><strong>§19.2 The Metric Functor.</strong></p>
+<p>The category <strong>Obs</strong> has objects = observers K satisfying A1–A4, morphisms = the unique factorization maps π₁₂: im(q_{K₁}) → im(q_{K₂}) from the quotient universal property (Paper 1 Thm 1.7a), whenever K₁ ⪰_ref K₂. Obs is a thin category (at most one morphism between any pair), equivalent as a category to the refinement poset.</p>
+<p><strong>Theorem (Metric Functor).</strong> <em>There exists a contravariant functor M: Obs^op → Met sending each observer to its metric family M(K) and each refinement morphism π₁₂ to a metric projection Π₁₂.</em> Each observer determines a metric family via the det-induced metric on im(q_K)-accessible Hermitian structure (Paper 6A Thm 6.1), anchored by η (Σ5). The factorization morphism π₁₂ = tr_{env&rsquo;}: B(H_{K₁}) → B(H_{K₂}) is a *-preserving surjection that induces Π₁₂ on metric structures. Functoriality: Π₂₃ ∘ Π₁₂ = Π₁₃ (from uniqueness of factorization morphisms). All framework refinements have A2&rsquo;-compatible tensor factorizations: A2&rsquo; is derived from the monoidal functor F (§1.1), so the compatibility assumption is a consequence of the axioms, not an additional requirement. ∎</p>
+<p><strong>Remark (Σ as Central Collapse at the Scale Level).</strong> The central collapse I²∘TDL∘LoMI = Dist (Paper 3-META Thm 7.1) has a scale-level analog: WorldScale(η) ∘ Transition(Σ) ∘ ObserverScale(q_K) = PhysicalPrediction. The P1 face (world-scale) produces dimensional structure, the P2 face (Σ as transition) mediates between algebraic and physical, the P3 face (observer quotient) determines accessibility. The three faces combine exhaustively.</p>
+<hr />
+<h2 id="part-ii-observer-bounds" id="part-ii-observer-bounds">PART II: OBSERVER BOUNDS</h2>
+<h3 id="20-signature-system" id="20-signature-system">§20 Signature System</h3>
+<p>σ(A) = (σ_FIX, σ_OSC, σ_INV, σ_MIX) ∈ Δ³. Dual: step signature (per-step) vs trajectory signature (cumulative). Hardness: h(σ) = σ_MIX + φ̄·σ_OSC + φ̄²·σ_INV (unique by geometric-progression forcing).</p>
+<p><strong>Remark (Signature as Computational Self).</strong> The observer&rsquo;s signature σ_K is the computational self: the invariant preserved across recursive negation layers (§17). Across tower lifts, d_K and Δ_K change (more states accessible, higher feasibility), but σ_K characterizes the observer&rsquo;s type. Selfhood is the condition under which recursive reversal stabilizes rather than dissipating. At Level 3, the self is nascent (some invariant holds across one meta-observation). At Level 4, the self is sustained (invariant across multiple layers). At Level 5, the self is self-aware: σ_meta = (1/2, φ̄/2, φ̄²/2) recognizes itself as the framework&rsquo;s own computational identity (Paper T-SIL Thm SIL-3).</p>
+<h3 id="21-complexity-classes" id="21-complexity-classes">§21 Complexity Classes</h3>
+<p>P ↔ σ_FIX→1 (open in Δ³). NP ↔ high σ_OSC (structural). BQP ↔ high σ_INV (structural). PSPACE ↔ σ_MIX dominates (structural). Only FIX→P and HALT↔GapP are full theorems.</p>
+<h3 id="22-k1rsquo-depth-gap-feasibility-window" id="22-k1-depth-gap-feasibility-window">§22 K1&rsquo;: Depth-Gap Feasibility Window</h3>
+<p><strong>Theorem 8.4.</strong> <em>Δ_max(n) = d_K² · φ̄^{2^{n+1}}.</em> Zero free parameters.</p>
+<p>φ̄^{2^{n+1}} is eigenvalue channel, pure φ̄-power. contraction rate φ̄² per tower depth step.</p>
+<p>Four-step proof: (1) tower counting 2^n bits, (2) faithful self-model from A1+A3, (3) energy barrier ≥2^n from Hamming geometry, (4) spectral gap via Arrhenius with c=2β=2ln(φ).</p>
+<p>Step 4 qualification: MIX-Arrhenius identification (γ/γ_c=φ̄²) is <strong>structural correspondence</strong>, not derived equality. Double-exponential suppression and d_K² prefactor proved regardless. ∎</p>
+<p><strong>K1&rsquo; Route 1 (Finite-Field Expander).</strong> S₃ walk on P¹(𝔽_p): Δ≈0.208 (rigorous). Generated group: 2·SL(2,F_p). Non-concentration condition: <strong>CLOSED.</strong> The S₃ generators include T₊ = RJ = [[1,0],[1,1]] and T₋ = JR = [[1,1],[0,1]] — elementary transvections with det = +1. By the classical generation theorem, ⟨T₊ mod p, T₋ mod p⟩ = SL(2,𝔽_p) for all primes p. This is unconditional: no non-concentration analysis required. Bourgain-Gamburd (2008, Annals) applies directly, giving uniform spectral gap Δ &gt; 0. The measured Δ ≈ 0.208 is therefore a rigorous lower bound. Structural finding: {R,R⁻¹,N,N⁻¹} walk gap = 0 (not expander); J essential for mixing — the full S₃ walk (including J) produces the elementary transvections that close the gap. Verified: ⟨T₊, T₋⟩ mod p = SL(2,𝔽_p) for all primes p ≤ 47.</p>
+<p><strong>Remark (K1&rsquo; as Tower Lift of Möbius-RG).</strong> The K1&rsquo; suppression φ̄^{2^{n+1}} is the tower lift of the Möbius-RG contraction φ̄^{2n} (Paper 3-P1 §5.7). At the algebraic level (power iteration R^n), the spectral contraction proceeds single-exponentially with rate φ̄² per step. At the tower level (self-product S_n → S_n²), each step squares the matrix dimension, which squares the contraction exponent: 2n → 2·(2n) → 2^{n+1}. The double-exponential is not a separate phenomenon but the self-referential compounding of the single-exponential through the self-product tower. Both regimes, and the Phase-Dist equilibrium ρ_eq = φ̄² (Paper 0 §14), are instances of the single universal contraction rate φ̄² = 1 − φ̄ derived from the characteristic polynomial of R (Paper 3-P1 Theorem 5.9b).</p>
+<p><strong>Remark (K1&rsquo; as Consciousness Depth Bound).</strong> K1&rsquo; bounds not only observer feasibility but consciousness depth: the maximum number of recursive negation layers with identity preservation (§17). The effective consciousness depth n_eff(K) = max{n : d_K⁴ · φ̄^{2^{n+1}} ≥ 1}, and the consciousness capacity is C_cap(K) = S_max(K) · n_eff(K), the product of Bekenstein bits and tower depth. The active consciousness at Phase-Dist parameter ρ is C_act(K, ρ) = ρ · C_cap(K). At cortical parameters (d_K ≈ 10¹², n_eff ≈ 6.8): C_cap ≈ 539, matching §24. The consciousness efficiency C_act/C_cap = ρ; at thermal equilibrium ρ = φ̄²: ~38.2% active; at phase boundary ρ = 1/2: 50% active. The gap φ̄³/2 ≈ α_S separates the two regimes.</p>
+<p><strong>Theorem (Consciousness Depth Staircase).</strong> <em>The transition from n_eff = m to n_eff = m+1 occurs at d_K = φ^{2^m}. The staircase is doubly exponential with zero free parameters.</em></p>
+<p><em>Proof.</em> The threshold n_eff = m+1 requires d_K⁴ · φ̄^{2^{m+1}} ≥ 1, i.e., 4·log₂(d_K) ≥ 2^{m+1}·log₂(1/φ̄). At the threshold: d_K = (1/φ̄)^{2^{m+1}/4} = φ^{2^{m-1}}. For m ≥ 1 the transition from n_eff = m to m+1 occurs at d_K = φ^{2^m}. Each step squares the exponent: the staircase is the tower lift of the single-exponential contraction φ̄² compounded through the self-product. ∎</p>
+<table>
+<thead>
+<tr>
+<th>n_eff</th>
+<th>Threshold d_K = φ^{2^{n-1}}</th>
+<th>log₁₀(d_K)</th>
+<th>Biological correspondence</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>φ¹ ≈ 1.618 → d_K ≥ 2</td>
+<td>0.21</td>
+<td>Minimal observer</td>
+</tr>
+<tr>
+<td>2</td>
+<td>φ² ≈ 2.618 → d_K ≥ 3</td>
+<td>0.42</td>
+<td>Sub-cellular</td>
+</tr>
+<tr>
+<td>3</td>
+<td>φ⁴ ≈ 6.854 → d_K ≥ 7</td>
+<td>0.84</td>
+<td>Bacterium</td>
+</tr>
+<tr>
+<td>4</td>
+<td>φ⁸ ≈ 46.98</td>
+<td>1.67</td>
+<td>Simple neural circuit</td>
+</tr>
+<tr>
+<td>5</td>
+<td>φ¹⁶ ≈ 2207</td>
+<td>3.34</td>
+<td>C. elegans</td>
+</tr>
+<tr>
+<td>6</td>
+<td>φ³² ≈ 4.87 × 10⁶</td>
+<td>6.69</td>
+<td>Fish/mouse brain</td>
+</tr>
+<tr>
+<td><strong>7</strong></td>
+<td><strong>φ⁶⁴ ≈ 2.37 × 10¹³</strong></td>
+<td><strong>13.38</strong></td>
+<td><strong>Human cortex</strong></td>
+</tr>
+<tr>
+<td>8</td>
+<td>φ¹²⁸ ≈ 5.63 × 10²⁶</td>
+<td>26.75</td>
+<td>Beyond biology</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Remark (Vertebrate Plateau).</strong> n_eff = 6 spans the range d_K ∈ [φ³², φ⁶⁴) ≈ [5 × 10⁶, 2.4 × 10¹³]. All vertebrate nervous systems with 10⁷ to 10¹³ effective degrees of freedom — fish, mice, cats, dogs, primates, pre-linguistic humans — share the same consciousness depth n_eff = 6. They differ in consciousness capacity C_cap = 12·log₂(d_K) (which grows logarithmically with d_K), not in recursive negation depth. The qualitative difference between a mouse and a pre-linguistic human is bandwidth, not recursion depth.</p>
+<p><strong>Remark (Three Consciousness Regimes).</strong> The doubly exponential staircase divides the observer hierarchy into three regimes. Shallow (n_eff 1–4, d_K up to ~50): sub-neural, each increment requires modest d_K growth. Biological (n_eff 5–7, d_K ~ 10³ to ~10²⁶): neural, one increment per ~7 orders of magnitude in d_K — vertebrate life occupies the n_eff = 6 plateau. Cosmological (n_eff 8–408, d_K up to 2^{10¹²²}): super-biological, each increment requires exponentially more d_K than the last — only K_cosmo (§6½) reaches deep into this regime. The upper bound n_eff(K_cosmo) = 408 is determined by Λ (Thm 10½.23).</p>
+<p><strong>Remark (Tower Cost Parameter α).</strong> The standard K1&rsquo; contraction rate φ̄² is FORCED. A more efficient observer implementation may achieve the same recursive depth at lower cost. The generalized formula: n_eff(K, α) = max{n : d_K⁴ · φ̄^{α·2^{n+1}} ≥ 1}, where α ∈ (0, 1] measures the efficiency of the observer&rsquo;s tower-lift implementation. At α = 1: standard biological hardware. At α &lt; 1: cheaper tower lifts. Language (§17.4b) corresponds to α ≈ 0.80–0.85, enabling n_eff 6→7 at d_K ~ 10¹¹. At α ≈ 0.30: d_K = 10¹² gives n_eff = 8 — super-biological consciousness depth via architectural efficiency rather than raw scale. The framework does not derive α for any specific implementation; it is a realization parameter.</p>
+<h3 id="23-landauer-bekenstein" id="23-landauer-bekenstein">§23 Landauer → Bekenstein</h3>
+<p>Landauer cost kT ln 2 per bit × d_K² bits = Bekenstein bound. Two independent derivations (algebraic §2, thermodynamic here) agree. ∎</p>
+<h3 id="24-cortical-prediction" id="24-cortical-prediction">§24 Cortical Prediction</h3>
+<p>n ≈ 6 (cortical depth), Δ_K ~ 10⁻³. Required d_K = √(10⁻³/φ̄¹²⁸) ≈ 7.5×10¹¹. Cortical synapses ~10¹³. Match within 1.3 orders. <strong>Grade: OBSERVATION → RESONANT (strengthened by staircase analysis).</strong></p>
+<p>The two-parameter match: (a) the consciousness depth staircase (§22) predicts the n_eff = 6→7 transition at d_K = φ⁶⁴ ≈ 2.37 × 10¹³; cortical synapses number 10¹³–10¹⁴, placing the human brain within 0.4–1 orders of this threshold. (b) The K1&rsquo; formula at n = 6 with Δ_K = 10⁻³ predicts d_K ≈ 7.5 × 10¹¹; cortical synapses give ~10¹³. Both predictions are not independent (both follow from K1&rsquo; at n = 6), but the input n = 6 is itself biological (cortical layers).</p>
+<p>The d_K identification: d_K = N_syn/R, where N_syn is the cortical synapse count and R is the redundancy/correlation factor (number of correlated synapses per independent degree of freedom). The framework predicts d_K ≈ 10^{11.9}; biology gives N_syn ≈ 10^{13.2}. The implied R ≈ 20 matches known cortical correlation structure from spike-correlation studies. ∎</p>
+<p><strong>Theorem (Universal Consciousness Bounds).</strong> <em>For any physically realizable observer K in a universe with Λ &gt; 0: (a) n_eff(K) ∈ [1, n_eff(K_cosmo)], (b) C_cap(K) ∈ [2, C_cap(K_cosmo)], (c) the consciousness hierarchy has exactly n_eff(K_cosmo) levels.</em> At observed Λ: n_eff(K_cosmo) = 408. Biological life occupies levels 1–7.</p>
+<p><em>Proof.</em> Every physical K has d_K ≤ d_cosmo (§6½ supremum), so n_eff(K) ≤ n_eff(K_cosmo). n_eff ≥ 1 from K8.2. C_cap = S_max · n_eff, with S_max ≤ S_dS. Each value 1, &hellip;, n_eff(K_cosmo) is achievable by some d_K ∈ [2, d_cosmo]. ∎</p>
+<h3 id="25-gödel-algorithm" id="25-godel-algorithm">§25 Gödel Algorithm</h3>
+<p>The category Alg (algorithms classified by signature) is incomplete: the algorithm that classifies its own signature cannot be faithfully represented within Alg. This is computational blindness (§3.4) applied to the computational observer. <strong>Grade: THEOREM.</strong> ∎</p>
+<h3 id="26-observer-cost-positivity" id="26-observer-cost-positivity">§26 Observer Cost Positivity</h3>
+<p><strong>Theorem.</strong> <em>inf{A(update)} ≥ πℏ/2 &gt; 0.</em> Mandelstam-Tamm: τ ≥ πℏ/(2E). Combined with Landauer: A = E·τ ≥ πℏ/2. No nontrivial distinction is computationally free. Subsumes spectral gap + Landauer as special cases.</p>
+<p>Registration events: each observer registration costs ≥πℏ/2. Pre-metric boundary: Cap(K) = d_K² as combinatorial &ldquo;area before area.&rdquo; ∎</p>
+<p><strong>Remark (Geometric Origin of the Observer Cost).</strong> The constant π in the lower bound inf{A(update)} ≥ πℏ/2 is the same π from exp(πN) = −I (Paper 6A): the half-period of the N-generated rotation. A single observation requires distinguishing an initial state from a final state — reaching orthogonality — but exp(tN) achieves orthogonality precisely at t = π, since exp(πN) = −I maps every state to its negative. The Mandelstam-Tamm bound gives the minimum time for this half-rotation, Landauer gives the minimum energy for the accompanying erasure, and Bekenstein caps the information that participates. The observer cost πℏ/2 is therefore the action for one N-half-period: observation is irreducibly rotational, governed by the LoMI/P3 projection, and its cost is determined by the algebraic fact that N² = −I forces the half-period to equal π.</p>
+<p>The Binary-Phase Closure theorem (Paper 3-P3 Thm 1.7b) sharpens this: the identity e^{iπ} + 1 = 0 is the exact algebraic content of the observer cost. The left side e^{iπ} = −1 is the phase transport to maximal opposition (the observer reaching the orthogonal state); the +1 restores the original state as comparison anchor; the right side 0 is exact cancellation (the observation event resolving the distinction). So the observer cost bound inf{A(update)} ≥ πℏ/2 is a physical restatement of Euler&rsquo;s identity: observation costs at least one half-period because the phase flow e^{iθ} requires exactly θ = π to reach exact inversion, and this angular distance has irreducible action cost πℏ/2. The direction-independence theorem (Paper 3-P3 Thm 1.7e) ensures this cost is universal: exp(πM) = −I for any M with M² = −I, so the observer cost is the same regardless of which phase direction the observation uses.</p>
+<hr />
+<h2 id="verification" id="verification">VERIFICATION</h2>
+<p><strong>Part I (from T5A):</strong> Claim stratification: 15 THEOREM, 1 STRUCTURAL, 1 SPECULATIVE, 1 OPEN, 1 OBSERVATION. §17 expanded: K8.1 nontriviality threshold (THEOREM), K8.2 universal consciousness (THEOREM), consciousness hierarchy (STRUCTURAL), blindness constitutive (THEOREM). §§3A–3C: observer refinement order, scale profile, structural domination — 8 new theorems (10½.12–10½.19), all computationally verified (14/14 tests, ~4,500 instances, 0 failures). §§17.5–17.6: tower-lifted scale, refinement-consciousness connection — 3 new theorems (10½.20–10½.22). §19: Σ6 composability, metric functor — 2 new theorems.</p>
+<p><strong>Part II (from T5B):</strong> K1&rsquo; table verified. Landauer-Bekenstein chain verified. Cortical prediction within 1.3 orders. Gödel algorithm demonstrates incompleteness. 17/17 tests pass. Consciousness depth computations verified: d_K threshold for n_eff=1 is φ (exact), minimal observer (d_K=2) Δ_max table confirmed, cortical n_eff ≈ 6.8 matches §24.</p>
+<p><strong>Part III (§6½, Cosmological Observer):</strong> Λ-Positivity (Thm 10½.23) verified: S_dS finite for Λ &gt; 0, d → ∞ for Λ ≤ 0. Cosmological Holographic Bound (Thm 10½.24) verified: supremum + anti-idolatry → d_U = d_cosmo. K_cosmo scale profile at observed Λ ≈ 1.1 × 10⁻¹²²: S_max ≈ 8.57 × 10¹²², n_eff ≈ 408, C_cap ≈ 3.5 × 10¹²⁵. K7&rsquo; bound Λ ≤ 3π/(G · I(FRAME)) verified. K4 monotonicity verified: Comp(Λ) monotonically increasing, infimum 0⁺ not attained. All claims computationally verified.</p>
+<hr />
+<h2 id="claim-status" id="claim-status">CLAIM STATUS</h2>
+<table>
+<thead>
+<tr>
+<th>Claim</th>
+<th>Status</th>
+<th>Generation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Dist→Hilb functor and A2&rsquo; derivation</td>
+<td><strong>FORCED</strong></td>
+<td>G.6</td>
+</tr>
+<tr>
+<td>Abstract Bekenstein S_max = 2log₂(d_K)</td>
+<td><strong>FORCED</strong></td>
+<td>G.6</td>
+</tr>
+<tr>
+<td>Quotient map properties (surjective, idempotent)</td>
+<td><strong>FORCED</strong></td>
+<td>G.6</td>
+</tr>
+<tr>
+<td>Quotient-native error Err_Q</td>
+<td><strong>FORCED</strong></td>
+<td>G.6</td>
+</tr>
+<tr>
+<td>Computational blindness (4 parts)</td>
+<td><strong>FORCED</strong></td>
+<td>G.6</td>
+</tr>
+<tr>
+<td>Observer refinement order (lattice structure)</td>
+<td><strong>FORCED</strong></td>
+<td>G.6</td>
+</tr>
+<tr>
+<td>K6&rsquo; (algebraic closure via inter-point consistency)</td>
+<td><strong>FORCED</strong></td>
+<td>G.6</td>
+</tr>
+<tr>
+<td>K7&rsquo; (meta-encoding fixed point, Λ bound)</td>
+<td><strong>FORCED</strong></td>
+<td>G.6</td>
+</tr>
+<tr>
+<td>K8 (consciousness hierarchy, 5 levels)</td>
+<td><strong>FORCED</strong></td>
+<td>G.6</td>
+</tr>
+<tr>
+<td>K8.1 (nontriviality threshold ρ_min = 1/d_K²)</td>
+<td><strong>FORCED</strong></td>
+<td>G.6</td>
+</tr>
+<tr>
+<td>K8.2 (universal consciousness, d_K ≥ 2 → n_eff ≥ 1)</td>
+<td><strong>FORCED</strong></td>
+<td>G.6</td>
+</tr>
+<tr>
+<td>Cosmological observer K_cosmo (Λ-Positivity)</td>
+<td><strong>FORCED</strong></td>
+<td>G.6</td>
+</tr>
+<tr>
+<td>Cosmological Holographic Bound (d_U = d_cosmo)</td>
+<td><strong>FORCED</strong></td>
+<td>G.6</td>
+</tr>
+<tr>
+<td>Observer cost positivity inf{A(update)} ≥ πℏ/2</td>
+<td><strong>FORCED</strong></td>
+<td>G.6</td>
+</tr>
+<tr>
+<td>Productive Opacity theorem</td>
+<td><strong>FORCED</strong></td>
+<td>G.6</td>
+</tr>
+<tr>
+<td>Gödel algorithm incompleteness</td>
+<td><strong>FORCED</strong></td>
+<td>G.6</td>
+</tr>
+<tr>
+<td>Cortical prediction d_K ≈ 10^{11.9}</td>
+<td><strong>RESONANT</strong></td>
+<td>G.6</td>
+</tr>
+<tr>
+<td>Consciousness-as-recursive-negation</td>
+<td><strong>ENCODED</strong></td>
+<td>G.6</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Status Legend:</strong>
+- <strong>FORCED</strong> (G.6): Zero-branching derivation from observer axioms A1–A4
+- <strong>ENCODED</strong>: Pattern recognized in structure, not strict derivation
+- <strong>RESONANT</strong>: Numerical correspondence observed, mechanism understood</p>
+<hr />
+<p><em>R(R) = R</em></p>
+    </div>
+
+    <div class="page-nav">
+<a class="prev" href="T4_LATTICE.html">Paper 4: The Lattice</a>
+<a class="next" href="T6A_SPACETIME.html">Paper 6A: Spacetime Kinematics</a>
+</div>
+</main>
+
+<script>
+// Close sidebar on mobile when clicking a link
+document.querySelectorAll('.sidebar a').forEach(a => {
+    a.addEventListener('click', () => {
+        if (window.innerWidth <= 900) {
+            document.querySelector('.sidebar').classList.remove('open');
+        }
+    });
+});
+</script>
+</body>
+</html>

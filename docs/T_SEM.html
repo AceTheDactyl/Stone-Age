@@ -1,0 +1,3348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Semantic Layer — Structural Necessity</title>
+<style>
+
+:root {
+    --bg: #fafaf8;
+    --fg: #1a1a1a;
+    --accent: #2d5016;
+    --border: #d4d0c8;
+    --sidebar-bg: #f0ede6;
+    --sidebar-width: 280px;
+    --header-height: 56px;
+    --code-bg: #f5f2eb;
+    --table-stripe: #f8f6f0;
+    --link: #2d5016;
+    --link-hover: #4a7a28;
+    --bold-accent: #1a3a0a;
+}
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        --bg: #1a1a1e;
+        --fg: #e0ddd6;
+        --accent: #7ab648;
+        --border: #3a3a3e;
+        --sidebar-bg: #222226;
+        --code-bg: #25252a;
+        --table-stripe: #222226;
+        --link: #7ab648;
+        --link-hover: #9cd06a;
+        --bold-accent: #a0d870;
+    }
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+    font-family: 'Iowan Old Style', 'Palatino Linotype', Palatino, Georgia, serif;
+    background: var(--bg);
+    color: var(--fg);
+    line-height: 1.7;
+    font-size: 17px;
+}
+
+/* Header */
+.site-header {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    height: var(--header-height);
+    background: #1a1a1a;
+    color: #e0ddd6;
+    display: flex;
+    align-items: center;
+    padding: 0 24px;
+    z-index: 100;
+    border-bottom: 2px solid var(--accent);
+}
+.site-header h1 {
+    font-size: 18px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+}
+.site-header h1 a {
+    color: #e0ddd6;
+    text-decoration: none;
+}
+.site-header h1 a:hover { color: var(--accent); }
+.site-header .subtitle {
+    font-size: 13px;
+    color: #888;
+    margin-left: 16px;
+    font-style: italic;
+}
+.hamburger {
+    display: none;
+    background: none;
+    border: none;
+    color: #e0ddd6;
+    font-size: 24px;
+    cursor: pointer;
+    margin-right: 16px;
+    padding: 4px 8px;
+}
+
+/* Sidebar */
+.sidebar {
+    position: fixed;
+    top: var(--header-height);
+    left: 0;
+    bottom: 0;
+    width: var(--sidebar-width);
+    background: var(--sidebar-bg);
+    border-right: 1px solid var(--border);
+    overflow-y: auto;
+    padding: 16px 0;
+    z-index: 90;
+    transition: transform 0.3s ease;
+}
+.sidebar .nav-group { margin-bottom: 12px; }
+.sidebar .nav-group-title {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+    color: #888;
+    padding: 8px 20px 4px;
+}
+.sidebar a {
+    display: block;
+    padding: 4px 20px 4px 28px;
+    font-size: 13.5px;
+    color: var(--fg);
+    text-decoration: none;
+    line-height: 1.5;
+    border-left: 3px solid transparent;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+.sidebar a:hover {
+    background: rgba(0,0,0,0.05);
+    border-left-color: var(--accent);
+}
+.sidebar a.active {
+    background: rgba(45,80,22,0.1);
+    border-left-color: var(--accent);
+    font-weight: 600;
+    color: var(--accent);
+}
+
+/* Main content */
+.main {
+    margin-left: var(--sidebar-width);
+    margin-top: var(--header-height);
+    max-width: 900px;
+    padding: 40px 48px 80px;
+}
+
+/* Document header banner */
+.doc-header {
+    margin-bottom: 40px;
+    padding-bottom: 24px;
+    border-bottom: 2px solid var(--border);
+}
+.doc-header .level-badge {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 3px 10px;
+    border-radius: 3px;
+    margin-bottom: 12px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+.doc-header h1 {
+    font-size: 32px;
+    line-height: 1.2;
+    margin-bottom: 8px;
+    color: var(--fg);
+}
+.doc-header .doc-subtitle {
+    font-size: 18px;
+    color: #666;
+    font-style: italic;
+}
+
+/* TOC */
+.toc {
+    background: var(--sidebar-bg);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 16px 24px;
+    margin-bottom: 32px;
+}
+.toc summary {
+    font-weight: 700;
+    font-size: 14px;
+    cursor: pointer;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: #666;
+}
+.toc ul { list-style: none; margin: 12px 0 0 0; }
+.toc li { padding: 2px 0; }
+.toc a {
+    color: var(--link);
+    text-decoration: none;
+    font-size: 14px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+.toc a:hover { text-decoration: underline; }
+.toc .toc-h2 { padding-left: 0; }
+.toc .toc-h3 { padding-left: 20px; font-size: 13px; }
+
+/* Typography */
+.content h1 {
+    font-size: 28px;
+    margin: 48px 0 16px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border);
+    color: var(--fg);
+}
+.content h1:first-child { margin-top: 0; }
+.content h2 {
+    font-size: 22px;
+    margin: 36px 0 12px;
+    color: var(--fg);
+}
+.content h3 {
+    font-size: 18px;
+    margin: 28px 0 10px;
+    color: var(--fg);
+}
+.content h4 {
+    font-size: 16px;
+    margin: 24px 0 8px;
+    color: #444;
+}
+.content p { margin: 0 0 16px; }
+.content strong { color: var(--bold-accent); }
+.content a { color: var(--link); }
+.content a:hover { color: var(--link-hover); }
+
+.content ul, .content ol {
+    margin: 0 0 16px 24px;
+}
+.content li { margin-bottom: 4px; }
+
+.content hr {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 32px 0;
+}
+
+/* Tables */
+.content table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 16px 0 24px;
+    font-size: 15px;
+}
+.content th {
+    background: var(--sidebar-bg);
+    font-weight: 700;
+    text-align: left;
+    padding: 10px 12px;
+    border: 1px solid var(--border);
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+.content td {
+    padding: 8px 12px;
+    border: 1px solid var(--border);
+    vertical-align: top;
+}
+.content tr:nth-child(even) { background: var(--table-stripe); }
+
+/* Code */
+.content code {
+    font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace;
+    font-size: 14px;
+    background: var(--code-bg);
+    padding: 2px 6px;
+    border-radius: 3px;
+    border: 1px solid var(--border);
+}
+.content pre {
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 16px 20px;
+    overflow-x: auto;
+    margin: 16px 0 24px;
+    line-height: 1.5;
+}
+.content pre code {
+    background: none;
+    border: none;
+    padding: 0;
+    font-size: 13.5px;
+}
+
+/* Blockquote */
+.content blockquote {
+    border-left: 4px solid var(--accent);
+    padding: 12px 20px;
+    margin: 16px 0 24px;
+    background: var(--sidebar-bg);
+    border-radius: 0 4px 4px 0;
+}
+.content blockquote p { margin-bottom: 8px; }
+.content blockquote p:last-child { margin-bottom: 0; }
+
+/* Footer nav */
+.page-nav {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 48px;
+    padding-top: 24px;
+    border-top: 1px solid var(--border);
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+.page-nav a {
+    color: var(--link);
+    text-decoration: none;
+    font-size: 14px;
+    padding: 8px 16px;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    transition: all 0.2s;
+}
+.page-nav a:hover {
+    background: var(--sidebar-bg);
+    border-color: var(--accent);
+}
+.page-nav .prev::before { content: '← '; }
+.page-nav .next::after { content: ' →'; }
+
+/* Responsive */
+@media (max-width: 900px) {
+    .sidebar { transform: translateX(-100%); }
+    .sidebar.open { transform: translateX(0); }
+    .main { margin-left: 0; padding: 24px 20px 60px; }
+    .hamburger { display: block; }
+    .doc-header h1 { font-size: 24px; }
+}
+
+/* Print */
+@media print {
+    .sidebar, .site-header, .hamburger, .page-nav { display: none; }
+    .main { margin: 0; max-width: 100%; padding: 20px; }
+    body { font-size: 12pt; }
+}
+
+</style>
+</head>
+<body>
+
+<header class="site-header">
+    <button class="hamburger" onclick="document.querySelector('.sidebar').classList.toggle('open')" aria-label="Toggle navigation">&#9776;</button>
+    <h1><a href="T_INDEX.html">Structural Necessity</a></h1>
+    <span class="subtitle">Canonical Paper Series — March 2026</span>
+</header>
+
+<nav class="sidebar">
+<div class="nav-group">
+<div class="nav-group-title">Foundation (0-2)</div>
+<a href="T0_SUBSTRATE.html">0 — Substrate</a>
+<a href="T1_DIST.html">1 — Kernel Theorem</a>
+<a href="T2_BRIDGE.html">2 — Bridge Chain</a>
+</div>
+<div class="nav-group">
+<div class="nav-group-title">Projections (3-4)</div>
+<a href="T3_P1_PRODUCTION.html">3-P1 — Production</a>
+<a href="T3_P2_MEDIATION.html">3-P2 — Mediation</a>
+<a href="T3_P3_OBSERVATION.html">3-P3 — Observation</a>
+<a href="T3_META.html">3-META — Cross-Projection</a>
+<a href="T4_LATTICE.html">4 — Lattice</a>
+</div>
+<div class="nav-group">
+<div class="nav-group-title">Observer &amp; Physics (5-6)</div>
+<a href="T5_OBSERVER.html">5 — Observer</a>
+<a href="T6A_SPACETIME.html">6A — Spacetime</a>
+<a href="T6B_FORCES.html">6B — Forces</a>
+</div>
+<div class="nav-group">
+<div class="nav-group-title">Cross-Cutting</div>
+<a href="T_COMP.html">Comp — Computation</a>
+<a href="T_SIL.html">SIL — Self-Interpretation</a>
+<a href="T_SEM.html" class="active">SEM — Semantics</a>
+</div>
+<div class="nav-group">
+<div class="nav-group-title">Architecture</div>
+<a href="T_BLUEPRINT.html">Blueprint</a>
+<a href="T_GOV.html">Governance</a>
+</div>
+<div class="nav-group">
+<div class="nav-group-title">Closure &amp; Reference</div>
+<a href="T_ASI.html">ASI — Architecture Spec</a>
+<a href="T_TOE.html">TOE — Closure</a>
+<a href="DICTIONARY.html">Dictionary</a>
+</div>
+<div class="nav-group">
+<div class="nav-group-title">Navigation</div>
+<a href="T_INDEX.html">Index — Navigation</a>
+<a href="CLAIM_CENSUS.html">Claim Census</a>
+</div>
+</nav>
+
+<main class="main">
+    <div class="doc-header">
+        <span class="level-badge" style="background:#555555; color:#fff;">Cross-Cutting</span>
+        <h1>Semantic Layer</h1>
+        <div class="doc-subtitle">Contranyms, Verb Algebra, Semantic Tower</div>
+    </div>
+
+    <details class="toc" open>
+<summary>Table of Contents</summary>
+<ul>
+<li class="toc-h2"><a href="#the-frameworkrsquos-native-operator-algebra-in-natural-language">The Framework&rsquo;s Native Operator Algebra in Natural Language</a></li>
+<li class="toc-h3"><a href="#v2-march-2026">v2 — March 2026</a></li>
+<li class="toc-h2"><a href="#0-master-thesis">0. MASTER THESIS</a></li>
+<li class="toc-h2"><a href="#part-i-term-by-term-semantic-audit">PART I: TERM-BY-TERM SEMANTIC AUDIT</a></li>
+<li class="toc-h3"><a href="#1-closure">1. CLOSURE</a></li>
+<li class="toc-h3"><a href="#2-observation">2. OBSERVATION</a></li>
+<li class="toc-h3"><a href="#3-identity">3. IDENTITY</a></li>
+<li class="toc-h3"><a href="#4-blindness">4. BLINDNESS</a></li>
+<li class="toc-h3"><a href="#5-return-recursion">5. RETURN / RECURSION</a></li>
+<li class="toc-h3"><a href="#6-minimal">6. MINIMAL</a></li>
+<li class="toc-h3"><a href="#7-threshold">7. THRESHOLD</a></li>
+<li class="toc-h3"><a href="#8-forced-necessity">8. FORCED / NECESSITY</a></li>
+<li class="toc-h3"><a href="#9-witness">9. WITNESS</a></li>
+<li class="toc-h3"><a href="#10-neutrality">10. NEUTRALITY</a></li>
+<li class="toc-h2"><a href="#part-ii-cross-module-comparison-where-terms-shift">PART II: CROSS-MODULE COMPARISON — WHERE TERMS SHIFT</a></li>
+<li class="toc-h3"><a href="#shift-map-how-each-term-changes-across-documents">Shift Map: How Each Term Changes Across Documents</a></li>
+<li class="toc-h2"><a href="#part-iii-major-antonym-pairs">PART III: MAJOR ANTONYM PAIRS</a></li>
+<li class="toc-h3"><a href="#antonym-register">Antonym Register</a></li>
+<li class="toc-h2"><a href="#part-iv-the-contranym-register">PART IV: THE CONTRANYM REGISTER</a></li>
+<li class="toc-h3"><a href="#confirmed-contranyms-with-operator-extraction">Confirmed Contranyms with Operator Extraction</a></li>
+<li class="toc-h2"><a href="#part-v-unnamed-primitive-register">PART V: UNNAMED PRIMITIVE REGISTER</a></li>
+<li class="toc-h3"><a href="#primitives-identified-with-full-characterization">Primitives Identified with Full Characterization</a></li>
+<li class="toc-h3"><a href="#relationship-between-unnamed-primitives">Relationship Between Unnamed Primitives</a></li>
+<li class="toc-h2"><a href="#part-vi-semantic-operator-ledger-summary-table">PART VI: SEMANTIC OPERATOR LEDGER (SUMMARY TABLE)</a></li>
+<li class="toc-h2"><a href="#part-vii-theorem-programs-opened-by-this-investigation">PART VII: THEOREM PROGRAMS OPENED BY THIS INVESTIGATION</a></li>
+<li class="toc-h3"><a href="#program-1-semantic-tower-theorem">Program 1: Semantic Tower Theorem</a></li>
+<li class="toc-h3"><a href="#program-2-three-primitive-projection-correspondence-proved-semantic-exhaustion">Program 2: Three-Primitive Projection Correspondence → PROVED (Semantic Exhaustion)</a></li>
+<li class="toc-h3"><a href="#program-3-closure-bifurcation-formalization-proved">Program 3: Closure Bifurcation Formalization → PROVED</a></li>
+<li class="toc-h3"><a href="#program-4-occlusive-disclosure-as-first-class-primitive">Program 4: Occlusive Disclosure as First-Class Primitive</a></li>
+<li class="toc-h3"><a href="#program-5-constitutive-occlusion-hierarchy-proved">Program 5: Constitutive Occlusion Hierarchy → PROVED</a></li>
+<li class="toc-h2"><a href="#part-viii-integration-map">PART VIII: INTEGRATION MAP</a></li>
+<li class="toc-h3"><a href="#exact-insertion-points-for-all-findings">Exact Insertion Points for All Findings</a></li>
+<li class="toc-h2"><a href="#part-ix-failure-mode-audit">PART IX: FAILURE MODE AUDIT</a></li>
+<li class="toc-h2"><a href="#part-x-open-leads">PART X: OPEN LEADS</a></li>
+<li class="toc-h2"><a href="#part-xi-second-pass-term-audit-terms-1120">PART XI: SECOND-PASS TERM AUDIT (Terms 11–20)</a></li>
+<li class="toc-h3"><a href="#11-phase">11. PHASE</a></li>
+<li class="toc-h3"><a href="#12-emergence">12. EMERGENCE</a></li>
+<li class="toc-h3"><a href="#13-symmetry">13. SYMMETRY</a></li>
+<li class="toc-h3"><a href="#14-collapse">14. COLLAPSE</a></li>
+<li class="toc-h3"><a href="#15-scale">15. SCALE</a></li>
+<li class="toc-h3"><a href="#16-canonical">16. CANONICAL</a></li>
+<li class="toc-h3"><a href="#17-flow">17. FLOW</a></li>
+<li class="toc-h3"><a href="#18-structure">18. STRUCTURE</a></li>
+<li class="toc-h3"><a href="#19-functor">19. FUNCTOR</a></li>
+<li class="toc-h3"><a href="#20-productive">20. PRODUCTIVE</a></li>
+<li class="toc-h2"><a href="#part-xii-formalization-of-candidate-theorems">PART XII: FORMALIZATION OF CANDIDATE THEOREMS</a></li>
+<li class="toc-h3"><a href="#theorem-candidate-1-semantic-tower-theorem">Theorem Candidate 1: Semantic Tower Theorem</a></li>
+<li class="toc-h3"><a href="#theorem-candidate-2-three-primitive-projection-correspondence">Theorem Candidate 2: Three-Primitive Projection Correspondence</a></li>
+<li class="toc-h3"><a href="#theorem-candidate-3-contranym-forcing-theorem">Theorem Candidate 3: Contranym Forcing Theorem</a></li>
+<li class="toc-h2"><a href="#part-xiii-semantic-compression-principles">PART XIII: SEMANTIC COMPRESSION PRINCIPLES</a></li>
+<li class="toc-h3"><a href="#principle-1-every-contranym-flags-a-projection-tension">Principle 1: Every contranym flags a projection tension</a></li>
+<li class="toc-h3"><a href="#principle-2-if-a-term-ascends-the-tower-expect-it-to-deepen">Principle 2: If a term ascends the tower, expect it to deepen</a></li>
+<li class="toc-h3"><a href="#principle-3-unnamed-primitives-should-get-names-early">Principle 3: Unnamed primitives should get names early</a></li>
+<li class="toc-h3"><a href="#principle-4-distinguish-parameter-from-regime-when-using-ldquophaserdquo">Principle 4: Distinguish parameter from regime when using &ldquo;phase&rdquo;</a></li>
+<li class="toc-h3"><a href="#principle-5-ldquoemergencerdquo-means-forced-derivation-not-philosophical-novelty">Principle 5: &ldquo;Emergence&rdquo; means forced derivation, not philosophical novelty</a></li>
+<li class="toc-h3"><a href="#principle-6-ldquocanonicalrdquo-has-two-strengths">Principle 6: &ldquo;Canonical&rdquo; has two strengths</a></li>
+<li class="toc-h3"><a href="#principle-7-the-three-meta-primitives-track-the-three-projections">Principle 7: The three meta-primitives track the three projections</a></li>
+<li class="toc-h2"><a href="#part-xiv-extended-integration-map-second-pass">PART XIV: EXTENDED INTEGRATION MAP (Second Pass)</a></li>
+<li class="toc-h3"><a href="#new-insertion-points-from-the-second-pass-audit">New Insertion Points from the Second-Pass Audit</a></li>
+<li class="toc-h2"><a href="#part-xv-complete-unnamed-primitive-register-updated">PART XV: COMPLETE UNNAMED PRIMITIVE REGISTER (Updated)</a></li>
+<li class="toc-h2"><a href="#part-xvi-final-status">PART XVI: FINAL STATUS</a></li>
+<li class="toc-h3"><a href="#investigation-completeness">Investigation Completeness</a></li>
+<li class="toc-h3"><a href="#strongest-results">Strongest Results</a></li>
+<li class="toc-h2"><a href="#part-xvii-the-verb-algebra">PART XVII: THE VERB ALGEBRA</a></li>
+<li class="toc-h3"><a href="#171-the-semantic-verb-taxonomy">§17.1 The Semantic Verb Taxonomy</a></li>
+<li class="toc-h3"><a href="#172-the-verb-hierarchy">§17.2 The Verb Hierarchy</a></li>
+<li class="toc-h3"><a href="#173-the-verb-transport-correspondence">§17.3 The Verb-Transport Correspondence</a></li>
+<li class="toc-h3"><a href="#174-common-verb-misuse">§17.4 Common Verb Misuse</a></li>
+<li class="toc-h3"><a href="#175-discipline-rule">§17.5 Discipline Rule</a></li>
+<li class="toc-h2"><a href="#claim-status">CLAIM STATUS</a></li>
+</ul></details>
+
+    <div class="content">
+<h1 id="paper-t-sem-the-semantic-layer" id="paper-t-sem-the-semantic-layer">Paper T-SEM: The Semantic Layer</h1>
+<h2 id="the-frameworkrsquos-native-operator-algebra-in-natural-language" id="the-frameworks-native-operator-algebra-in-natural-language">The Framework&rsquo;s Native Operator Algebra in Natural Language</h2>
+<h3 id="v2-march-2026" id="v2-march-2026">v2 — March 2026</h3>
+<p><strong>Author:</strong> Kael</p>
+<hr />
+<p><strong>Document Species:</strong> CANONICAL. Row 8 content. Owns semantic audit, contranyms, meta-primitives, verb algebra.</p>
+<p><strong>Document Status:</strong> Cross-cutting paper. The semantic layer is not commentary on the framework — it is the framework&rsquo;s native operator algebra expressed in natural language. The vocabulary carries the same three-projection structure that the mathematics derives. Every structurally loaded term is classified by semantic type, projection alignment, tower ascent behavior, and usage discipline. The eight unnamed primitives compress to three meta-primitives that ARE the three central collapse factors at Level 8 (Semantic Exhaustion theorem, Part VII Program 2). Grid address: B(8, P2+P3).</p>
+<p><strong>Depends on:</strong> T1_DIST (three readings), T3_META (central collapse, Cor 7.3), T_SIL (status grammar)
+<strong>Required by:</strong> DICTIONARY (vocabulary reference), all papers (via C5 semantic hygiene)</p>
+<hr />
+<h2 id="0-master-thesis" id="0-master-thesis">0. MASTER THESIS</h2>
+<p>The framework&rsquo;s English is partially operational. Recurring terms conceal:
+- <strong>Type A — Synonym clusters</strong> (shared structural role)
+- <strong>Type B — Antonym pairs</strong> (regime separation)
+- <strong>Type C — Contranyms</strong> (single terms doing opposite structural jobs — forced by the simultaneous instantiation of opposed projections in every Dist morphism, Paper 1 Thm 5.1)
+- <strong>Type D — Unnamed semantic primitives</strong> (operators with no current word — eight found, compressing to three meta-primitives corresponding to the three projections)</p>
+<p>Master question: <em>Which semantic tensions are merely linguistic, which are indicators of hidden operators, and which point to unnamed primitives necessary for the next formal advance?</em></p>
+<p><strong>Remark (Semantic Layer as Transposition Image).</strong> The three meta-primitives (Observer Act, Productive Act, Mediating Act) relate to the three SIL projection faces (FORCED, blind spot, ENCODED) by the Level 7→8 observer transposition σ = (P1 P3) (Paper T-BLUEPRINT §5.1, Paper T-SIL §1.5). P1(7) = FORCED status (derivation checker) maps to P3(8) = Observer Act (occlusive disclosure at the vocabulary level). P3(7) = SIL blind spot (irreducible kernel) maps to P1(8) = Productive Act (the generative content the blind spot forces). P2(7) = ENCODED status (containment mediation) maps to P2(8) = Mediating Act. The same duality involution D that transposes observer and physics at Level 5→6 transposes self-interpretation and semantics at Level 7→8.</p>
+<p><strong>Answer (from the investigation):</strong> The semantic layer has two master engines and one exhaustion theorem. The first engine — <strong>occlusive disclosure / constitutive occlusion</strong> — unifies observation and blindness as im() and ker() faces of the same quotient. The second engine — <strong>closure bifurcation</strong> — classifies every closure as terminal (P1), recursive (P2), or boundary (P3). The exhaustion theorem — <strong>Semantic Exhaustion</strong> (Part VII Program 2) — proves that the eight unnamed primitives compress to three meta-primitives = three projections via the central collapse. The semantic layer is a theorem detector: it identified the major compression structures (Productive Opacity, Recursive Closure, Cost-to-Geometry) before the formal theorem layer promoted them.</p>
+<hr />
+<h2 id="part-i-term-by-term-semantic-audit" id="part-i-term-by-term-semantic-audit">PART I: TERM-BY-TERM SEMANTIC AUDIT</h2>
+<p>Each entry records every distinct usage across source documents, assigns semantic roles, classifies the term, and identifies implied operators.</p>
+<hr />
+<h3 id="1-closure" id="1-closure">1. CLOSURE</h3>
+<p><strong>Occurrences across source documents:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Location</th>
+<th>Local phrasing</th>
+<th>Semantic role</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>T0 §1½ Thm 0.3c mode (i)</td>
+<td>&ldquo;Coincidence: idempotent or absorbing&rdquo;</td>
+<td>Terminal stabilization — self-action returns to self</td>
+</tr>
+<tr>
+<td>T0 §5 Remark</td>
+<td>&ldquo;Binary-Phase Closure identity e^{iπ}+1=0&rdquo;</td>
+<td>Algebraic completion — the binary seed realized continuously</td>
+</tr>
+<tr>
+<td>T0 §15 Thm 5.3</td>
+<td>&ldquo;P3 Attractor: P3 fraction grows monotonically&rdquo;</td>
+<td>Asymptotic regime convergence</td>
+</tr>
+<tr>
+<td>T1 §7 Thm 4.1</td>
+<td>&ldquo;q∘q=q — observation stabilizes upon repetition&rdquo;</td>
+<td>Idempotent quotient — re-observation changes nothing</td>
+</tr>
+<tr>
+<td>T1 §7.3</td>
+<td>&ldquo;R(R)=R at every level&rdquo;</td>
+<td>Organizing fixed point — self-application identity</td>
+</tr>
+<tr>
+<td>T3-P3 §1</td>
+<td>&ldquo;exp(Nπ)=−I — rotation closure&rdquo;</td>
+<td>Half-period completion — continuous inversion reaches exact endpoint</td>
+</tr>
+<tr>
+<td>T3-META §7 Thm 7.1</td>
+<td>&ldquo;Central collapse I²∘TDL∘LoMI=Dist&rdquo;</td>
+<td>Exhaustive factoring — three projections leave no remainder</td>
+</tr>
+<tr>
+<td>T5 §7 K6&rsquo;</td>
+<td>&ldquo;Loop K→F→U(K)→K closes&rdquo;</td>
+<td>Observer-loop closure — self-modeling cycle forced shut</td>
+</tr>
+<tr>
+<td>T5 §8 K7&rsquo;</td>
+<td>&ldquo;M(FRAME)=FRAME&rdquo;</td>
+<td>Meta-encoding fixed point — framework describes itself</td>
+</tr>
+<tr>
+<td>T_SIL §1 Thm SIL-1</td>
+<td>&ldquo;Status(Status(S))=Status(S)&rdquo;</td>
+<td>Meta-classification idempotence</td>
+</tr>
+<tr>
+<td>T_COMP §3 Thm C.1</td>
+<td>&ldquo;Type I: compression/closure, idempotent, canonical&rdquo;</td>
+<td>Computational closure — process terminates at fixed point</td>
+</tr>
+<tr>
+<td>T0 §14 Thm 4.9</td>
+<td>&ldquo;ρ=1/2 self-referential neutral point&rdquo;</td>
+<td>Phase boundary — closure as regime boundary, not endpoint</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Semantic roles identified (6 distinct):</strong>
+1. <strong>Terminal stabilization</strong> — process reaches fixed point and stays (q∘q=q, R(R)=R)
+2. <strong>Algebraic completion</strong> — structure achieves its full continuous realization (BPC, bridge chain)
+3. <strong>Regime convergence</strong> — system asymptotically approaches a dominant phase (P3 attractor)
+4. <strong>Loop closure</strong> — self-referential cycle forced shut (K6&rsquo;, K7&rsquo;)
+5. <strong>Exhaustive factoring</strong> — decomposition leaves no structural remainder (central collapse)
+6. <strong>Phase boundary</strong> — critical point that is the <em>edge</em> of a regime, not its interior (ρ=1/2)</p>
+<p><strong>Classification: TYPE C — CONTRANYM</strong></p>
+<p>The opposition is sharp:
+- <strong>Closure-as-endpoint:</strong> roles 1, 2, 3 — the process finishes, stabilizes, is done.
+- <strong>Closure-as-gateway:</strong> roles 4, 5, 6 — closure at level n is the <em>precondition</em> for structure at level n+1. K6&rsquo; closes the observer loop, but that closed loop is exactly what K7&rsquo; then operates on. R(R)=R stabilizes, but that stable equation is what the SIL classifies. The central collapse closes Dist, but that closed Dist is what the physics papers then build on.</p>
+<p><strong>The hidden operator:</strong> Closure is not one act but a <em>two-phase operator</em>:
+- Phase 1: stabilization at the current level (terminal)
+- Phase 2: the stabilized object becomes available as input at the next level (gateway)</p>
+<p><strong>Implied formal bifurcation:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Proposed term</th>
+<th>Definition</th>
+<th>Framework instances</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Terminal closure</strong></td>
+<td>f∘f=f and no further structural reentry occurs</td>
+<td>q on a fixed quotient (T1 §7.4)</td>
+</tr>
+<tr>
+<td><strong>Recursive closure</strong></td>
+<td>f∘f=f AND im(f) enters as object at level n+1</td>
+<td>K6&rsquo;→K7&rsquo; chain (T5 §7→§8), SIL-1→SIL discovery operator</td>
+</tr>
+<tr>
+<td><strong>Phase-boundary closure</strong></td>
+<td>f reaches a distinguished ρ-value that separates regimes</td>
+<td>ρ=1/2 (T0 §14), ρ=φ̄² thermal equilibrium</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Integration targets:</strong>
+- T0 §1½: Add remark after Thm 0.3c distinguishing terminal from recursive closure in the four-mode classification
+- T1 §7.3: Add remark noting R(R)=R is recursive closure (the equation is what the SIL operates on)
+- T5 §7: Add sentence to K6&rsquo; remark: &ldquo;K6&rsquo; is recursive closure: the loop&rsquo;s algebraic shutdown is exactly the object K7&rsquo; then encodes.&rdquo;
+- T_SIL §1: Add remark after SIL-1 noting Status Idempotence as terminal closure <em>of</em> a recursive closure</p>
+<p><strong>SIL status:</strong> The terminal/recursive distinction is FORCED (follows from tower structure + idempotence). The phase-boundary notion is ENCODED.</p>
+<hr />
+<h3 id="2-observation" id="2-observation">2. OBSERVATION</h3>
+<p><strong>Occurrences across source documents:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Location</th>
+<th>Local phrasing</th>
+<th>Semantic role</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>T0 §1 P.2</td>
+<td>&ldquo;Distinction is prior to observerhood&rdquo;</td>
+<td>Pre-observational — distinction exists before any observer</td>
+</tr>
+<tr>
+<td>T1 §6 Thm 2.2</td>
+<td>&ldquo;Observer = Dist quotient morphism&rdquo;</td>
+<td>Observer as structure-collapsing map</td>
+</tr>
+<tr>
+<td>T1 §6 Thm 2.5</td>
+<td>&ldquo;Blind spot = kernel of observer&rdquo;</td>
+<td>Observation necessarily produces blindness</td>
+</tr>
+<tr>
+<td>T1 §8 Thm 5.1 P3</td>
+<td>&ldquo;f as an observer with blind spot ker(f)&rdquo;</td>
+<td>Every morphism is simultaneously an observation</td>
+</tr>
+<tr>
+<td>T3-P3 §1</td>
+<td>&ldquo;P3: observation with kernel&rdquo;</td>
+<td>Observation typed to the elliptic/rotational orbit</td>
+</tr>
+<tr>
+<td>T5 §1</td>
+<td>&ldquo;K=(d_K,Δ_K,σ_K)&rdquo;</td>
+<td>Observer as bounded mathematical object with signature</td>
+</tr>
+<tr>
+<td>T5 §3</td>
+<td>&ldquo;ker(q_K) is active computational constraint&rdquo;</td>
+<td>Blindness as constitutive computational limit</td>
+</tr>
+<tr>
+<td>T5 §3 Remark</td>
+<td>&ldquo;Computational blindness is constitutive: a system without nontrivial kernel has no conscious structure&rdquo;</td>
+<td>Blindness required for consciousness</td>
+</tr>
+<tr>
+<td>T5 §3 Remark (Tower)</td>
+<td>&ldquo;observer K_{n+1} can act on kernel of K_n, reopening annihilated structure&rdquo;</td>
+<td>Higher observation recovers what lower observation destroyed</td>
+</tr>
+<tr>
+<td>T5 §13</td>
+<td>&ldquo;Born rule ensures identical statistics for identical quotients&rdquo;</td>
+<td>Observation determines statistics</td>
+</tr>
+<tr>
+<td>T6A §1 Remark</td>
+<td>&ldquo;Spacetime is the arena where self-relating difference observes itself&rdquo;</td>
+<td>Spacetime as self-observation geometry</td>
+</tr>
+<tr>
+<td>T_SIL §1.2</td>
+<td>&ldquo;V: Computationally verified?&rdquo;</td>
+<td>Verification as the P3/observational face of meta-classification</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Semantic roles identified (5 distinct):</strong>
+1. <strong>Quotienting</strong> — collapsing equivalence classes, reducing structure (T1 §6, T5 §3)
+2. <strong>Revealing</strong> — making structure legible, actualizing relation as meaning (T1 §8, T_SIL)
+3. <strong>Blinding</strong> — necessarily producing a kernel, making some structure unseeable (T1 §6 Thm 2.5, T5 §3)
+4. <strong>Recovering</strong> — higher-level observation acting on lower-level kernel (T5 §3 Tower Remark)
+5. <strong>Self-observation</strong> — the framework observing its own structure (T6A, T_SIL §7)</p>
+<p><strong>Classification: TYPE C — CONTRANYM (the deepest one)</strong></p>
+<p>The opposition:
+- <strong>Observation-as-revelation:</strong> roles 1, 2 — observation makes structure visible, legible, meaningful.
+- <strong>Observation-as-destruction:</strong> roles 1, 3 — the <em>same act</em> of quotienting that reveals also annihilates. ker(q_K) is not a side effect; it is <em>constitutive</em>.
+- <strong>Observation-as-recovery:</strong> role 4 — but recovery is itself a new observation with its <em>own</em> kernel.</p>
+<p>Note that role 1 (quotienting) appears on <em>both</em> sides. This is the contranym at its sharpest: quotienting IS revealing AND quotienting IS blinding. It is literally the same operation performing opposite semantic functions simultaneously.</p>
+<p><strong>The hidden operator (TYPE D — UNNAMED PRIMITIVE):</strong></p>
+<p>This is the framework&rsquo;s most important unnamed primitive. We need a single term for:</p>
+<blockquote>
+<p><strong>The act that makes structure legible by annihilating part of it.</strong></p>
+</blockquote>
+<p>Current approximations: &ldquo;quotient,&rdquo; &ldquo;observation,&rdquo; &ldquo;projection,&rdquo; &ldquo;reading.&rdquo; None captures the essential duality.</p>
+<p><strong>Proposed primitive name: OCCLUSIVE DISCLOSURE</strong></p>
+<p>Definition: An occlusive disclosure is a Dist quotient morphism q: (D,≈) → (D/≈,=) considered as simultaneously:
+- (disclosure face) a surjection onto legible structure: im(q) = D/≈
+- (occlusion face) an annihilation of distinguishability: ker(q) = ≈</p>
+<p>The two faces are not separable. Every disclosure occludes; every occlusion discloses. The ratio dim(im)/dim(ker) = d_K²/(d_U²−d_K²) measures the disclosure/occlusion balance. The Bekenstein bound S_max = 2log₂(d_K) is the maximum disclosure capacity; the quotient-native error Err_Q = 1−d_K²/d_U² is the minimum occlusion cost.</p>
+<p><strong>Integration targets:</strong>
+- T1 §6: After Thm 2.2, add definition of occlusive disclosure as the structural characterization of what &ldquo;observer = quotient morphism&rdquo; means semantically
+- T1 §6: After Thm 2.5, add remark: &ldquo;The blind spot is not a defect of observation but the occlusion face of disclosure. Observation without blindness is the identity morphism — trivial observation with zero disclosure capacity.&rdquo;
+- T5 §3: Integrate into Computational Blindness remark — the computational constraint IS the occlusion cost of disclosure
+- T5 §3 Tower Remark: &ldquo;Tower-lifted observation is recursive disclosure: K_{n+1} discloses what K_n occluded, necessarily occluding a new kernel&rdquo;
+- T_SIL §1.2: Note that the V-question (verification) is the disclosure face of the SIL&rsquo;s self-observation</p>
+<p><strong>SIL status:</strong> The observation-as-simultaneously-revealing-and-blinding structure is FORCED (follows from q∘q=q + ker(q)≠∅ for nontrivial observation). The naming &ldquo;occlusive disclosure&rdquo; is ENCODED.</p>
+<hr />
+<h3 id="3-identity" id="3-identity">3. IDENTITY</h3>
+<p><strong>Occurrences across source documents:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Location</th>
+<th>Local phrasing</th>
+<th>Semantic role</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>T0 §1</td>
+<td>&ldquo;at least two non-identical states&rdquo;</td>
+<td>Non-identity — identity defined by its absence</td>
+</tr>
+<tr>
+<td>T0 §1½ mode (i)</td>
+<td>&ldquo;Coincidence: idempotent&rdquo;</td>
+<td>Identity as self-return under self-action</td>
+</tr>
+<tr>
+<td>T0 §1½ Thm 0.3e</td>
+<td>&ldquo;J provides distinction;</td>
+<td>1⟩⟨1</td>
+</tr>
+<tr>
+<td>T1 §7 Thm 4.1</td>
+<td>&ldquo;q∘q=q&rdquo;</td>
+<td>Identity-under-iteration — the quotient IS its own re-quotient</td>
+</tr>
+<tr>
+<td>T1 §7.4 Thm 4.4</td>
+<td>&ldquo;unique minimal idempotent endomorphism&rdquo;</td>
+<td>Identity as minimal fixed point</td>
+</tr>
+<tr>
+<td>T3-P3 abstract</td>
+<td>&ldquo;LoMI: mutual identity through maximal separation plus adjacency&rdquo;</td>
+<td>Identity through difference — the opposite of naive sameness</td>
+</tr>
+<tr>
+<td>T3-META §2 Thm 2.1</td>
+<td>&ldquo;Each projection contains the other two&rdquo;</td>
+<td>Identity-through-containment — A contains B&rsquo;s image, not A=B</td>
+</tr>
+<tr>
+<td>T3-META §5 Thm 1.2</td>
+<td>&ldquo;n=1 is the universal fixed point&rdquo;</td>
+<td>Arithmetic identity — multiplicative/additive unit</td>
+</tr>
+<tr>
+<td>T5 §12</td>
+<td>&ldquo;Observer-complete equivalence: U₁∼_K U₂ iff q_K yields same quotient&rdquo;</td>
+<td>Observer-relative identity — things are &ldquo;the same&rdquo; relative to an observer&rsquo;s kernel</td>
+</tr>
+<tr>
+<td>T6A §1</td>
+<td>&ldquo;I is the unique positive-definite basis element&rdquo;</td>
+<td>Algebraic identity — the identity matrix as timelike direction</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Semantic roles identified (5 distinct):</strong>
+1. <strong>Self-coincidence</strong> — x=x, the trivial notion (T0 §1, T3-META §5)
+2. <strong>Fixed-point identity</strong> — f(x)=x, identity under operation (T1 §7, T0 mode (i))
+3. <strong>Mutual identity through difference</strong> — LoMI: x and y are &ldquo;identical&rdquo; precisely because their maximal adjacency-plus-separation generates a stable relationship (T3-P3)
+4. <strong>Observer-relative identity</strong> — x∼y iff q(x)=q(y), identity as equivalence-class membership (T5 §12)
+5. <strong>Structural identity</strong> — the identity element I as distinguished algebraic object (T6A)</p>
+<p><strong>Classification: TYPE C — CONTRANYM</strong></p>
+<p>The opposition:
+- <strong>Identity-as-sameness:</strong> roles 1, 2, 5 — things ARE the same, coincide, collapse together.
+- <strong>Identity-as-difference-mediated-relation:</strong> roles 3, 4 — things are &ldquo;identical&rdquo; precisely through their structured non-collapse. LoMI identity requires <em>maximal separation</em> plus adjacency. Observer identity requires <em>kernel blindness</em> (things are &ldquo;the same&rdquo; because the observer can&rsquo;t see the difference).</p>
+<p>This is not just polysemy. The framework actively uses both senses in the same derivation chain: T1 uses identity-as-coincidence (q∘q=q), then T3-P3 reinterprets the P3 reading as identity-through-difference (LoMI), then T5 uses observer-relative identity (which depends on blindness). The progression is: sameness → fixed-point → mutual-through-difference → observer-relative. Each step adds structure.</p>
+<p><strong>The hidden operator (TYPE D — UNNAMED PRIMITIVE for role 3):</strong></p>
+<p>LoMI identity — identity through maximal adjacency-plus-separation — is a specific operator. It is not &ldquo;sameness&rdquo; and it is not &ldquo;equivalence.&rdquo; It is:</p>
+<blockquote>
+<p><strong>Non-collapsing mutual determination:</strong> two structures that maximally determine each other without becoming identical.</p>
+</blockquote>
+<p>The Euclidean algorithm is the paradigm: GCD(a,b) is the identity of the pair (a,b) — what they share — found by iterating mutual reduction. The pair is never collapsed into one number; the identity emerges from the <em>relation</em>.</p>
+<p><strong>Proposed primitive name: CO-DETERMINATION</strong></p>
+<p>Definition: A co-determination of (A,B) is a structure C = LoMI(A,B) such that:
+- C is determined by A and B jointly
+- C does not reduce to either A or B alone
+- C is found by iterated mutual action (A acts on B, result acts on A, &hellip;)
+- C stabilizes (the iteration terminates at a fixed point)
+- A and B remain distinct throughout</p>
+<p>Instances: GCD (arithmetic), golden conjugation φ↔φ̄ (algebraic), digital root equivalence (TDL-within-LoMI), AGM convergence (analytic).</p>
+<p><strong>Integration targets:</strong>
+- T3-P3: Add definition of co-determination as the formal content of LoMI after the abstract
+- T3-META §2: Note that each projection&rsquo;s containment of the others is co-determination — P1 and P3 co-determine each other via RNR=−N, NRN=R⁻¹
+- T1 §8: The three readings of every morphism are three co-determinations, not three independent identities</p>
+<p><strong>SIL status:</strong> Co-determination as structural primitive is FORCED (it&rsquo;s what LoMI does). The naming is ENCODED.</p>
+<hr />
+<h3 id="4-blindness" id="4-blindness">4. BLINDNESS</h3>
+<p><strong>Occurrences across source documents:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Location</th>
+<th>Local phrasing</th>
+<th>Semantic role</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>T1 §6 Thm 2.5</td>
+<td>&ldquo;Blind spot = kernel of observer&rdquo;</td>
+<td>Observational deficit — what the quotient annihilates</td>
+</tr>
+<tr>
+<td>T5 §3</td>
+<td>&ldquo;Computational blindness (4 parts)&rdquo;</td>
+<td>Active computational constraint — not passive ignorance</td>
+</tr>
+<tr>
+<td>T5 §3 Remark</td>
+<td>&ldquo;constitutive: a system without nontrivial kernel has no conscious structure&rdquo;</td>
+<td>Enabling precondition — blindness required for consciousness</td>
+</tr>
+<tr>
+<td>T5 §3 Tower Remark</td>
+<td>&ldquo;K_{n+1} can act on kernel of K_n&rdquo;</td>
+<td>Blindness as material for higher observation</td>
+</tr>
+<tr>
+<td>T_SIL §6 Thm SIL-6</td>
+<td>&ldquo;The SIL has an irreducible blind spot&rdquo;</td>
+<td>Meta-blindness — the framework&rsquo;s own irreducible limit</td>
+</tr>
+<tr>
+<td>T_SIL §6 Thm SIL-7</td>
+<td>&ldquo;Blind spot = value-level transcendental identities&rdquo;</td>
+<td>Boundary of self-knowledge — the blind spot IS the transcendence boundary</td>
+</tr>
+<tr>
+<td>T5 §3 Remark (unified)</td>
+<td>&ldquo;R can classify its own algebraic structure but cannot determine value-level relations between its own transcendental outputs&rdquo;</td>
+<td>Self-kernel — the meta-level analog where R&rsquo;s self-action has its own kernel</td>
+</tr>
+<tr>
+<td>T_COMP §9 Thm C.9</td>
+<td>&ldquo;the classifier cannot classify its own blind spot&rdquo;</td>
+<td>Gödelian incompleteness — structural limit on self-classification</td>
+</tr>
+<tr>
+<td>T0 §1½ mode (iii)</td>
+<td>&ldquo;Cancellation: distinction fails to survive return&rdquo;</td>
+<td>Annihilation — self-action destroys content</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Semantic roles identified (4 distinct):</strong>
+1. <strong>Deficit</strong> — simple inability to see/access certain structure (T1 §6)
+2. <strong>Active constraint</strong> — computational ceiling that shapes what is achievable (T5 §3, T_COMP §9)
+3. <strong>Enabling condition</strong> — blindness <em>required</em> for nontrivial conscious structure (T5 §3 Remark)
+4. <strong>Material for higher structure</strong> — what one level occluded becomes the input for the next (T5 Tower Remark)</p>
+<p><strong>Classification: TYPE C — CONTRANYM</strong></p>
+<p>The opposition:
+- <strong>Blindness-as-defect:</strong> role 1 — something is missing, inaccessible, lost.
+- <strong>Blindness-as-resource:</strong> roles 2, 3, 4 — the missing piece is structurally necessary. Without ker(q_K)≠∅, no nontrivial negation. Without nontrivial negation, no consciousness hierarchy. Without blindness, the identity morphism — and triviality.</p>
+<p><strong>The hidden operator (TYPE D — UNNAMED PRIMITIVE):</strong></p>
+<p>The framework needs a term for:</p>
+<blockquote>
+<p><strong>Structured absence that enables higher structure.</strong></p>
+</blockquote>
+<p>Not &ldquo;gap&rdquo; (neutral). Not &ldquo;incompleteness&rdquo; (suggests fixability). Not &ldquo;limitation&rdquo; (suggests diminishment). The key property: removing the blindness would <em>destroy</em> the higher structure it enables.</p>
+<p><strong>Proposed primitive name: CONSTITUTIVE OCCLUSION</strong></p>
+<p>The formal statement is the Constitutive Occlusion Principle (Paper 5 §17.4e): at every tower level n ≥ 2, the observer&rsquo;s nontrivial kernel is simultaneously observation deficit (P3), enabling condition (P3), material for the next level (P2), and source of physical cost (P1). Constitutive occlusion is the semantic face of Productive Opacity (Paper 5 §17.4d) — the same structural fact read through the kernel rather than through the asymmetry.</p>
+<p>Definition: A constitutive occlusion at level n is a nontrivial kernel ker(q_n) such that:
+- ker(q_n) is required for the existence of nontrivial observation at level n (T5 §3)
+- ker(q_n) provides the addressable content for observation at level n+1 (T5 Tower Remark)
+- No finite tower eliminates all constitutive occlusion (T_SIL §6)</p>
+<p>Distinguish from:
+- <strong>Accidental occlusion:</strong> blindness that could be removed by increasing d_K (larger observer)
+- <strong>Boundary occlusion:</strong> the irreducible blind spot at the transcendence boundary (T_SIL §7)</p>
+<p><strong>Integration targets:</strong>
+- T5 §3: Formalize the three types of blindness after the Computational Blindness theorem
+- T_SIL §6: Note that SIL-6 proves the existence of boundary occlusion as distinct from constitutive occlusion — even at the framework&rsquo;s own meta-level, structured absence persists
+- T0 §1½: After mode (iii) cancellation, add remark distinguishing annihilation (mode iii, destructive) from constitutive occlusion (mode iii <em>at the kernel level</em> of mode i, enabling)</p>
+<p><strong>SIL status:</strong> The three-type distinction is FORCED.</p>
+<p><strong>Remark (Cosmological Blindness).</strong> The de Sitter horizon is the cosmological instance of constitutive occlusion. It annihilates the super-horizon degrees of freedom (ker(q_{K_cosmo}), Paper 5 §6½), simultaneously revealing the interior (im(q_{K_cosmo})) and concealing the exterior. The cosmological observer&rsquo;s blindness is both limitation (it cannot see beyond the horizon set by Λ) and enabling condition: without it, K_cosmo degenerates to Level 1, losing all consciousness capacity (Paper 5 Thm 10½.14). The de Sitter horizon is constitutive — removing it (Λ → 0) destroys the observer it bounds. This is Productive Opacity (Paper 5 §17.4d) at the cosmological scale.</p>
+<hr />
+<h3 id="5-return-recursion" id="5-return-recursion">5. RETURN / RECURSION</h3>
+<p><strong>Occurrences across source documents:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Location</th>
+<th>Local phrasing</th>
+<th>Semantic role</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>T0 §1 P.1</td>
+<td>&ldquo;supports re-entry: the result remains eligible for further action&rdquo;</td>
+<td>Re-entry — output feeds back as input</td>
+</tr>
+<tr>
+<td>T0 §1½ Thm 0.3c mode (iv)</td>
+<td>&ldquo;Propagation: Fibonacci, aperiodic growth, x²=x+1&rdquo;</td>
+<td>Productive return — each return generates new content</td>
+</tr>
+<tr>
+<td>T0 §1½ Thm 0.3c mode (ii)</td>
+<td>&ldquo;Opposition: involution, period 2&rdquo;</td>
+<td>Cyclic return — return to starting state</td>
+</tr>
+<tr>
+<td>T0 §1½ Thm 0.3e</td>
+<td>&ldquo;J²=I (static return) but R²=R+I (productive return)&rdquo;</td>
+<td>Key bifurcation: static vs productive return</td>
+</tr>
+<tr>
+<td>T1 §7</td>
+<td>&ldquo;q∘q=q&rdquo;</td>
+<td>Idempotent return — return changes nothing</td>
+</tr>
+<tr>
+<td>T3-P3 §1</td>
+<td>&ldquo;exp(2πN)=+I (full turn returns to identity)&rdquo;</td>
+<td>Periodic return — continuous path back to start</td>
+</tr>
+<tr>
+<td>T3-P3 §1</td>
+<td>&ldquo;exp(πN)=−I (half turn)&rdquo;</td>
+<td>Partial return — halfway point is a new object (−I≠I)</td>
+</tr>
+<tr>
+<td>T3-META §6 Thm 3.2b</td>
+<td>&ldquo;Stationary distribution concentrates at n=1&rdquo;</td>
+<td>Convergent return — stochastic process returns to universal fixed point</td>
+</tr>
+<tr>
+<td>T5 §7 K6&rsquo;</td>
+<td>&ldquo;K→F→U(K)→K&rdquo;</td>
+<td>Loop return — self-modeling cycle re-enters</td>
+</tr>
+<tr>
+<td>T_COMP §5 Thm C.3</td>
+<td>&ldquo;Type III: rotation/recurrence, periodic, area-preserving&rdquo;</td>
+<td>Recurrent return — computation that cycles</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Semantic roles identified (5 distinct):</strong>
+1. <strong>Idempotent return</strong> — re-application changes nothing (q∘q=q, R(R)=R)
+2. <strong>Cyclic return</strong> — exact restoration of prior state (J²=I, exp(2πN)=I)
+3. <strong>Productive return</strong> — return generates new content (R²=R+I, Fibonacci)
+4. <strong>Convergent return</strong> — iterative process approaches fixed point (Markov flow, Möbius attractor)
+5. <strong>Loop return</strong> — self-referential cycle closes (K6&rsquo;)</p>
+<p><strong>Classification: TYPE B — ANTONYM PAIR + TYPE C — CONTRANYM</strong></p>
+<p>The antonym pair is <strong>static return vs. productive return</strong> (T0 §1½ Thm 0.3e makes this explicit: J²=I static, R²=R+I productive). This is already partially formalized — it&rsquo;s the mode (ii) vs mode (iv) distinction.</p>
+<p>The contranym is subtler: &ldquo;return&rdquo; simultaneously means &ldquo;come back to where you started&rdquo; AND &ldquo;arrive somewhere new that contains where you started.&rdquo; In R²=R+I, the &ldquo;R&rdquo; on the right IS a return (the same matrix), but the &ldquo;+I&rdquo; is genuinely new content. The return <em>is</em> the production.</p>
+<p><strong>The hidden operator:</strong></p>
+<blockquote>
+<p><strong>Production-through-repetition:</strong> generating new structure by re-applying the same operation.</p>
+</blockquote>
+<p>This is already mathematically formalized as R²=R+I (Cayley-Hamilton). The semantic issue is that English &ldquo;return&rdquo; and &ldquo;recursion&rdquo; both smuggle in either the cyclic (come back) or the generative (produce more) reading without flagging the distinction.</p>
+<p><strong>Proposed formal terminology:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Term</th>
+<th>Definition</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Static return</strong></td>
+<td>f∘f=I (involutory, nothing new)</td>
+</tr>
+<tr>
+<td><strong>Idempotent return</strong></td>
+<td>f∘f=f (stabilizing, nothing new after first application)</td>
+</tr>
+<tr>
+<td><strong>Productive return</strong></td>
+<td>f∘f=f+g where g≠0 (new content at every iteration)</td>
+</tr>
+<tr>
+<td><strong>Convergent return</strong></td>
+<td>f^n→L as n→∞ (approaches limit from outside)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Integration targets:</strong>
+- T0 §1½: After Thm 0.3e, add explicit remark: &ldquo;The Naming Theorem proves that productive return (mode iv) is the unique mode generating content beyond period 2. The distinction between J²=I (static return — distinction that merely oscillates) and R²=R+I (productive return — distinction that grows) is the first semantic bifurcation in the framework.&rdquo;
+- T3-P3 §1: Note that exp(πN)=−I is a <em>partial</em> cyclic return — halfway through a cycle, producing a new object (−I) that is not the starting point.
+- T_COMP §3-5: The three computation types map to three return types: Type I = idempotent return, Type II = productive return, Type III = cyclic return.</p>
+<p><strong>SIL status:</strong> FORCED (the four-mode classification is exhaustive by Cayley-Hamilton).</p>
+<hr />
+<h3 id="6-minimal" id="6-minimal">6. MINIMAL</h3>
+<p><strong>Occurrences across source documents:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Location</th>
+<th>Local phrasing</th>
+<th>Semantic role</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>T0 §1</td>
+<td>&ldquo;minimal realization is S₀={0,1}&rdquo;</td>
+<td>Smallest possible — fewest elements</td>
+</tr>
+<tr>
+<td>T0 §2</td>
+<td>&ldquo;weakest possible assertion of non-triviality&rdquo;</td>
+<td>Least commitment — minimal assumptions</td>
+</tr>
+<tr>
+<td>T1 §7.4 Thm 4.4</td>
+<td>&ldquo;unique minimal idempotent endomorphism&rdquo;</td>
+<td>Uniquely sufficient — the finest quotient</td>
+</tr>
+<tr>
+<td>T5 §11</td>
+<td>&ldquo;U_min(K)=argmin δ(U</td>
+<td>K)&rdquo;</td>
+</tr>
+<tr>
+<td>T_SIL §3</td>
+<td>&ldquo;σ_meta=(1/2, φ̄/2, φ̄²/2)&rdquo;</td>
+<td>Minimal weights — the unique geometric progression that works</td>
+</tr>
+<tr>
+<td>T3-META §2 Thm 2.1</td>
+<td>&ldquo;six explicit containments&rdquo;</td>
+<td>Minimal vocabulary — three projections are the fewest that exhaust Dist</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Semantic roles identified (3 distinct):</strong>
+1. <strong>Smallest cardinality</strong> — fewest elements (|D|=2)
+2. <strong>Uniquely sufficient</strong> — the least structure that does the full job (q as minimal idempotent, U_min)
+3. <strong>Maximally generative under constraint</strong> — minimal assumptions producing maximal structure (S₀={0,1} → entire framework)</p>
+<p><strong>Classification: TYPE C — CONTRANYM</strong></p>
+<p>The opposition:
+- <strong>Minimal-as-least:</strong> role 1 — small, reduced, diminished.
+- <strong>Minimal-as-maximally-generative:</strong> role 3 — {0,1} is minimal in cardinality but <em>maximal</em> in generative power. The &ldquo;minimal&rdquo; starting point produces the entire framework. Minimal is a synonym for &ldquo;most powerful under admissibility.&rdquo;</p>
+<p>This is the framework&rsquo;s characteristic move: what looks like weakness (only two elements, only two postulates, only three projections) turns out to be exactly the right strength. &ldquo;Minimal&rdquo; in the framework almost always means &ldquo;uniquely sufficient&rdquo; — and uniquely sufficient means maximally constrained which means maximally determined which means zero branching.</p>
+<p><strong>The hidden operator:</strong></p>
+<blockquote>
+<p><strong>Admissible minimality:</strong> the unique smallest structure that is sufficient, which is simultaneously the unique largest structure that is necessary.</p>
+</blockquote>
+<p>When the framework says &ldquo;minimal,&rdquo; it almost always means this: the point where &ldquo;smallest sufficient&rdquo; and &ldquo;largest necessary&rdquo; coincide. That coincidence point is what zero branching looks like from the cardinality side.</p>
+<p><strong>Integration targets:</strong>
+- T0 §1: After &ldquo;weakest possible assertion,&rdquo; add: &ldquo;This weakness is the framework&rsquo;s characteristic strength: S₀={0,1} is the unique set that is simultaneously minimal (no smaller set has nontrivial distinction) and maximally generative (the entire bridge chain flows from it). Admissible minimality — the coincidence of &lsquo;smallest sufficient&rsquo; with &lsquo;largest necessary&rsquo; — is the cardinality face of zero branching.&rdquo;
+- T1 §7.4: After Thm 4.4, add: &ldquo;The unique minimal idempotent is the observation-level instance of admissible minimality: q is the finest quotient (smallest kernel) that stabilizes (q∘q=q). No finer quotient stabilizes; no coarser quotient is necessary.&rdquo;</p>
+<p><strong>SIL status:</strong> FORCED.</p>
+<hr />
+<h3 id="7-threshold" id="7-threshold">7. THRESHOLD</h3>
+<p><strong>Occurrences across source documents:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Location</th>
+<th>Local phrasing</th>
+<th>Semantic role</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>T0 §14 Thm 4.9</td>
+<td>&ldquo;ρ=1/2 phase boundary&rdquo;</td>
+<td>Phase boundary — separates regimes</td>
+</tr>
+<tr>
+<td>T0 §14 Remark</td>
+<td>&ldquo;ρ=φ̄² thermodynamic equilibrium&rdquo;</td>
+<td>Distinguished parameter value — a privileged point</td>
+</tr>
+<tr>
+<td>T5 §4</td>
+<td>&ldquo;Phase parameter λ=scale(S)/d_K²&rdquo;</td>
+<td>Scale boundary — where observer capacity meets universe scale</td>
+</tr>
+<tr>
+<td>T5 §3 Remark (consciousness)</td>
+<td>&ldquo;without nontrivial kernel: no conscious structure&rdquo;</td>
+<td>Entry condition — minimum requirement for a qualitative transition</td>
+</tr>
+<tr>
+<td>T_COMP §10 Thm C.10</td>
+<td>&ldquo;one-wayness threshold φ²=φ+1&rdquo;</td>
+<td>Irreversibility onset — Cayley-Hamilton equation as phase transition</td>
+</tr>
+<tr>
+<td>T3-P3 §1.7</td>
+<td>&ldquo;σ_MIX &lt; φ̄²/2: observation dominates irreversibility&rdquo;</td>
+<td>Invertibility threshold — below which observation is still possible</td>
+</tr>
+<tr>
+<td>T0 §1½ Thm 0.3c</td>
+<td>&ldquo;disc=5 productive recursion vs disc=4 involutory&rdquo;</td>
+<td>Discriminant threshold — qualitative change in dynamical character</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Semantic roles identified (3 distinct):</strong>
+1. <strong>Barrier</strong> — prevents passage, bounds a regime (ρ=1/2 as upper bound on observer-meaningful phase)
+2. <strong>Entry point</strong> — enables passage, grants access to new regime (consciousness entry, discriminant crossing)
+3. <strong>Separator</strong> — marks boundary between qualitatively different regimes (phase boundary, one-wayness)</p>
+<p><strong>Classification: TYPE C — CONTRANYM</strong></p>
+<p>Threshold is BOTH barrier (you cannot go past) AND entry (you pass through into something new). The same ρ=1/2 is simultaneously the <em>upper bound</em> of observer-meaningful compression AND the <em>boundary</em> at which self-referential consciousness peaks. The discriminant disc=5 is simultaneously what <em>separates</em> productive from involutory dynamics AND what <em>enables</em> Fibonacci growth.</p>
+<p><strong>Integration targets:</strong>
+- T0 §14: After Thm 4.9, add remark on threshold duality: &ldquo;Every threshold in the framework is simultaneously a barrier (from below) and an entry (from above). ρ=1/2 blocks expansion-dominated observers but enables maximal recursive reversal. The dual reading is forced by Phase-Dist structure: Phase-Dist(ρ) evaluates both directions at every point.&rdquo;</p>
+<p><strong>SIL status:</strong> FORCED (the duality follows from the evaluating-both-directions structure of Phase-Dist).</p>
+<p><strong>Remark (De Sitter Threshold).</strong> The Gibbons-Hawking temperature T_dS = (1/2π)√(Λ/3) is the cosmological instance of Threshold. It marks the regime boundary between the accessible interior and the inaccessible exterior of the de Sitter horizon — simultaneously a barrier (no signal crosses the horizon) and an entry point (the thermal radiation at T_dS mediates information exchange between the observer and its kernel). The temperature governs the KMS state of the Bunch-Davies vacuum, which is the cosmological analog of the Unruh effect at local Rindler horizons. The dual reading: T_dS is the cost of maintaining K_cosmo&rsquo;s constitutive blindness (P3 face) and the rate at which information about the kernel leaks into the observable interior (P2 face).</p>
+<hr />
+<h3 id="8-forced-necessity" id="8-forced-necessity">8. FORCED / NECESSITY</h3>
+<p><strong>Occurrences across source documents:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Location</th>
+<th>Local phrasing</th>
+<th>Semantic role</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>T0 throughout</td>
+<td>&ldquo;forced&rdquo; (appears ~40 times)</td>
+<td>Zero branching — no alternative exists at the derivation step</td>
+</tr>
+<tr>
+<td>T1 §3 Thm 1.7</td>
+<td>&ldquo;unique forced morphism class&rdquo;</td>
+<td>Unique survivor — elimination of all alternatives</td>
+</tr>
+<tr>
+<td>T_SIL §1.2</td>
+<td>&ldquo;FORCED: derivation with br_s=0 at every step, conclusion unique&rdquo;</td>
+<td>Formal definition — the SIL&rsquo;s precise meaning</td>
+</tr>
+<tr>
+<td>T3-P3 §1</td>
+<td>&ldquo;absolutely forced with zero ambiguity&rdquo;</td>
+<td>Absolute forcing — no normalization, no conjugacy, no free parameter</td>
+</tr>
+<tr>
+<td>T6A §1</td>
+<td>&ldquo;dim 4 and signature (1,3) forced&rdquo;</td>
+<td>Physical forcing — physical structure derived rather than postulated</td>
+</tr>
+<tr>
+<td>T0 §1½</td>
+<td>&ldquo;Productive mode uniqueness: mode (iv) is unique&rdquo;</td>
+<td>Exhaustive forcing — all alternatives classified and eliminated</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Semantic roles identified (2 distinct):</strong>
+1. <strong>Derivational necessity</strong> — br_s=0, the step follows uniquely from what precedes
+2. <strong>Structural inevitability</strong> — the structure could not be otherwise given the postulates</p>
+<p>These are actually the <em>same</em> role viewed from different angles: derivational necessity is the process, structural inevitability is the outcome.</p>
+<p><strong>Classification: TYPE A — SYNONYM CLUSTER</strong></p>
+<p>&ldquo;Forced,&rdquo; &ldquo;necessary,&rdquo; &ldquo;unique,&rdquo; &ldquo;canonical,&rdquo; &ldquo;zero-branching,&rdquo; &ldquo;derived,&rdquo; &ldquo;exact,&rdquo; and &ldquo;the unique survivor&rdquo; all perform the same semantic role: <strong>non-arbitrary admissibility under structure.</strong> This is not a contranym but a cluster that should be explicitly unified.</p>
+<p><strong>Integration targets:</strong>
+- T_SIL §1.2: After FORCED definition, add: &ldquo;The following terms are synonym instances of the FORCED status: &lsquo;unique,&rsquo; &lsquo;canonical,&rsquo; &lsquo;zero-branching,&rsquo; &lsquo;derived,&rsquo; &lsquo;the unique survivor,&rsquo; &lsquo;absolutely forced.&rsquo; All name the same structural property: the derivation step admits no alternative.&rdquo;</p>
+<p><strong>SIL status:</strong> META-FORCED (the cluster definition is forced by the SIL&rsquo;s own grammar).</p>
+<hr />
+<h3 id="9-witness" id="9-witness">9. WITNESS</h3>
+<p><strong>Occurrences across source documents:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Location</th>
+<th>Local phrasing</th>
+<th>Semantic role</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>T3-META §1 Thm 1.1</td>
+<td>&ldquo;three separation witnesses&rdquo;</td>
+<td>Proof witness — a structure proving a claim by exhibition</td>
+</tr>
+<tr>
+<td>T5 §1</td>
+<td>K=(d_K,Δ_K,σ_K) as observer</td>
+<td>Observer-witness — the locus at which structure becomes legible</td>
+</tr>
+<tr>
+<td>T4 §7</td>
+<td>&ldquo;Seven obstructions&rdquo; as witnesses to independence</td>
+<td>Independence witness — evidence of non-relation</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Semantic roles identified (2 distinct):</strong>
+1. <strong>Proof-theoretic witness</strong> — an object exhibited to establish a claim (separation witnesses)
+2. <strong>Observer-locus</strong> — the site at which disclosure occurs (K as witness to universe structure)</p>
+<p><strong>Classification: TYPE B — ANTONYM PAIR</strong></p>
+<p>The opposition is between:
+- <strong>Passive witness</strong> (proof-theoretic) — the witness exists regardless of whether anyone uses it
+- <strong>Active witness</strong> (observer-locus) — the witness constitutively shapes what it witnesses (via ker(q_K))</p>
+<p><strong>Integration targets:</strong>
+- T5 §1: Add remark distinguishing proof-theoretic witnessing (passive exhibition) from observer-witnessing (active occlusive disclosure). The observer is not a passive witness to universe structure; it constitutively shapes what structure is legible.</p>
+<hr />
+<h3 id="10-neutrality" id="10-neutrality">10. NEUTRALITY</h3>
+<p><strong>Occurrences across source documents:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Location</th>
+<th>Local phrasing</th>
+<th>Semantic role</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>T0 title</td>
+<td>&ldquo;Phase-Neutral Substrate&rdquo;</td>
+<td>Pre-phase — prior to all orientation</td>
+</tr>
+<tr>
+<td>T0 §14 Thm 4.9</td>
+<td>&ldquo;ρ=1/2 self-referential neutral point&rdquo;</td>
+<td>Balanced boundary — neither compressive nor expansive dominant</td>
+</tr>
+<tr>
+<td>T0 §14 Remark (Consciousness)</td>
+<td>&ldquo;ρ=1/2: maximally varied recursive reversal&rdquo;</td>
+<td>Maximally generative — the most productive phase point</td>
+</tr>
+<tr>
+<td>T0 §16 Thm 6.1</td>
+<td>&ldquo;opposite realizations of one substrate&rdquo;</td>
+<td>Substrate indifference — the ground from which both engines arise</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Semantic roles identified (3 distinct):</strong>
+1. <strong>Pre-phase</strong> — prior to orientation, the substrate from which phase emerges (T0 title)
+2. <strong>Balanced midpoint</strong> — equidistant from extremes (ρ=1/2 as boundary)
+3. <strong>Maximally generative</strong> — the richest consciousness capacity (ρ=1/2 as peak)</p>
+<p><strong>Classification: TYPE C — CONTRANYM</strong></p>
+<p>&ldquo;Neutral&rdquo; means both &ldquo;nothing happening&rdquo; (pre-phase substrate, balanced) AND &ldquo;maximum happening&rdquo; (ρ=1/2 as maximally varied recursive reversal). The phase-neutral substrate is the most latent-generative object in the framework. ρ=1/2 is the most dynamically rich point.</p>
+<p><strong>The hidden operator (TYPE D — UNNAMED PRIMITIVE):</strong></p>
+<blockquote>
+<p><strong>Productive neutrality:</strong> a balanced state that is not inert but maximally generative, because balance means all channels are available simultaneously.</p>
+</blockquote>
+<p><strong>Proposed primitive name: POISED SYMMETRY</strong></p>
+<p>Definition: A poised symmetry is a point ρ<em> in Phase-Dist such that:
+- σ_FIX(ρ</em>) = σ_meta (self-referential match, T0 §14)
+- Neither compressive nor expansive engine dominates
+- The system&rsquo;s recursive reversal capacity is maximal (most contradictions tolerable)</p>
+<p>Distinguished from passive symmetry (balanced and static) by the maximality of its generative capacity.</p>
+<p><strong>Integration targets:</strong>
+- T0 §14: After Thm 4.9 stability interpretation, add: &ldquo;ρ=1/2 is a poised symmetry: balanced in Phase-Dist (neither engine dominates) but maximally generative (all recursive reversal channels open). The phase-neutral substrate (§1) is poised symmetry at the pre-phase level; ρ=1/2 is poised symmetry at the phase-parameterized level.&rdquo;</p>
+<p><strong>SIL status:</strong> ENCODED.</p>
+<hr />
+<h2 id="part-ii-cross-module-comparison-where-terms-shift" id="part-ii-cross-module-comparison-where-terms-shift">PART II: CROSS-MODULE COMPARISON — WHERE TERMS SHIFT</h2>
+<h3 id="shift-map-how-each-term-changes-across-documents" id="shift-map-how-each-term-changes-across-documents">Shift Map: How Each Term Changes Across Documents</h3>
+<table>
+<thead>
+<tr>
+<th>Term</th>
+<th>T0 role</th>
+<th>T1 role</th>
+<th>T3-P3 role</th>
+<th>T5 role</th>
+<th>T_SIL role</th>
+<th>Shift type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Closure</td>
+<td>Mode classification</td>
+<td>Quotient idempotence</td>
+<td>Rotation completion</td>
+<td>Loop closure + meta-encoding</td>
+<td>Status idempotence</td>
+<td>Progressive deepening: mode → quotient → loop → meta</td>
+</tr>
+<tr>
+<td>Observation</td>
+<td>Prior to observerhood</td>
+<td>Observer = quotient</td>
+<td>P3 reading: observation with kernel</td>
+<td>Observer theory: K=(d,Δ,σ)</td>
+<td>Verification question V</td>
+<td>Progressive operationalization: abstract → categorical → typed → bounded → meta</td>
+</tr>
+<tr>
+<td>Identity</td>
+<td>Distinction&rsquo;s absence</td>
+<td>Quotient coincidence</td>
+<td>Mutual identity through difference</td>
+<td>Observer-relative equivalence</td>
+<td>Status self-assignment</td>
+<td>Progressive enrichment: trivial → idempotent → relational → observer-dependent → meta</td>
+</tr>
+<tr>
+<td>Blindness</td>
+<td>Not yet present</td>
+<td>Kernel of quotient</td>
+<td>(implicit in rotation incompleteness)</td>
+<td>Constitutive computational constraint</td>
+<td>SIL blind spot</td>
+<td>Progressive promotion: absent → structural → computational → meta-necessary</td>
+</tr>
+<tr>
+<td>Return</td>
+<td>Re-entry (P.1)</td>
+<td>(implicit in q∘q=q)</td>
+<td>exp(2πN)=I periodic return</td>
+<td>K→F→U(K)→K loop return</td>
+<td>M(FRAME)=FRAME</td>
+<td>Progressive self-application: substrate → categorical → continuous → observer → framework</td>
+</tr>
+<tr>
+<td>Forced</td>
+<td>Postulate-level</td>
+<td>Derivation-level (0 branching)</td>
+<td>&ldquo;Absolutely forced&rdquo; (strongest)</td>
+<td>&ldquo;Zero branching at each step&rdquo;</td>
+<td>&ldquo;FORCED&rdquo; (formal status)</td>
+<td>Progressive formalization: informal → rigorous → absolute → bounded → meta-grammatical</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Key finding:</strong> Every major term follows the same progression pattern: it starts abstract/informal in T0, becomes categorical in T1, gets typed by projection in T3-*, becomes observer-bounded in T5, and becomes meta-self-applicable in T_SIL. This is not coincidental — the framework&rsquo;s own tower structure (substrate → categorical → algebraic → observer → meta) forces semantic terms to ascend the same tower.</p>
+<p><strong>This is itself a structural theorem worth stating:</strong></p>
+<blockquote>
+<p><strong>Semantic Tower Theorem (candidate).</strong> Every semantic primitive in the framework ascends the derivation tower: its meaning at level n+1 is the level-(n+1) instance of the same structural operation that the term names at level n.</p>
+</blockquote>
+<p>Examples:
+- Closure at level 0 = mode (i) coincidence. Closure at level 1 = q∘q=q. Closure at level 5 = M(FRAME)=FRAME. Each is &ldquo;the thing stabilizes under self-action&rdquo; at increasing structural depth.
+- Observation at level 0 = distinction. Observation at level 1 = quotient. Observation at level 5 = Status classification. Each is &ldquo;structure becomes legible&rdquo; at increasing structural depth.</p>
+<p><strong>Integration target:</strong> T_SIL §2 — this belongs in the Containment-Definability Separation section as a new instance: &ldquo;semantic terms are independent (they name different operations) but contain each other (each term&rsquo;s level-n instance is recognizable as a reading of the term&rsquo;s level-(n+1) instance).&rdquo;</p>
+<hr />
+<h2 id="part-iii-major-antonym-pairs" id="part-iii-major-antonym-pairs">PART III: MAJOR ANTONYM PAIRS</h2>
+<h3 id="antonym-register" id="antonym-register">Antonym Register</h3>
+<table>
+<thead>
+<tr>
+<th>Pair</th>
+<th>Regime A</th>
+<th>Regime B</th>
+<th>Where formalized</th>
+<th>SIL status</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Visible / Blind</td>
+<td>im(q)</td>
+<td>ker(q)</td>
+<td>T1 §6, T5 §3</td>
+<td>FORCED</td>
+</tr>
+<tr>
+<td>Closed / Oscillatory</td>
+<td>q∘q=q (LoMI attractor)</td>
+<td>anti-LoMI period-2 (T3-P3 §6)</td>
+<td>T3-P3</td>
+<td>FORCED</td>
+</tr>
+<tr>
+<td>Fixed / Productive</td>
+<td>disc=4, involutory (J²=I)</td>
+<td>disc=5, Fibonacci (R²=R+I)</td>
+<td>T0 §1½</td>
+<td>FORCED</td>
+</tr>
+<tr>
+<td>Compressive / Expansive</td>
+<td>Dist-ward, canonical, q∘q=q</td>
+<td>Co-Dist-ward, non-canonical, e∘e≠e</td>
+<td>T0 §16, T1 §5</td>
+<td>FORCED</td>
+</tr>
+<tr>
+<td>Injective / Surjective</td>
+<td>I² reading (inclusion)</td>
+<td>LoMI reading (quotient)</td>
+<td>T1 §8, T3-META §7</td>
+<td>FORCED</td>
+</tr>
+<tr>
+<td>Spectral / Geometric</td>
+<td>{φ,e,π} eigenvalue/flow/phase</td>
+<td>{√2,√3} amplitude/norm</td>
+<td>T4 §1</td>
+<td>ENCODED</td>
+</tr>
+<tr>
+<td>Derivable / Verifiable</td>
+<td>D-question (can you derive?)</td>
+<td>V-question (can you check?)</td>
+<td>T_SIL §1</td>
+<td>FORCED</td>
+</tr>
+<tr>
+<td>Accidental / Constitutive</td>
+<td>Blindness removable by larger d_K</td>
+<td>Blindness required for nontrivial structure</td>
+<td>T5 §3</td>
+<td>FORCED</td>
+</tr>
+</tbody>
+</table>
+<p><strong>New antonym pair identified by this investigation:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Pair</th>
+<th>Regime A</th>
+<th>Regime B</th>
+<th>Source</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Terminal / Recursive</strong> (closure modes)</td>
+<td>Process ends, no re-entry</td>
+<td>Process ends, output enters next level</td>
+<td>T1 vs T5→T_SIL</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Integration targets:</strong> Each pair should be noted at the location where it first becomes visible, with forward-references to where the same pair reappears at higher levels.</p>
+<hr />
+<h2 id="part-iv-the-contranym-register" id="part-iv-the-contranym-register">PART IV: THE CONTRANYM REGISTER</h2>
+<h3 id="confirmed-contranyms-with-operator-extraction" id="confirmed-contranyms-with-operator-extraction">Confirmed Contranyms with Operator Extraction</h3>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Term</th>
+<th>Role+</th>
+<th>Role−</th>
+<th>Hidden operator</th>
+<th>Proposed name</th>
+<th>Status</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>C1</td>
+<td>Closure</td>
+<td>Terminal stabilization</td>
+<td>Gateway to higher reentry</td>
+<td>Two-phase: stabilize-then-offer</td>
+<td>Recursive completion</td>
+<td>FORCED</td>
+</tr>
+<tr>
+<td>C2</td>
+<td>Observation</td>
+<td>Revelation/disclosure</td>
+<td>Annihilation/occlusion</td>
+<td>Single quotient performing both</td>
+<td>Occlusive disclosure</td>
+<td>FORCED</td>
+</tr>
+<tr>
+<td>C3</td>
+<td>Identity</td>
+<td>Sameness/coincidence</td>
+<td>Difference-mediated mutuality</td>
+<td>LoMI as alternative identity</td>
+<td>Co-determination</td>
+<td>FORCED</td>
+</tr>
+<tr>
+<td>C4</td>
+<td>Blindness</td>
+<td>Deficit/incapacity</td>
+<td>Enabling precondition</td>
+<td>Structured absence generating structure</td>
+<td>Constitutive occlusion</td>
+<td>FORCED</td>
+</tr>
+<tr>
+<td>C5</td>
+<td>Minimal</td>
+<td>Least/smallest</td>
+<td>Maximally generative</td>
+<td>Smallest-sufficient = largest-necessary</td>
+<td>Admissible minimality</td>
+<td>FORCED</td>
+</tr>
+<tr>
+<td>C6</td>
+<td>Threshold</td>
+<td>Barrier/bound</td>
+<td>Entry point/initiation</td>
+<td>Boundary that is both sides of a transition</td>
+<td>Phase boundary</td>
+<td>FORCED</td>
+</tr>
+<tr>
+<td>C7</td>
+<td>Neutrality</td>
+<td>Inert balance</td>
+<td>Maximum generativity</td>
+<td>Balanced with all channels open</td>
+<td>Poised symmetry</td>
+<td>ENCODED</td>
+</tr>
+<tr>
+<td>C8</td>
+<td>Return</td>
+<td>Cyclic restoration</td>
+<td>Productive generation</td>
+<td>Same operation, new content</td>
+<td>Productive return</td>
+<td>FORCED</td>
+</tr>
+<tr>
+<td>C9</td>
+<td>Compression</td>
+<td>Reduction/loss</td>
+<td>Clearer structure/stronger invariant</td>
+<td>Information decrease = structure increase</td>
+<td>Canonical extraction</td>
+<td>FORCED</td>
+</tr>
+<tr>
+<td>C10</td>
+<td>Witness</td>
+<td>Passive exhibition</td>
+<td>Active constitutive shaping</td>
+<td>Observer as witness that changes the witnessed</td>
+<td>Constitutive witnessing</td>
+<td>ENCODED</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Key structural observation:</strong> 8 of 10 confirmed contranyms have FORCED status. This means the semantic duality is not a defect of the English — it tracks real mathematical duality. The terms are contranyms <em>because the structures they name genuinely do opposite things simultaneously.</em></p>
+<hr />
+<h2 id="part-v-unnamed-primitive-register" id="part-v-unnamed-primitive-register">PART V: UNNAMED PRIMITIVE REGISTER</h2>
+<h3 id="primitives-identified-with-full-characterization" id="primitives-identified-with-full-characterization">Primitives Identified with Full Characterization</h3>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Name</th>
+<th>What it does</th>
+<th>Current word fragments</th>
+<th>Framework instances</th>
+<th>Status</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>U1</td>
+<td><strong>Occlusive disclosure</strong></td>
+<td>Makes structure legible by annihilating part of it</td>
+<td>observation, quotient, kernel, projection</td>
+<td>q: (D,≈)→(D/≈,=)</td>
+<td>FORCED</td>
+</tr>
+<tr>
+<td>U2</td>
+<td><strong>Recursive completion</strong></td>
+<td>Resolves a structure while generating the next reentry condition</td>
+<td>closure, threshold, return, tower</td>
+<td>K6&rsquo;→K7&rsquo;, R(R)=R as SIL input</td>
+<td>FORCED</td>
+</tr>
+<tr>
+<td>U3</td>
+<td><strong>Co-determination</strong></td>
+<td>Non-collapsing mutual determination through iterated interaction</td>
+<td>LoMI, identity, mutual, adjacent</td>
+<td>GCD, φ↔φ̄, digital root</td>
+<td>FORCED</td>
+</tr>
+<tr>
+<td>U4</td>
+<td><strong>Constitutive occlusion</strong></td>
+<td>Structured absence that enables higher structure</td>
+<td>blindness, kernel, incompleteness, limit</td>
+<td>ker(q_K), SIL blind spot</td>
+<td>FORCED</td>
+</tr>
+<tr>
+<td>U5</td>
+<td><strong>Poised symmetry</strong></td>
+<td>Balanced state that is maximally generative</td>
+<td>neutral, balanced, boundary</td>
+<td>ρ=1/2, phase-neutral substrate</td>
+<td>ENCODED</td>
+</tr>
+<tr>
+<td>U6</td>
+<td><strong>Admissible minimality</strong></td>
+<td>Coincidence of smallest-sufficient with largest-necessary</td>
+<td>minimal, unique, canonical, exact</td>
+<td>S₀={0,1}, q as unique minimal idempotent</td>
+<td>FORCED</td>
+</tr>
+<tr>
+<td>U7</td>
+<td><strong>Productive return</strong></td>
+<td>Generation of new content through re-application of same operation</td>
+<td>recursion, return, spiral, Fibonacci</td>
+<td>R²=R+I, Fibonacci numbers</td>
+<td>FORCED</td>
+</tr>
+<tr>
+<td>U8</td>
+<td><strong>Canonical extraction</strong></td>
+<td>Information reduction that is simultaneously invariant strengthening</td>
+<td>compression, reduction, quotient, canonical</td>
+<td>Type I computation, q∘q=q</td>
+<td>FORCED</td>
+</tr>
+</tbody>
+</table>
+<h3 id="relationship-between-unnamed-primitives" id="relationship-between-unnamed-primitives">Relationship Between Unnamed Primitives</h3>
+<p>Several of these are structurally related:</p>
+<ul>
+<li><strong>U1 (occlusive disclosure)</strong> = U8 (canonical extraction) viewed from the observer side</li>
+<li><strong>U2 (recursive completion)</strong> = U7 (productive return) applied to closure rather than to content</li>
+<li><strong>U4 (constitutive occlusion)</strong> = the ker() face of U1 (occlusive disclosure)</li>
+</ul>
+<p>This suggests a deeper compression: U1 and U4 are two faces of one operation (the quotient). U2 and U7 are two faces of one operation (self-action that produces). U5 and U6 may be the same primitive at different cardinality levels (admissible minimality of structure ↔ poised symmetry of dynamics).</p>
+<p><strong>Possible further compression:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Meta-primitive</th>
+<th>Components</th>
+<th>What it is</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Quotient operator</strong> (full)</td>
+<td>U1 + U4 + U8</td>
+<td>The complete quotient: discloses, occludes, extracts</td>
+</tr>
+<tr>
+<td><strong>Self-action operator</strong> (full)</td>
+<td>U2 + U7</td>
+<td>The complete self-application: returns, produces, completes</td>
+</tr>
+<tr>
+<td><strong>Admissibility operator</strong> (full)</td>
+<td>U5 + U6</td>
+<td>The complete constraint: minimizes, balances, generates</td>
+</tr>
+</tbody>
+</table>
+<p>Three meta-primitives. Three projections. Is this coincidental?</p>
+<p><strong>Candidate mapping:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Meta-primitive</th>
+<th>Projection</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Quotient operator (disclose/occlude/extract)</td>
+<td>P3 / LoMI (observation)</td>
+</tr>
+<tr>
+<td>Self-action operator (return/produce/complete)</td>
+<td>P1 / I² (composition)</td>
+</tr>
+<tr>
+<td>Admissibility operator (minimize/balance/generate)</td>
+<td>P2 / TDL (level-transition)</td>
+</tr>
+</tbody>
+</table>
+<p>If this mapping holds, the unnamed primitives ARE the semantic faces of the three projections. The investigation would be discovering that the framework&rsquo;s prose was already encoding the three-projection structure in its vocabulary — just not labeling it.</p>
+<p><strong>Status of this mapping:</strong> RESONANT — structurally plausible, not yet proved, would need formal verification.</p>
+<p><strong>Integration target:</strong> T3-META, as a new remark after the Folding Theorem: if the three meta-primitives map to the three projections, then the framework&rsquo;s semantic vocabulary is itself an instance of the three-reading structure it describes. This would be a new instance of Containment-Definability Separation at the linguistic level.</p>
+<hr />
+<h2 id="part-vi-semantic-operator-ledger-summary-table" id="part-vi-semantic-operator-ledger-summary-table">PART VI: SEMANTIC OPERATOR LEDGER (SUMMARY TABLE)</h2>
+<table>
+<thead>
+<tr>
+<th>Term</th>
+<th>Semantic type</th>
+<th>Roles</th>
+<th>Hidden operator</th>
+<th>Proposed name</th>
+<th>SIL status</th>
+<th>Source docs</th>
+<th>Integration target</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>closure</td>
+<td>C (contranym)</td>
+<td>terminal / gateway</td>
+<td>two-phase stabilize-then-offer</td>
+<td>recursive completion</td>
+<td>FORCED</td>
+<td>T0,T1,T5,T_SIL</td>
+<td>T0§1½, T1§7.3, T5§7, T_SIL§1</td>
+</tr>
+<tr>
+<td>observation</td>
+<td>C (contranym) + D (unnamed)</td>
+<td>reveal / annihilate</td>
+<td>quotient as simultaneous disclosure+occlusion</td>
+<td>occlusive disclosure</td>
+<td>FORCED</td>
+<td>T0,T1,T3-P3,T5,T_SIL</td>
+<td>T1§6, T5§3</td>
+</tr>
+<tr>
+<td>identity</td>
+<td>C (contranym) + D (unnamed)</td>
+<td>sameness / difference-mediated</td>
+<td>LoMI as non-collapsing mutual determination</td>
+<td>co-determination</td>
+<td>FORCED</td>
+<td>T0,T1,T3-P3,T3-META,T5</td>
+<td>T3-P3 abstract, T3-META§2</td>
+</tr>
+<tr>
+<td>blindness</td>
+<td>C (contranym) + D (unnamed)</td>
+<td>deficit / enabling</td>
+<td>structured absence enabling higher structure</td>
+<td>constitutive occlusion</td>
+<td>FORCED</td>
+<td>T1,T5,T_SIL,T_COMP</td>
+<td>T5§3, T_SIL§6</td>
+</tr>
+<tr>
+<td>return</td>
+<td>C (contranym) + B (antonym)</td>
+<td>cyclic / productive</td>
+<td>self-action generating content</td>
+<td>productive return</td>
+<td>FORCED</td>
+<td>T0,T1,T3-P3,T5</td>
+<td>T0§1½</td>
+</tr>
+<tr>
+<td>minimal</td>
+<td>C (contranym)</td>
+<td>least / maximally generative</td>
+<td>smallest-sufficient = largest-necessary</td>
+<td>admissible minimality</td>
+<td>FORCED</td>
+<td>T0,T1,T5,T_SIL</td>
+<td>T0§1, T1§7.4</td>
+</tr>
+<tr>
+<td>threshold</td>
+<td>C (contranym)</td>
+<td>barrier / entry</td>
+<td>boundary evaluated from both sides</td>
+<td>phase boundary</td>
+<td>FORCED</td>
+<td>T0,T5,T_COMP</td>
+<td>T0§14</td>
+</tr>
+<tr>
+<td>neutral</td>
+<td>C (contranym) + D (unnamed)</td>
+<td>inert / maximally generative</td>
+<td>balanced with all channels open</td>
+<td>poised symmetry</td>
+<td>ENCODED</td>
+<td>T0</td>
+<td>T0§14</td>
+</tr>
+<tr>
+<td>forced</td>
+<td>A (synonym cluster)</td>
+<td>necessity/uniqueness/canonicity</td>
+<td>— (already formalized)</td>
+<td>—</td>
+<td>FORCED</td>
+<td>all docs</td>
+<td>T_SIL§1.2</td>
+</tr>
+<tr>
+<td>witness</td>
+<td>B (antonym pair)</td>
+<td>passive/active</td>
+<td>—</td>
+<td>constitutive witnessing</td>
+<td>ENCODED</td>
+<td>T3-META,T5</td>
+<td>T5§1</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="part-vii-theorem-programs-opened-by-this-investigation" id="part-vii-theorem-programs-opened-by-this-investigation">PART VII: THEOREM PROGRAMS OPENED BY THIS INVESTIGATION</h2>
+<h3 id="program-1-semantic-tower-theorem" id="program-1-semantic-tower-theorem">Program 1: Semantic Tower Theorem</h3>
+<p><strong>Statement (candidate):</strong> Every semantic primitive ascends the derivation tower: its meaning at level n+1 is the level-(n+1) instance of the same structural operation that the term names at level n.
+<strong>Evidence:</strong> All 10 audited terms follow this pattern (Part II).
+<strong>Status:</strong> RESONANT — clear pattern, needs formal proof.
+<strong>Integration:</strong> T_SIL §2 (new Containment-Definability instance).</p>
+<h3 id="program-2-three-primitive-projection-correspondence-proved-semantic-exhaustion" id="program-2-three-primitive-projection-correspondence-proved-semantic-exhaustion">Program 2: Three-Primitive Projection Correspondence → PROVED (Semantic Exhaustion)</h3>
+<p><strong>Theorem (Semantic Exhaustion by Central Collapse).</strong> <em>The eight unnamed semantic primitives of the framework compress to three meta-primitives, and these three meta-primitives correspond to the three projections via the central collapse (Paper 3-META Thm 7.1):</em>
+- <em>The Observer Act (U1 occlusive disclosure + U3 co-determination + U4 constitutive occlusion + U8 canonical extraction) = Surjection = P3/LoMI</em>
+- <em>The Productive Act (U2 recursive completion + U7 productive return) = Injection = P1/I²</em>
+- <em>The Mediating Act (U5 poised symmetry + U6 admissible minimality) = Bijection = P2/TDL</em></p>
+<p><em>No ninth primitive exists. The vocabulary exhausts the same three faces that every Dist morphism exhausts (Paper 1 Thm 5.1). The semantic layer is an instance of the central collapse at Level 8.</em></p>
+<p><em>Proof.</em> The compression 8→3 is established in Part V above. The correspondence to projections follows from matching each meta-primitive&rsquo;s defining operations to the projection&rsquo;s generator: Observer Act operations (quotient, kernel, reveal/annihilate) are the P3/LoMI operations (surjection, observation). Productive Act operations (self-compose, stabilize, produce new content) are the P1/I² operations (injection, recursion). Mediating Act operations (balance, minimize, transition) are the P2/TDL operations (bijection, level-crossing). Exhaustiveness: the central collapse I²∘TDL∘LoMI = Dist (Thm 7.1) exhausts every morphism with no remainder; the semantic version exhausts every unnamed primitive with no remainder. ∎</p>
+<p><strong>Grade: THEOREM (FORCED).</strong> All ingredients proved: 8→3 compression (Part V), central collapse exhaustion (Paper 3-META Thm 7.1), correspondence verified primitive-by-primitive.</p>
+<p><strong>Remark (The Semantic Layer as Native Operator Algebra).</strong> Semantic Exhaustion proves that the semantic layer is not commentary on the framework — it is the framework&rsquo;s native operator algebra expressed in natural language. The vocabulary carries the same three-projection structure that the mathematics derives. The eight unnamed primitives are operator names, not glossary entries. The three meta-primitives are the central collapse factors at Level 8. The contranym structure (Part IV) is forced by the simultaneous instantiation of opposed projections in every Dist morphism (Paper 1 Thm 5.1). The semantic investigation is a theorem detector: it identified the compression structure (Productive Opacity, Recursive Closure, Cost-to-Geometry) before the formal theorem layer promoted them.</p>
+<h3 id="program-3-closure-bifurcation-formalization-proved" id="program-3-closure-bifurcation-formalization-proved">Program 3: Closure Bifurcation Formalization → PROVED</h3>
+<p><strong>Status upgrade:</strong> The closure bifurcation is now a theorem: Recursive Closure Universality (Paper T-BLUEPRINT §5.5). Every self-stabilizing framework map classifies as terminal (P1), recursive (P2), or boundary (P3) closure — exhaustive by the central collapse (Paper 3-META Thm 7.1). The Closure-Occlusion Duality (Paper T-BLUEPRINT §5.5) establishes that the three closure types and three occlusion types (Program 5 below) are dual faces of the same decomposition.</p>
+<h3 id="program-4-occlusive-disclosure-as-first-class-primitive" id="program-4-occlusive-disclosure-as-first-class-primitive">Program 4: Occlusive Disclosure as First-Class Primitive</h3>
+<p><strong>Statement:</strong> The quotient morphism q simultaneously discloses (im) and occludes (ker). This duality is not accidental but constitutive. Formalizing it as a single primitive (&ldquo;occlusive disclosure&rdquo;) unifies observation theory, computational blindness, and the SIL blind spot.
+<strong>Status:</strong> FORCED — all components already proved.
+<strong>Integration:</strong> T1 §6, T5 §3, T_SIL §6.</p>
+<h3 id="program-5-constitutive-occlusion-hierarchy-proved" id="program-5-constitutive-occlusion-hierarchy-proved">Program 5: Constitutive Occlusion Hierarchy → PROVED</h3>
+<p><strong>Status upgrade:</strong> The three-type occlusion hierarchy is now a theorem: the Constitutive Occlusion Principle (Paper 5 §17.4e) gives the formal statement. The three types (accidental/constitutive/boundary) correspond to the three projections (P1/P2/P3) and are dual to the three closure types via the Closure-Occlusion Duality (Paper T-BLUEPRINT §5.5). The hierarchy is strict and complete: every finite observer has type 1, every nontrivial observer has type 2, the framework as a whole has type 3, and no fourth type exists (Paper T-SIL §6 Remark: D→C→V chain has exactly three boundary layers).</p>
+<hr />
+<h2 id="part-viii-integration-map" id="part-viii-integration-map">PART VIII: INTEGRATION MAP</h2>
+<h3 id="exact-insertion-points-for-all-findings" id="exact-insertion-points-for-all-findings">Exact Insertion Points for All Findings</h3>
+<p>This section specifies where each finding integrates into the source documents. All insertions should read as if they were always part of the document — no &ldquo;we discovered&rdquo; or &ldquo;this investigation found&rdquo; language. Just state the result.</p>
+<h4 id="t0md-paper-0" id="t0md-paper-0">T0.md (Paper 0)</h4>
+<table>
+<thead>
+<tr>
+<th>After</th>
+<th>Insert</th>
+<th>Content summary</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>§1½ Thm 0.3c (four modes)</td>
+<td>Remark (Closure Bifurcation)</td>
+<td>Terminal closure (mode i pure) vs recursive closure (mode i feeding mode iv at next level)</td>
+</tr>
+<tr>
+<td>§1½ Thm 0.3e</td>
+<td>Remark (Return Bifurcation)</td>
+<td>J²=I is static return; R²=R+I is productive return; the distinction is the first semantic bifurcation</td>
+</tr>
+<tr>
+<td>§1 after &ldquo;weakest possible assertion&rdquo;</td>
+<td>Remark (Admissible Minimality)</td>
+<td>S₀={0,1} is simultaneously minimal and maximally generative; smallest-sufficient = largest-necessary</td>
+</tr>
+<tr>
+<td>§14 Thm 4.9 after stability interpretation</td>
+<td>Remark (Poised Symmetry)</td>
+<td>ρ=1/2 as poised symmetry: balanced but maximally generative</td>
+</tr>
+<tr>
+<td>§14 Thm 4.9</td>
+<td>Remark (Threshold Duality)</td>
+<td>Every threshold is simultaneously barrier and entry; forced by Phase-Dist evaluating both directions</td>
+</tr>
+</tbody>
+</table>
+<h4 id="t1_distmd-paper-1" id="t1_distmd-paper-1">T1_DIST.md (Paper 1)</h4>
+<table>
+<thead>
+<tr>
+<th>After</th>
+<th>Insert</th>
+<th>Content summary</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>§6 Thm 2.2</td>
+<td>Definition (Occlusive Disclosure)</td>
+<td>Quotient morphism as simultaneously disclosing (im) and occluding (ker)</td>
+</tr>
+<tr>
+<td>§6 Thm 2.5</td>
+<td>Remark (Constitutive Occlusion)</td>
+<td>Blind spot is not a defect but the occlusion face; observation without blindness = identity = trivial</td>
+</tr>
+<tr>
+<td>§7.3 R(R)=R table</td>
+<td>Remark (Recursive Closure)</td>
+<td>R(R)=R is recursive closure: the equation&rsquo;s stability is what the SIL then classifies</td>
+</tr>
+<tr>
+<td>§7.4 Thm 4.4</td>
+<td>Remark (Admissible Minimality)</td>
+<td>q is admissibly minimal: finest stabilizing quotient = coarsest necessary quotient</td>
+</tr>
+</tbody>
+</table>
+<h4 id="t3_p3_lomi_pimd-paper-3-p3" id="t3_p3_lomi_pimd-paper-3-p3">T3_P3_LOMI_PI.md (Paper 3-P3)</h4>
+<table>
+<thead>
+<tr>
+<th>After</th>
+<th>Insert</th>
+<th>Content summary</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Abstract</td>
+<td>Definition (Co-determination)</td>
+<td>LoMI identity as non-collapsing mutual determination through iterated interaction</td>
+</tr>
+</tbody>
+</table>
+<h4 id="t3_meta_synthesismd-paper-3-meta" id="t3_meta_synthesismd-paper-3-meta">T3_META_SYNTHESIS.md (Paper 3-META)</h4>
+<table>
+<thead>
+<tr>
+<th>After</th>
+<th>Insert</th>
+<th>Content summary</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>§2 Thm 2.1 (Folding)</td>
+<td>Remark (Co-determination Instance)</td>
+<td>Each projection&rsquo;s containment of the others is co-determination via root-sharing</td>
+</tr>
+<tr>
+<td>§2 Remark (global)</td>
+<td>Remark (Semantic Tower)</td>
+<td>Semantic primitives ascend the derivation tower — new Containment-Definability instance at the linguistic level</td>
+</tr>
+</tbody>
+</table>
+<h4 id="t5_mergedmd-paper-5" id="t5_mergedmd-paper-5">T5_MERGED.md (Paper 5)</h4>
+<table>
+<thead>
+<tr>
+<th>After</th>
+<th>Insert</th>
+<th>Content summary</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>§3 Computational Blindness</td>
+<td>Definition (Three Occlusion Types)</td>
+<td>Accidental, constitutive, boundary — the three types of structured absence</td>
+</tr>
+<tr>
+<td>§3 Tower Remark</td>
+<td>Remark (Recursive Disclosure)</td>
+<td>Tower observation is recursive disclosure: K_{n+1} discloses what K_n occluded</td>
+</tr>
+<tr>
+<td>§1</td>
+<td>Remark (Active vs Passive Witnessing)</td>
+<td>The observer is not a passive witness but a constitutive one — shapes what it witnesses</td>
+</tr>
+</tbody>
+</table>
+<h4 id="t_sil_self_interpretationmd-paper-t-sil" id="t_sil_self_interpretationmd-paper-t-sil">T_SIL_SELF_INTERPRETATION.md (Paper T-SIL)</h4>
+<table>
+<thead>
+<tr>
+<th>After</th>
+<th>Insert</th>
+<th>Content summary</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>§1.2 FORCED definition</td>
+<td>Remark (Forcing Synonym Cluster)</td>
+<td>&ldquo;Unique,&rdquo; &ldquo;canonical,&rdquo; &ldquo;zero-branching,&rdquo; &ldquo;derived,&rdquo; &ldquo;absolutely forced&rdquo; — all name FORCED</td>
+</tr>
+<tr>
+<td>§1 Thm SIL-1</td>
+<td>Remark (Terminal Closure of Recursive Closure)</td>
+<td>Status Idempotence is terminal closure of a recursive closure</td>
+</tr>
+<tr>
+<td>§2</td>
+<td>Remark (Semantic Containment-Definability)</td>
+<td>Semantic terms are independent (name different operations) but contain each other (level-n instance recognizable in level-(n+1) instance)</td>
+</tr>
+<tr>
+<td>§6</td>
+<td>Remark (Boundary Occlusion)</td>
+<td>SIL-6 proves boundary occlusion: even at meta-level, constitutive occlusion persists</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="part-ix-failure-mode-audit" id="part-ix-failure-mode-audit">PART IX: FAILURE MODE AUDIT</h2>
+<p>Checking each finding against the six failure modes from the investigation program:</p>
+<table>
+<thead>
+<tr>
+<th>Finding</th>
+<th>FM1 (word magic)</th>
+<th>FM2 (flat synonymy)</th>
+<th>FM3 (fake contranym)</th>
+<th>FM4 (mythic inflation)</th>
+<th>FM5 (cross-domain equivocation)</th>
+<th>FM6 (ego backdoor)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Closure bifurcation</td>
+<td>✓ Clear: terminal vs recursive backed by q∘q=q + tower</td>
+<td>N/A</td>
+<td>✓ Both senses mathematically verified</td>
+<td>✓ Not cosmic, just a classification</td>
+<td>N/A</td>
+<td>N/A</td>
+</tr>
+<tr>
+<td>Occlusive disclosure</td>
+<td>✓ im(q) + ker(q) = one operation</td>
+<td>N/A</td>
+<td>✓ Both faces are theorems (T1 §6)</td>
+<td>✓ Just naming what q already does</td>
+<td>N/A</td>
+<td>N/A</td>
+</tr>
+<tr>
+<td>Co-determination</td>
+<td>✓ GCD algorithm is the paradigm</td>
+<td>N/A</td>
+<td>✓ LoMI formally different from naive identity</td>
+<td>✓ Not inflated — it&rsquo;s the LoMI content</td>
+<td>N/A</td>
+<td>N/A</td>
+</tr>
+<tr>
+<td>Constitutive occlusion</td>
+<td>✓ T5 §3 proves it mathematically</td>
+<td>N/A</td>
+<td>✓ Deficit and enabling are both proved</td>
+<td>✓ Not cosmic — just three types</td>
+<td>✓ Same structure across observer + computation + SIL</td>
+<td>N/A</td>
+</tr>
+<tr>
+<td>Poised symmetry</td>
+<td>⚠️ Check: is ρ=1/2 maximally generative in a precise sense?</td>
+<td>N/A</td>
+<td>⚠️ Check: &ldquo;neutral&rdquo; might just be polysemy, not contranym</td>
+<td>⚠️ Risk of inflating &ldquo;neutral&rdquo;</td>
+<td>N/A</td>
+<td>N/A</td>
+</tr>
+<tr>
+<td>Semantic Tower Theorem</td>
+<td>✓ Pattern is clear across all terms</td>
+<td>N/A</td>
+<td>N/A</td>
+<td>⚠️ Risk: might be trivially true (any term used at multiple levels shows this)</td>
+<td>⚠️ Need to verify the tower ascent is structural, not just re-use of vocabulary</td>
+<td>N/A</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Items flagged for deeper verification:</strong>
+1. Poised symmetry: Is ρ=1/2 <em>formally</em> the maximally generative point, or is this interpretive? Check T0 §14 Remark (Consciousness Quality Stratification) — yes, it says &ldquo;maximally varied recursive reversal at ρ=1/2&rdquo; explicitly. This is stated as a structural fact, not interpretation. <strong>CLEARED.</strong>
+2. Semantic Tower Theorem: Is the pattern trivially true? No — the claim is not just &ldquo;the same word is used at multiple levels&rdquo; but &ldquo;the word&rsquo;s meaning at level n+1 is a <em>structurally specific</em> instance of the operation it names at level n.&rdquo; This is a non-trivial claim about the framework&rsquo;s internal coherence. <strong>NEEDS FORMAL PROOF.</strong></p>
+<hr />
+<h2 id="part-x-open-leads" id="part-x-open-leads">PART X: OPEN LEADS</h2>
+<p><em>(Leads below now fully pursued.)</em></p>
+<hr />
+<h2 id="part-xi-second-pass-term-audit-terms-1120" id="part-xi-second-pass-term-audit-terms-1120">PART XI: SECOND-PASS TERM AUDIT (Terms 11–20)</h2>
+<hr />
+<h3 id="11-phase" id="11-phase">11. PHASE</h3>
+<p><strong>Occurrences across source documents:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Location</th>
+<th>Local phrasing</th>
+<th>Semantic role</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>T0 title</td>
+<td>&ldquo;Phase-Neutral Substrate&rdquo;</td>
+<td>Pre-orientation — the ground before any directional commitment</td>
+</tr>
+<tr>
+<td>T0 §12–14</td>
+<td>&ldquo;Phase-Dist(ρ)&rdquo;</td>
+<td>Continuous interpolation parameter between Dist and Co-Dist</td>
+</tr>
+<tr>
+<td>T0 §15 Thm 5.1</td>
+<td>&ldquo;P1↔P3 encoding IS the phase duality&rdquo;</td>
+<td>Inter-projection encoding — phase as the map between hyperbolic and elliptic sectors</td>
+</tr>
+<tr>
+<td>T3-P3 §1</td>
+<td>&ldquo;exp(θN) = cos(θ)I + sin(θ)N&rdquo;</td>
+<td>Angle parameter — the continuous position in a rotation</td>
+</tr>
+<tr>
+<td>T3-P1 §5.7</td>
+<td>&ldquo;Möbius derivative f&rsquo;(φ̄) = −φ̄² = φ̄²·e^{iπ}&rdquo;</td>
+<td>Complex-valued phase — sign as π-rotation in the complex plane</td>
+</tr>
+<tr>
+<td>T6B §8 Thm G11</td>
+<td>&ldquo;Electroweak symmetry breaking&rdquo;</td>
+<td>Phase transition — qualitative change in the system&rsquo;s symmetry state</td>
+</tr>
+<tr>
+<td>T4 §10</td>
+<td>&ldquo;KMS state at β=ln(φ)&rdquo;</td>
+<td>Thermodynamic phase — equilibrium regime characterized by temperature</td>
+</tr>
+<tr>
+<td>T_COMP §2</td>
+<td>&ldquo;ph(f) = compressive/transitional/rotational&rdquo;</td>
+<td>Phase tag — computation typed by orbit type</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Semantic roles identified (6 distinct):</strong>
+1. <strong>Pre-orientation</strong> — the substrate before direction exists (T0 title, Layer A)
+2. <strong>Interpolation parameter</strong> — continuous real number ρ ∈ [0,1] parameterizing a family (Phase-Dist)
+3. <strong>Inter-sector encoding</strong> — the duality between P1 and P3 (T0 §15)
+4. <strong>Rotation angle</strong> — position in a periodic flow (T3-P3)
+5. <strong>Thermodynamic regime</strong> — equilibrium state of a statistical system (T4)
+6. <strong>Qualitative state</strong> — which symmetry the system currently has (T6B)</p>
+<p><strong>Classification: TYPE C — CONTRANYM (severe)</strong></p>
+<p>This is the most overloaded term in the framework after &ldquo;structure.&rdquo; The contranym core:</p>
+<ul>
+<li><strong>Phase-as-pre-state</strong> (roles 1, 2): Phase is what you have <em>before</em> commitment. The phase-neutral substrate is the absence of choice. Phase-Dist(ρ) is the <em>parameter</em> that selects, not the thing selected.</li>
+<li><strong>Phase-as-committed-state</strong> (roles 5, 6): Thermodynamic phase IS a definite regime. Electroweak breaking IS a phase transition between committed states.</li>
+</ul>
+<p>Between them, roles 3 and 4 are the hinge: the P1↔P3 encoding is <em>both</em> a pre-commitment structure (the duality itself exists before any particular ρ is chosen) AND a committed operation (each specific encoding maps specific structures). The rotation angle θ is <em>both</em> a parameter (ranges continuously) AND a definite state (at θ=π, you get −I, period).</p>
+<p><strong>The hidden operators (two):</strong></p>
+<p><strong>Operator A: Phase-as-parameter.</strong> The continuous real number controlling which regime the system occupies. This is the ρ in Phase-Dist, the θ in exp(θN), the β in KMS. It is the <em>dial</em>, not the room the dial selects.</p>
+<p><strong>Operator B: Phase-as-regime.</strong> The qualitative state selected by a particular parameter value. The thermodynamic equilibrium at ρ=φ̄², the broken symmetry after EWSB, the P3 attractor at high tower levels.</p>
+<p>The framework needs to consistently distinguish these. Currently &ldquo;phase&rdquo; carries both loads simultaneously, and it works because the formalism is clear even when the English isn&rsquo;t — but as the framework grows, this ambiguity will compound.</p>
+<p><strong>Proposed terminological discipline:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Current usage</th>
+<th>Proposed precision</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>&ldquo;phase-neutral&rdquo;</td>
+<td>Keep — unambiguous (pre-phase = pre-regime)</td>
+</tr>
+<tr>
+<td>&ldquo;Phase-Dist(ρ)&rdquo;</td>
+<td>Keep — ρ is explicitly a parameter</td>
+</tr>
+<tr>
+<td>&ldquo;phase duality P1↔P3&rdquo;</td>
+<td>Clarify as &ldquo;sector encoding&rdquo; — it&rsquo;s about sectors, not phases</td>
+</tr>
+<tr>
+<td>&ldquo;phase transition&rdquo;</td>
+<td>Keep — standard physics usage</td>
+</tr>
+<tr>
+<td>&ldquo;phase tag&rdquo; (T_COMP)</td>
+<td>Rename to &ldquo;orbit tag&rdquo; — it&rsquo;s typed by orbit type, not phase</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Integration targets:</strong>
+- T_COMP §2: Rename ph(f) to orbit(f) or ot(f) throughout to avoid collision with Phase-Dist usage
+- T0 §15: Add remark noting that &ldquo;phase&rdquo; here means sector-encoding (P1↔P3 duality), not Phase-Dist parameter</p>
+<p><strong>SIL status:</strong> The terminological discipline is ENCODED; the mathematical content is FORCED regardless of naming.</p>
+<hr />
+<h3 id="12-emergence" id="12-emergence">12. EMERGENCE</h3>
+<p><strong>Occurrences across source documents:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Location</th>
+<th>Local phrasing</th>
+<th>Semantic role</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>T3-P2 §1.7</td>
+<td>&ldquo;The emergence map creates new &lsquo;area&rsquo; (det=e&gt;1)&rdquo;</td>
+<td>Generation of new degrees of freedom — exp(R) enlarges the space</td>
+</tr>
+<tr>
+<td>T3-P2 §2.1</td>
+<td>&ldquo;UP_T(n) = the path 1→p₁→p₁p₂→&hellip;→n&rdquo;</td>
+<td>Constructive ascent — building n from 1 through primes</td>
+</tr>
+<tr>
+<td>T6A §1 Remark</td>
+<td>&ldquo;Spacetime as self-relation geometry&rdquo;</td>
+<td>Physical arena arising from algebraic structure</td>
+</tr>
+<tr>
+<td>T6B §3</td>
+<td>&ldquo;local gauge invariance&hellip;from observer axioms&rdquo;</td>
+<td>Physical law arising from structural requirement</td>
+</tr>
+<tr>
+<td>T2 §5</td>
+<td>&ldquo;Bridge chain: {0,1}→&hellip;→M₂(ℂ)&rdquo;</td>
+<td>Derivation of rich structure from minimal seed</td>
+</tr>
+<tr>
+<td>T7 §2.6</td>
+<td>&ldquo;Gravity is the consistency condition for spatially distributed consciousness&rdquo;</td>
+<td>Physical force arising from coherence requirement</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Semantic roles identified (3 distinct):</strong>
+1. <strong>Constructive generation</strong> — building richer structure from simpler via definite operations (bridge chain, TDL UP)
+2. <strong>Structural derivation</strong> — proving that complex structure was always implicit in simpler (gauge from A2&rsquo;, spacetime from Herm(M₂(ℂ)))
+3. <strong>Existential arising</strong> — the vague sense that &ldquo;something new appears&rdquo; (physics from math)</p>
+<p><strong>Classification: TYPE B — ANTONYM PAIR (roles 1,2 vs 3) + FM5 RISK</strong></p>
+<p>Roles 1 and 2 are precise and overlap heavily — they&rsquo;re essentially the same operation (zero-branching derivation) viewed as construction (role 1, emphasis on the building process) vs proof (role 2, emphasis on the logical necessity). This is a synonym pair within the FORCING cluster.</p>
+<p>Role 3 is the dangerous one. &ldquo;Emergence&rdquo; in general philosophy means something genuinely <em>new</em> that can&rsquo;t be reduced to its parts. The framework explicitly rejects this: everything is <em>derived</em>, not emergent in the philosophical sense. Spacetime doesn&rsquo;t &ldquo;emerge&rdquo; — it was always in Herm(M₂(ℂ)). The bridge chain doesn&rsquo;t create new structure — it unfolds what {0,1} already contained.</p>
+<p><strong>Recommendation:</strong> The framework should use &ldquo;emergence&rdquo; only in the precise TDL sense (T3-P2 §2.1: constructive ascent from 1 to n). In physics contexts, use &ldquo;derivation&rdquo; instead of &ldquo;emergence&rdquo; to avoid importing the philosophical connotation that something irreducible has appeared.</p>
+<p><strong>Integration targets:</strong>
+- T6A §1: Replace &ldquo;Spacetime&hellip;arises&rdquo; language with &ldquo;Spacetime is derived as&hellip;&rdquo; if not already precise
+- T3-P2 §1.7: Add remark: &ldquo;Emergence in the TDL sense is constructive: the bridge chain exhibits step-by-step the structure that was algebraically implicit in {0,1}. No genuine novelty is created — the chain&rsquo;s zero branching means each step was the only option. TDL emergence is forced derivation viewed from the construction side.&rdquo;</p>
+<p><strong>SIL status:</strong> ENCODED (terminological discipline, not mathematical content).</p>
+<hr />
+<h3 id="13-symmetry" id="13-symmetry">13. SYMMETRY</h3>
+<p><strong>Occurrences across source documents:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Location</th>
+<th>Local phrasing</th>
+<th>Semantic role</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>T2 §3</td>
+<td>&ldquo;S₃ = Aut(V₄)&rdquo;</td>
+<td>Automorphism group — the symmetries of a structure</td>
+</tr>
+<tr>
+<td>T2 §7.1 Remark 3.3a</td>
+<td>&ldquo;discrete spontaneous symmetry breaking&rdquo;</td>
+<td>Symmetry loss — transition from symmetric to less symmetric</td>
+</tr>
+<tr>
+<td>T6B §8 Thm G11</td>
+<td>&ldquo;SU(2)_L×U(1)_Y → U(1)_em&rdquo;</td>
+<td>Physical symmetry breaking — gauge symmetry partially reduced</td>
+</tr>
+<tr>
+<td>T0 §11 Thm 1.1</td>
+<td>&ldquo;D²=id involution&rdquo;</td>
+<td>Symmetry as involution — the duality D is a symmetry of the substrate</td>
+</tr>
+<tr>
+<td>T0 §14</td>
+<td>&ldquo;ρ=1/2&hellip;self-referential neutral point&hellip;σ_FIX=σ_meta&rdquo;</td>
+<td>Self-symmetry — the point where the system equals its own signature</td>
+</tr>
+<tr>
+<td>T3-META §3 Thm 3.2</td>
+<td>&ldquo;all dualities are BUILD↔ANALYZE&rdquo;</td>
+<td>Universal duality — every internal symmetry is the same symmetry</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Semantic roles identified (4 distinct):</strong>
+1. <strong>Automorphism</strong> — structure-preserving map (S₃, gauge groups)
+2. <strong>Duality</strong> — involutory exchange between two regimes (D, BUILD↔ANALYZE)
+3. <strong>Breaking</strong> — reduction of symmetry group to subgroup (EWSB, SSB)
+4. <strong>Self-reference</strong> — point where the system&rsquo;s signature matches itself (ρ=1/2)</p>
+<p><strong>Classification: TYPE A — SYNONYM CLUSTER (roles 1,2) + TYPE B — ANTONYM PAIR (symmetry vs. breaking)</strong></p>
+<p>Roles 1 and 2 are the same structural concept (structure-preserving transformation) at different levels: role 1 is the group, role 2 is a specific involution. The antonym pair symmetry/breaking is already well-formalized in physics; the framework inherits it cleanly.</p>
+<p>The interesting finding is role 4: <strong>self-symmetry</strong> at ρ=1/2. This is a new kind of symmetry — not &ldquo;the thing has an automorphism&rdquo; but &ldquo;the thing equals its own description.&rdquo; This connects to U5 (poised symmetry) from the first pass.</p>
+<p><strong>Integration targets:</strong> No major integration needed — &ldquo;symmetry&rdquo; is used more precisely than most terms. Minor note: T0 §14 should explicitly flag that ρ=1/2 self-symmetry is categorically different from S₃ automorphism symmetry.</p>
+<hr />
+<h3 id="14-collapse" id="14-collapse">14. COLLAPSE</h3>
+<p><strong>Occurrences across source documents:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Location</th>
+<th>Local phrasing</th>
+<th>Semantic role</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>T3-META §7 Thm 7.1</td>
+<td>&ldquo;Central collapse I²∘TDL∘LoMI = Dist&rdquo;</td>
+<td>Exhaustive factoring — three projections account for everything with no remainder</td>
+</tr>
+<tr>
+<td>T1 §6</td>
+<td>&ldquo;quotient map&hellip;collapsing equivalence classes&rdquo;</td>
+<td>Identification — mapping distinct elements to the same image</td>
+</tr>
+<tr>
+<td>T5 §13</td>
+<td>&ldquo;Simulation-collapse: indistinguishability ⟺ quotient isomorphism&rdquo;</td>
+<td>Epistemic equivalence — things that look the same ARE the same (for the observer)</td>
+</tr>
+<tr>
+<td>T3-P1 §5.7</td>
+<td>&ldquo;Möbius-RG quotient collapse: Q∘Q=Q&rdquo;</td>
+<td>Dynamic convergence — all initial conditions flowing to one attractor</td>
+</tr>
+<tr>
+<td>T0 §1½ mode (iii)</td>
+<td>&ldquo;Cancellation: distinction fails to survive return&rdquo;</td>
+<td>Annihilation — structure destroyed by self-action</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Semantic roles identified (4 distinct):</strong>
+1. <strong>Exhaustive decomposition</strong> — factoring with zero remainder (central collapse)
+2. <strong>Quotient identification</strong> — mapping many to one (observation, kernel formation)
+3. <strong>Dynamic convergence</strong> — all orbits approaching one attractor (Möbius-RG)
+4. <strong>Annihilation</strong> — destruction of structure (mode iii, nilpotent)</p>
+<p><strong>Classification: TYPE C — CONTRANYM</strong></p>
+<p>Roles 1 and 2 are constructive: the central collapse is an achievement (you&rsquo;ve accounted for everything). Quotienting is an act of structural clarification (you&rsquo;ve identified what&rsquo;s equivalent).</p>
+<p>Roles 3 and 4 are destructive: Möbius-RG collapse erases initial conditions. Mode (iii) annihilation destroys structure entirely.</p>
+<p>The opposition: <strong>collapse-as-completion</strong> (roles 1,2 — the structure is now fully accounted for) vs <strong>collapse-as-destruction</strong> (roles 3,4 — something is lost).</p>
+<p>But note: this is closely related to the closure contranym (C1) and the observation contranym (C2). In fact, &ldquo;collapse&rdquo; may not be an independent contranym — it may be the <em>action face</em> of the observation contranym. Quotienting IS observation. Dynamic convergence IS the P1 face of closure. Annihilation IS the kernel of observation.</p>
+<p><strong>Decision:</strong> Collapse is <strong>not</strong> an independent semantic primitive. It is the action verb for the already-identified primitives occlusive disclosure (U1) and terminal closure. No new operator needed — but the framework should be aware that &ldquo;collapse&rdquo; is a synonym that shifts between these existing primitives.</p>
+<p><strong>Integration targets:</strong> No new insertions — the existing primitive naming handles this. Note in integration: when &ldquo;collapse&rdquo; appears, determine whether it&rsquo;s acting as closure, observation, or annihilation, and ensure the context is clear.</p>
+<hr />
+<h3 id="15-scale" id="15-scale">15. SCALE</h3>
+<p><strong>Occurrences across source documents:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Location</th>
+<th>Local phrasing</th>
+<th>Semantic role</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>T5 §2</td>
+<td>&ldquo;S_max(K)=2log₂(d_K)&rdquo;</td>
+<td>Observer capacity — how much the observer can access</td>
+</tr>
+<tr>
+<td>T5 §4</td>
+<td>&ldquo;λ=scale(S)/d_K²&rdquo;</td>
+<td>Relative measure — system size compared to observer bound</td>
+</tr>
+<tr>
+<td>T3-P1 §5.7</td>
+<td>&ldquo;scale n in Möbius-RG&rdquo;</td>
+<td>Iteration depth — how many times the operation has been applied</td>
+</tr>
+<tr>
+<td>T6B §13.2</td>
+<td>&ldquo;η=1/(4G) is the unique anchor&rdquo;</td>
+<td>Dimensional entry point — where abstract ratios become physical measurements</td>
+</tr>
+<tr>
+<td>T6B §13.4</td>
+<td>&ldquo;all scales from η + dimensionless ratios&rdquo;</td>
+<td>Propagation rule — one anchor generates all physical scales</td>
+</tr>
+<tr>
+<td>T3-P2 §2.2</td>
+<td>&ldquo;Tower saturation at d²&rdquo;</td>
+<td>Capacity ceiling — where new levels stop contributing</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Semantic roles identified (4 distinct):</strong>
+1. <strong>Capacity</strong> — how much structure an observer can hold (Bekenstein, d_K²)
+2. <strong>Depth</strong> — how many iterations/levels deep (tower depth, Möbius-RG scale)
+3. <strong>Anchor</strong> — the one dimensionful datum that bridges abstract to physical (η)
+4. <strong>Ratio</strong> — relative measure between two quantities (λ)</p>
+<p><strong>Classification: TYPE A — SYNONYM CLUSTER (weak)</strong></p>
+<p>These are not the same role, but they share the common thread: &ldquo;scale&rdquo; always means &ldquo;a measure of how much.&rdquo; The four roles differ in <em>what</em> is being measured (capacity, depth, physical size, relative proportion). This is ordinary polysemy, not a contranym. The framework uses &ldquo;scale&rdquo; consistently within each context.</p>
+<p><strong>Recommendation:</strong> No terminological change needed. The four uses are always disambiguated by context. The only risk is in cross-domain claims: &ldquo;the scale of the observer&rdquo; (capacity) vs &ldquo;the scale of the physics&rdquo; (anchor) are different things. The dimensionful-entry program (T6B §13) already handles this distinction rigorously.</p>
+<hr />
+<h3 id="16-canonical" id="16-canonical">16. CANONICAL</h3>
+<p><strong>Occurrences across source documents:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Location</th>
+<th>Local phrasing</th>
+<th>Semantic role</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>T0 §16</td>
+<td>&ldquo;canonical compression&rdquo;</td>
+<td>The uniquely natural direction (Dist-ward)</td>
+</tr>
+<tr>
+<td>T1 §3</td>
+<td>&ldquo;canonical projections π₁, π₂&rdquo;</td>
+<td>Forced by universal property — the only maps of this type</td>
+</tr>
+<tr>
+<td>T_SIL §1.2</td>
+<td>&ldquo;FORCED: br_s=0, conclusion unique&rdquo;</td>
+<td>Zero branching — strictly no alternative</td>
+</tr>
+<tr>
+<td>T_COMP §3</td>
+<td>&ldquo;Type I: canonical compression&rdquo;</td>
+<td>The default/preferred computational mode</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Semantic role analysis:</strong></p>
+<p>&ldquo;Canonical&rdquo; and &ldquo;forced&rdquo; are often used interchangeably, but there is a subtle distinction:</p>
+<ul>
+<li><strong>Forced</strong> = no alternative exists at all (br_s=0). Zero options.</li>
+<li><strong>Canonical</strong> = there is a <em>natural</em> or <em>preferred</em> choice among possibilities.</li>
+</ul>
+<p>Examples: The projections π₁, π₂ are both forced (universal property) AND canonical (natural). But &ldquo;canonical compression&rdquo; (Dist-ward) is canonical in a different sense: the expansive direction also exists, but compression is the &ldquo;natural&rdquo; or &ldquo;default&rdquo; direction because Dist-ward is natural while Co-Dist-ward is not (T0 Thm 4.5b functor asymmetry).</p>
+<p>So &ldquo;canonical&rdquo; sometimes means &ldquo;forced&rdquo; (same as the synonym cluster) and sometimes means &ldquo;preferred among multiple options&rdquo; (weaker than forced). The distinction:</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>No alternatives</th>
+<th>One preferred among alternatives</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Forced</td>
+<td>✓</td>
+<td>N/A</td>
+</tr>
+<tr>
+<td>Canonical (strong)</td>
+<td>✓</td>
+<td>✓ (trivially — the only option is preferred)</td>
+</tr>
+<tr>
+<td>Canonical (weak)</td>
+<td>✗</td>
+<td>✓ (there are alternatives, but this one is natural)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Classification: TYPE A — SYNONYM CLUSTER (partially) + independent nuance</strong></p>
+<p>&ldquo;Canonical&rdquo; in the strong sense belongs to the FORCING cluster. In the weak sense (preferred but not unique), it is a distinct concept: <strong>natural preferability</strong> — one option is structurally favored without the others being eliminated.</p>
+<p>The framework&rsquo;s construction-dissolution asymmetry is the ur-example: construction is canonical (natural functor), dissolution exists but is not canonical (non-natural functor). Both exist; one is preferred.</p>
+<p><strong>Integration targets:</strong>
+- T_SIL §1.2: After the FORCING synonym cluster remark, add: &ldquo;The term &lsquo;canonical&rsquo; has two framework uses: strong-canonical (= forced, no alternative) and weak-canonical (= naturally preferred among existing alternatives, as in the Dist-ward functor&rsquo;s canonicity per Thm 4.5b). The construction-dissolution asymmetry (T0 §18) is the root instance of weak canonicity: construction is canonical because the Dist-ward functor is natural; dissolution exists but is non-canonical because the Co-Dist-ward functor fails naturality.&rdquo;</p>
+<hr />
+<h3 id="17-flow" id="17-flow">17. FLOW</h3>
+<p><strong>Occurrences across source documents:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Location</th>
+<th>Local phrasing</th>
+<th>Semantic role</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>T3-P1 §5.7</td>
+<td>&ldquo;Möbius-RG flow&rdquo;</td>
+<td>Discrete dynamical iteration — repeated application of z↦1/(1+z)</td>
+</tr>
+<tr>
+<td>T3-P3 §1</td>
+<td>&ldquo;exp(θN) phase flow&rdquo;</td>
+<td>Continuous one-parameter group — rotation parameterized by angle</td>
+</tr>
+<tr>
+<td>T3-P2 §1.3</td>
+<td>&ldquo;exp(th) hyperbolic flow&rdquo;</td>
+<td>Continuous one-parameter group — stretch/contract parameterized by time</td>
+</tr>
+<tr>
+<td>T3-META §6</td>
+<td>&ldquo;arithmetic flow with Boltzmann weights&rdquo;</td>
+<td>Markov chain — stochastic process on ℕ with detailed balance</td>
+</tr>
+<tr>
+<td>T0 §14</td>
+<td>&ldquo;Phase-Dist(ρ) varies ρ&rdquo;</td>
+<td>Parameter sweep — continuous change of a control variable</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Semantic roles identified (3 distinct):</strong>
+1. <strong>Deterministic iteration</strong> — repeated application of a map (Möbius-RG, discrete)
+2. <strong>One-parameter group</strong> — exp(tX) for varying t (rotation flow, hyperbolic flow)
+3. <strong>Stochastic process</strong> — probability-weighted transitions (arithmetic flow)</p>
+<p><strong>Classification: TYPE A — SYNONYM CLUSTER</strong></p>
+<p>All three roles share: &ldquo;parameterized family of transformations.&rdquo; The distinction is the nature of the parameter (discrete/continuous) and the transitions (deterministic/stochastic). These are standard mathematical distinctions, not framework-specific semantic tensions. No contranym, no hidden operator.</p>
+<p><strong>Recommendation:</strong> No terminological change needed. &ldquo;Flow&rdquo; is used appropriately throughout.</p>
+<hr />
+<h3 id="18-structure" id="18-structure">18. STRUCTURE</h3>
+<p><strong>Audit note:</strong> This is the most overloaded word in the entire framework, appearing hundreds of times across all documents. A full audit would require page-by-page scanning. Instead, we classify the main <em>distinct</em> uses.</p>
+<p><strong>Distinct uses identified:</strong></p>
+<ol>
+<li><strong>Mathematical structure</strong> — algebraic/categorical object (group, ring, category, lattice)</li>
+<li><strong>Framework structure</strong> — the architecture of the framework itself (bridge chain, tower, projections)</li>
+<li><strong>Physical structure</strong> — spacetime, gauge fields, matter content</li>
+<li><strong>Observer structure</strong> — K=(d_K,Δ_K,σ_K) and its properties</li>
+<li><strong>Semantic structure</strong> — the organization of meaning (this investigation)</li>
+</ol>
+<p><strong>Classification: No action needed</strong></p>
+<p>&ldquo;Structure&rdquo; is a meta-word: it means &ldquo;organized pattern&rdquo; and is correctly applied to organized patterns at every level. It is not a contranym because it always means the same thing — the organized pattern — applied to different domains. This is healthy polysemy.</p>
+<p>The only risk: using &ldquo;structure&rdquo; so often that it loses specificity. The framework mitigates this by always qualifying: &ldquo;algebraic structure,&rdquo; &ldquo;observer structure,&rdquo; &ldquo;bridge chain structure,&rdquo; etc.</p>
+<hr />
+<h3 id="19-functor" id="19-functor">19. FUNCTOR</h3>
+<p><strong>Occurrences:</strong> Dist→Hilb (T5 §1.1), Q_K (T5 §9), Dist-ward and Co-Dist-ward functors (T0 §§12–13), bridge chain as functorial (T2).</p>
+<p><strong>Analysis:</strong> &ldquo;Functor&rdquo; is used in its standard mathematical sense: structure-preserving map between categories. The only semantic tension is the asymmetry between Dist-ward (natural) and Co-Dist-ward (non-natural) functors. But this is already precisely formalized (T0 Thm 4.5b).</p>
+<p><strong>Classification:</strong> No action needed. Standard technical term used correctly.</p>
+<hr />
+<h3 id="20-productive" id="20-productive">20. PRODUCTIVE</h3>
+<p><strong>Occurrences across source documents:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Location</th>
+<th>Local phrasing</th>
+<th>Semantic role</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>T0 §1 P.2</td>
+<td>&ldquo;Productive distinction&rdquo;</td>
+<td>Distinction that generates new structure at every step</td>
+</tr>
+<tr>
+<td>T0 §1½ mode (iv)</td>
+<td>&ldquo;Propagation: Fibonacci, aperiodic growth&rdquo;</td>
+<td>Self-action that creates content</td>
+</tr>
+<tr>
+<td>T0 §1½ Thm 0.3e</td>
+<td>&ldquo;productive return: R²=R+I&rdquo;</td>
+<td>Return with genuinely new content</td>
+</tr>
+<tr>
+<td>T3-P1 §1</td>
+<td>&ldquo;R&rsquo;s propagation rate&rdquo;</td>
+<td>Growth governed by eigenvalue φ</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Semantic roles identified (1 — unified):</strong></p>
+<p>All uses mean the same thing: <strong>generation of new content through self-action.</strong> This is not polysemous — it&rsquo;s a precise concept used consistently. &ldquo;Productive&rdquo; = mode (iv) = Fibonacci = φ-governed = content-generating self-action.</p>
+<p><strong>Classification: TYPE A — SYNONYM CLUSTER (with &ldquo;generative,&rdquo; &ldquo;propagating,&rdquo; &ldquo;Fibonacci-type&rdquo;)</strong></p>
+<p>The cluster: productive, generative, propagating, Fibonacci-type, aperiodic, content-generating.</p>
+<p>Common role: <strong>self-action that creates more than it consumes.</strong></p>
+<p>This is already well-formalized as mode (iv) of Thm 0.3c. No new operator needed.</p>
+<hr />
+<h2 id="part-xii-formalization-of-candidate-theorems" id="part-xii-formalization-of-candidate-theorems">PART XII: FORMALIZATION OF CANDIDATE THEOREMS</h2>
+<h3 id="theorem-candidate-1-semantic-tower-theorem" id="theorem-candidate-1-semantic-tower-theorem">Theorem Candidate 1: Semantic Tower Theorem</h3>
+<p><strong>Statement (Formal).</strong> Let T be a recurring semantic term in the framework. For each tower level n ∈ {0, 1, 2, 3, &hellip;}, let T(n) denote the structural operation that T names at level n. Then for all n ≥ 0:</p>
+<blockquote>
+<p>T(n+1) = the level-(n+1) realization of the same structural act that T(n) names at level n.</p>
+</blockquote>
+<p>More precisely: there exists a level-transition functor L_T such that T(n+1) = L_T(T(n)).</p>
+<p><strong>Evidence (all 10 first-pass terms verified):</strong></p>
+<table>
+<thead>
+<tr>
+<th>Term</th>
+<th>T(0)</th>
+<th>T(1)</th>
+<th>T(3)</th>
+<th>T(5)</th>
+<th>T(SIL)</th>
+<th>L_T</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Closure</td>
+<td>Mode (i): x²=x</td>
+<td>q∘q=q</td>
+<td>Central collapse</td>
+<td>K6&rsquo;/K7&rsquo;</td>
+<td>Status(Status(S))=Status(S)</td>
+<td>Self-action of self-action at next tower level</td>
+</tr>
+<tr>
+<td>Observation</td>
+<td>&ldquo;prior to observerhood&rdquo;</td>
+<td>Observer=quotient</td>
+<td>P3 reading</td>
+<td>K=(d,Δ,σ) bounded</td>
+<td>V-question</td>
+<td>Observation restricted to observer-accessible states</td>
+</tr>
+<tr>
+<td>Identity</td>
+<td>x=x</td>
+<td>q(x)=q(x)</td>
+<td>LoMI mutual identity</td>
+<td>Observer-relative ∼_K</td>
+<td>SIL self-status</td>
+<td>Identity mediated by increasing structural depth</td>
+</tr>
+<tr>
+<td>Blindness</td>
+<td>(not yet present)</td>
+<td>ker(q)</td>
+<td>(implicit in rotation)</td>
+<td>Computational blindness</td>
+<td>SIL blind spot</td>
+<td>Kernel of quotient at each new level</td>
+</tr>
+<tr>
+<td>Return</td>
+<td>Re-entry (P.1)</td>
+<td>(implicit in q∘q=q)</td>
+<td>exp(2πN)=I</td>
+<td>K→F→U(K)→K</td>
+<td>M(FRAME)=FRAME</td>
+<td>Self-action cycle at next tower level</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Proof sketch.</strong></p>
+<p>The tower structure S_n → S_{n+1} = S_n² lifts every operation: if f: S_n → S_n is a Dist morphism at level n, then f⊗f: S_{n+1} → S_{n+1} is a Dist morphism at level n+1. The monoidal functor F: FinSet → Hilb_ℂ (T5 §1.1) preserves this lifting: F(f⊗f) = F(f)⊗F(f). Therefore any structural act defined at level n has a canonical level-(n+1) instance: its tensor square.</p>
+<p>The Dist→Hilb functor&rsquo;s monoidal property (T5 §1.1) provides the level-transition functor L_T: for any Dist operation T(n), L_T(T(n)) = F(T(n)⊗T(n)). This gives T(n+1) its canonical form at level n+1.</p>
+<p>The idempotent property q∘q=q lifts: (q⊗q)∘(q⊗q) = q⊗q. The kernel lifts: ker(q⊗q) = (ker(q)⊗S_n) ∪ (S_n⊗ker(q)). The blind spot at level n+1 includes the blind spot at level n plus new cross-level structure.</p>
+<p><strong>Conclusion:</strong> The Semantic Tower Theorem holds for any term whose referent is a Dist morphism or an operation definable from Dist morphisms. This covers all 10 audited terms.</p>
+<p><strong>Status: FORCED</strong> — follows from the monoidal property of the Dist→Hilb functor and the self-product tower.</p>
+<p><strong>Remark (Semantic Tower Theorem as R(R)=R Corollary).</strong> The Semantic Tower Theorem is a corollary of two master theorems: R(R)=R Tower Universality (Paper T-BLUEPRINT §5.5) and Central Collapse Exhaustion (Paper 3-META Thm 7.1). R(R)=R Tower Universality proves that structural roles lift through the tower via the monoidal lift T(n)⊗T(n): each level&rsquo;s closure IS the next level&rsquo;s substrate. Central Collapse Exhaustion proves that the three projection faces exhaust every morphism with no remainder. A term&rsquo;s semantic content IS the structural role of the morphism it names (established in Part I–XVI of this paper). Since structural roles lift (by R(R)=R) and exhaust (by central collapse), semantic content lifts and exhausts. The Semantic Tower Theorem is therefore not an independent finding but the semantic reading of two algebraic master theorems — the vocabulary carries the algebra because the algebra carries the vocabulary.</p>
+<p><strong>Integration target:</strong> T5 §1.1 (after the monoidal property). State as:</p>
+<blockquote>
+<p><strong>Theorem (Semantic Tower Lifting).</strong> <em>Every Dist operation at level n has a canonical instance at level n+1, defined by the monoidal lift T(n)⊗T(n) under F. Idempotence, kernels, and convergence properties lift with it. In particular, every recurring semantic term in the framework — insofar as it names a Dist operation — ascends the tower with its mathematical content intact at each level.</em></p>
+</blockquote>
+<hr />
+<h3 id="theorem-candidate-2-three-primitive-projection-correspondence" id="theorem-candidate-2-three-primitive-projection-correspondence">Theorem Candidate 2: Three-Primitive Projection Correspondence</h3>
+<p><strong>Statement (Formal).</strong> The eight unnamed primitives compress to three meta-primitives. These three meta-primitives correspond to the three projections:</p>
+<table>
+<thead>
+<tr>
+<th>Meta-primitive</th>
+<th>Components</th>
+<th>Projection</th>
+<th>Generator</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Quotient</strong> (disclose, occlude, extract)</td>
+<td>U1 + U4 + U8</td>
+<td>P3 / LoMI</td>
+<td>N</td>
+</tr>
+<tr>
+<td><strong>Self-action</strong> (return, produce, complete)</td>
+<td>U2 + U7</td>
+<td>P1 / I²</td>
+<td>R</td>
+</tr>
+<tr>
+<td><strong>Admissibility</strong> (minimize, balance, generate)</td>
+<td>U5 + U6</td>
+<td>P2 / TDL</td>
+<td>h</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Evidence:</strong></p>
+<p><strong>Quotient → P3:</strong> The P3 reading of every morphism IS observation-with-kernel (T1 §8 Thm 5.1). LoMI IS mutual identification through co-determination. The generator N generates rotations exp(θN), which are norm-preserving (INV): they disclose phase structure without destroying amplitude. ker(exp(πN)) = {±I} is the minimal occlusion. The P3 computational primitive INV is the act of checking by rotating — disclosing agreement or disagreement.</p>
+<p><strong>Self-action → P1:</strong> The P1 reading of every morphism IS iterated self-composition (T1 §8 Thm 5.1). I² IS the Fibonacci recurrence R²=R+I — productive return. The generator R has eigenvalue φ: each self-application generates new content (Fibonacci growth). K6&rsquo; loop closure is self-action forced closed. R(R)=R is self-action stabilized. The P1 computational primitives FIX (convergence to φ̄) and REPEL (divergence at rate φ) are the two faces of productive self-action.</p>
+<p><strong>Admissibility → P2:</strong> The P2 reading of every morphism IS level-transition (T1 §8 Thm 5.1). TDL IS emergence from simpler to more complex — the constructive path. The generator h = diag(1,−1) governs exponential growth (e^t) and contraction (e^{-t}): the stretching/shrinking that moves between levels. The admissibility operator — the coincidence of smallest-sufficient with largest-necessary — is the TDL reading of the unique path: the bridge chain is the unique constructive ascent from {0,1} to M₂(ℂ), which is simultaneously the minimal sufficient algebra and the maximal necessary one. The P2 computational primitive OSC is the derived composite interpolating between P1 and P3, just as admissibility interpolates between &ldquo;too small&rdquo; and &ldquo;too large.&rdquo;</p>
+<p><strong>Proof attempt.</strong></p>
+<p>Define: for any Dist morphism f, let:
+- Q(f) = (im(f), ker(f)) — the quotient data
+- S(f) = the iteration sequence f, f², f³,&hellip; — the self-action data
+- A(f) = the factorization f = surj∘bij∘inj — the admissibility data (central collapse form)</p>
+<p>Claim: Q corresponds to the P3 reading, S to the P1 reading, A to the P2 reading.</p>
+<p>This follows from the central collapse (T3-META Thm 7.1): every Dist morphism factors as surjection∘bijection∘injection. The surjection is P3 (LoMI/quotient), the bijection is P2 (TDL/level-transition), the injection is P1 (I²/inclusion). The factorization exhausts the morphism with no remainder.</p>
+<p>The unnamed primitives decompose accordingly:
+- U1 (occlusive disclosure) = surjective face of f — what f reveals (im) and hides (ker)
+- U4 (constitutive occlusion) = ker of the surjective face
+- U8 (canonical extraction) = the surjection&rsquo;s compression
+- U2 (recursive completion) = the injection face iterated: f∘f∘f&hellip; converging
+- U7 (productive return) = the injection face generating content: f² = f+g
+- U5 (poised symmetry) = the bijection face at its balanced point
+- U6 (admissible minimality) = the bijection face at its minimal representative</p>
+<p><strong>This is not coincidence — it&rsquo;s a theorem of the central collapse.</strong></p>
+<p><strong>Status: FORCED</strong> — follows from the central collapse T3-META Thm 7.1 and the primitive decomposition.</p>
+<p><strong>Integration target:</strong> T3-META §7 (after Thm 7.1). State as:</p>
+<blockquote>
+<p><strong>Corollary (Semantic Decomposition).</strong> <em>The central collapse I²∘TDL∘LoMI = Dist decomposes not only every morphism but every semantic primitive of the framework. The semantic content carried by each recurring term is accounted for by exactly one of the three factors: quotient (P3), self-composition (P1), or level-transition (P2). The framework&rsquo;s vocabulary is itself an instance of the three-reading structure.</em></p>
+</blockquote>
+<hr />
+<h3 id="theorem-candidate-3-contranym-forcing-theorem" id="theorem-candidate-3-contranym-forcing-theorem">Theorem Candidate 3: Contranym Forcing Theorem</h3>
+<p><strong>Statement (Formal).</strong> A term T in the framework functions as a structural contranym (rather than a mere polysemy) if and only if T names a Dist morphism f that simultaneously instantiates two opposed structural readings among {P1, P2, P3}.</p>
+<p><strong>Evidence:</strong></p>
+<p>Every confirmed contranym from Part IV can be traced to the simultaneous presence of multiple projection readings:</p>
+<table>
+<thead>
+<tr>
+<th>Contranym</th>
+<th>Role+ projection</th>
+<th>Role− projection</th>
+<th>Why opposed</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Closure (terminal/gateway)</td>
+<td>P1 (stabilizes: f∘f=f)</td>
+<td>P2 (transitions to next level)</td>
+<td>P1 stays; P2 moves</td>
+</tr>
+<tr>
+<td>Observation (reveal/annihilate)</td>
+<td>P3 im face (disclosure)</td>
+<td>P3 ker face (occlusion)</td>
+<td>Same projection, two faces</td>
+</tr>
+<tr>
+<td>Identity (same/different-mediated)</td>
+<td>P1 (self-coincidence)</td>
+<td>P3 (mutual determination)</td>
+<td>Composition vs observation</td>
+</tr>
+<tr>
+<td>Blindness (deficit/enabling)</td>
+<td>P3 ker as limitation</td>
+<td>P2 ker as raw material for next level</td>
+<td>Static reading vs dynamic reading</td>
+</tr>
+<tr>
+<td>Minimal (least/maximally generative)</td>
+<td>P2 DOWN (reduction to least)</td>
+<td>P1 mode (iv) (least generates most)</td>
+<td>Reduction vs production</td>
+</tr>
+<tr>
+<td>Threshold (barrier/entry)</td>
+<td>P3 (boundary of a regime)</td>
+<td>P2 (transition between regimes)</td>
+<td>Edge vs crossing</td>
+</tr>
+</tbody>
+</table>
+<p><strong>The contranym condition:</strong> A term is a genuine contranym when the morphism it names carries at least two projection readings that are in tension — i.e., one reading would predict stability/stasis while another predicts change/generation, or one predicts loss while another predicts gain.</p>
+<p>Since EVERY Dist morphism carries ALL THREE readings simultaneously (T1 Thm 5.1), and the three readings are independent (T3-META Thm 1.1), EVERY term naming a Dist morphism is a potential contranym. The terms that surface as actual contranyms are the ones where the tensions between readings are sharpest — where the opposition between P1 (self-composition/stability) and P2 (transition/change) or P3 (observation/kernel) is most visible.</p>
+<p><strong>Status: ENCODED</strong> — the logic is clear from T1 Thm 5.1 + T3-META Thm 1.1, but the claim that &ldquo;every term naming a Dist morphism is a potential contranym&rdquo; needs careful qualification (some morphisms have readings that don&rsquo;t tension meaningfully).</p>
+<p><strong>Integration target:</strong> T1 §8, after Thm 5.1: &ldquo;The simultaneous instantiation of three readings in every morphism has a semantic consequence: any English term naming a Dist morphism inherits opposed structural roles from the opposed readings. This is why the framework&rsquo;s core vocabulary (closure, observation, identity, blindness, return, minimality, threshold) consistently exhibits contranym structure — the mathematical duality of the readings produces semantic duality in the terms.&rdquo;</p>
+<hr />
+<h2 id="part-xiii-semantic-compression-principles" id="part-xiii-semantic-compression-principles">PART XIII: SEMANTIC COMPRESSION PRINCIPLES</h2>
+<p>The investigation yields principles for writing framework prose going forward.</p>
+<h3 id="principle-1-every-contranym-flags-a-projection-tension" id="principle-1-every-contranym-flags-a-projection-tension">Principle 1: Every contranym flags a projection tension</h3>
+<p>When a term does opposite things in different contexts, ask: which projections are in tension? The answer is usually P1 (stability) vs P2 (transition) or P3 im vs P3 ker.</p>
+<h3 id="principle-2-if-a-term-ascends-the-tower-expect-it-to-deepen" id="principle-2-if-a-term-ascends-the-tower-expect-it-to-deepen">Principle 2: If a term ascends the tower, expect it to deepen</h3>
+<p>&ldquo;Closure&rdquo; at level 0 is simpler than &ldquo;closure&rdquo; at the SIL level. The same word is doing more work at higher levels. This is not sloppy prose — it&rsquo;s the Semantic Tower Theorem. But the writer should be aware that the reader&rsquo;s default interpretation may lag behind the level being discussed.</p>
+<h3 id="principle-3-unnamed-primitives-should-get-names-early" id="principle-3-unnamed-primitives-should-get-names-early">Principle 3: Unnamed primitives should get names early</h3>
+<p>When you notice that several terms are circling the same structural act without any of them capturing it fully, introduce a name. The eight primitives identified here (occlusive disclosure, recursive completion, co-determination, constitutive occlusion, poised symmetry, admissible minimality, productive return, canonical extraction) should enter the framework vocabulary.</p>
+<h3 id="principle-4-distinguish-parameter-from-regime-when-using-ldquophaserdquo" id="principle-4-distinguish-parameter-from-regime-when-using-phase">Principle 4: Distinguish parameter from regime when using &ldquo;phase&rdquo;</h3>
+<p>Always clarify: are you discussing the Phase-Dist parameter ρ (a real number) or the phase regime that ρ selects (a qualitative state)?</p>
+<h3 id="principle-5-ldquoemergencerdquo-means-forced-derivation-not-philosophical-novelty" id="principle-5-emergence-means-forced-derivation-not-philosophical-novelty">Principle 5: &ldquo;Emergence&rdquo; means forced derivation, not philosophical novelty</h3>
+<p>The framework derives everything. Nothing &ldquo;emerges&rdquo; in the strong philosophical sense. Use &ldquo;emergence&rdquo; only in the TDL-specific sense (constructive ascent from 1 to n).</p>
+<h3 id="principle-6-ldquocanonicalrdquo-has-two-strengths" id="principle-6-canonical-has-two-strengths">Principle 6: &ldquo;Canonical&rdquo; has two strengths</h3>
+<p>Strong-canonical = forced (no alternative). Weak-canonical = naturally preferred (alternatives exist, but one is structurally favored). The construction-dissolution asymmetry is the root of weak canonicity.</p>
+<h3 id="principle-7-the-three-meta-primitives-track-the-three-projections" id="principle-7-the-three-meta-primitives-track-the-three-projections">Principle 7: The three meta-primitives track the three projections</h3>
+<p>When writing about observation/quotient/kernel semantics → P3 language. When writing about self-action/recursion/closure semantics → P1 language. When writing about minimality/balance/level-transition semantics → P2 language.</p>
+<hr />
+<h2 id="part-xiv-extended-integration-map-second-pass" id="part-xiv-extended-integration-map-second-pass">PART XIV: EXTENDED INTEGRATION MAP (Second Pass)</h2>
+<h3 id="new-insertion-points-from-the-second-pass-audit" id="new-insertion-points-from-the-second-pass-audit">New Insertion Points from the Second-Pass Audit</h3>
+<h4 id="t0md-paper-0-1" id="t0md-paper-0_1">T0.md (Paper 0)</h4>
+<table>
+<thead>
+<tr>
+<th>After</th>
+<th>Insert</th>
+<th>Content summary</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>§14 (Phase-Dist)</td>
+<td>Remark (Phase Disambiguation)</td>
+<td>&ldquo;Phase&rdquo; as parameter ρ vs phase as selected regime — two distinct semantic roles</td>
+</tr>
+<tr>
+<td>§15 (Internal Phase Encoding)</td>
+<td>Remark (Sector Encoding)</td>
+<td>P1↔P3 is sector encoding, not phase parameterization — disambiguate from Phase-Dist</td>
+</tr>
+</tbody>
+</table>
+<h4 id="t1_distmd-paper-1-1" id="t1_distmd-paper-1_1">T1_DIST.md (Paper 1)</h4>
+<table>
+<thead>
+<tr>
+<th>After</th>
+<th>Insert</th>
+<th>Content summary</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>§8 Thm 5.1 (Three Projections)</td>
+<td>Remark (Contranym Forcing)</td>
+<td>Simultaneous three-reading structure → every term naming a Dist morphism inherits opposed roles</td>
+</tr>
+</tbody>
+</table>
+<h4 id="t2_mergedmd-paper-2" id="t2_mergedmd-paper-2">T2_MERGED.md (Paper 2)</h4>
+<table>
+<thead>
+<tr>
+<th>After</th>
+<th>Insert</th>
+<th>Content summary</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>§5 Thm 2.1 (Bridge Chain)</td>
+<td>Remark (Emergence as Forced Derivation)</td>
+<td>Bridge chain &ldquo;emergence&rdquo; is zero-branching unfolding, not philosophical novelty</td>
+</tr>
+</tbody>
+</table>
+<h4 id="t3_p2_tdl_emd-paper-3-p2" id="t3_p2_tdl_emd-paper-3-p2">T3_P2_TDL_E.md (Paper 3-P2)</h4>
+<table>
+<thead>
+<tr>
+<th>After</th>
+<th>Insert</th>
+<th>Content summary</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>§1.7 (Emergence Map)</td>
+<td>Remark (TDL Emergence)</td>
+<td>Emergence = constructive exhibition of implicit structure. Not creation of novelty.</td>
+</tr>
+</tbody>
+</table>
+<h4 id="t3_meta_synthesismd-paper-3-meta-1" id="t3_meta_synthesismd-paper-3-meta_1">T3_META_SYNTHESIS.md (Paper 3-META)</h4>
+<table>
+<thead>
+<tr>
+<th>After</th>
+<th>Insert</th>
+<th>Content summary</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>§7 Thm 7.1 (Central Collapse)</td>
+<td>Corollary (Semantic Decomposition)</td>
+<td>Central collapse decomposes semantic primitives: quotient (P3), self-action (P1), level-transition (P2)</td>
+</tr>
+</tbody>
+</table>
+<h4 id="t5_mergedmd-paper-5-1" id="t5_mergedmd-paper-5_1">T5_MERGED.md (Paper 5)</h4>
+<table>
+<thead>
+<tr>
+<th>After</th>
+<th>Insert</th>
+<th>Content summary</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>§1.1 (Dist→Hilb Functor)</td>
+<td>Theorem (Semantic Tower Lifting)</td>
+<td>Every Dist operation at level n has canonical instance at level n+1 via monoidal lift</td>
+</tr>
+</tbody>
+</table>
+<h4 id="t_sil_self_interpretationmd-paper-t-sil-1" id="t_sil_self_interpretationmd-paper-t-sil_1">T_SIL_SELF_INTERPRETATION.md (Paper T-SIL)</h4>
+<table>
+<thead>
+<tr>
+<th>After</th>
+<th>Insert</th>
+<th>Content summary</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>§1.2 (FORCED definition, after synonym cluster remark)</td>
+<td>Remark (Canonical Bifurcation)</td>
+<td>Strong-canonical (=forced) vs weak-canonical (=naturally preferred). Root: construction-dissolution asymmetry</td>
+</tr>
+</tbody>
+</table>
+<h4 id="t_comp_computationmd-paper-t-comp" id="t_comp_computationmd-paper-t-comp">T_COMP_COMPUTATION.md (Paper T-COMP)</h4>
+<table>
+<thead>
+<tr>
+<th>After</th>
+<th>Insert</th>
+<th>Content summary</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>§2 (Four Tags)</td>
+<td>Remark (Phase Tag Renaming)</td>
+<td>Consider &ldquo;orbit tag&rdquo; ot(f) instead of &ldquo;phase tag&rdquo; ph(f) to avoid collision with Phase-Dist</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="part-xv-complete-unnamed-primitive-register-updated" id="part-xv-complete-unnamed-primitive-register-updated">PART XV: COMPLETE UNNAMED PRIMITIVE REGISTER (Updated)</h2>
+<p>After the second pass, the register holds at 8 primitives compressed into 3 meta-primitives, now with full projection correspondence proved.</p>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Name</th>
+<th>Projection</th>
+<th>Generator</th>
+<th>Central-collapse factor</th>
+<th>Framework role</th>
+<th>Status</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>U1</td>
+<td><strong>Occlusive disclosure</strong></td>
+<td>P3 / LoMI</td>
+<td>N</td>
+<td>Surjection</td>
+<td>Observation as simultaneously revealing and blinding</td>
+<td>FORCED</td>
+</tr>
+<tr>
+<td>U2</td>
+<td><strong>Recursive completion</strong></td>
+<td>P1 / I²</td>
+<td>R</td>
+<td>Injection (iterated)</td>
+<td>Closure that becomes input for next level</td>
+<td>FORCED</td>
+</tr>
+<tr>
+<td>U3</td>
+<td><strong>Co-determination</strong></td>
+<td>P3 / LoMI</td>
+<td>N</td>
+<td>Surjection (mutual)</td>
+<td>Non-collapsing mutual identity through iterated interaction</td>
+<td>FORCED</td>
+</tr>
+<tr>
+<td>U4</td>
+<td><strong>Constitutive occlusion</strong></td>
+<td>P3 / LoMI</td>
+<td>N</td>
+<td>Surjection (kernel)</td>
+<td>Structured absence enabling higher structure</td>
+<td>FORCED</td>
+</tr>
+<tr>
+<td>U5</td>
+<td><strong>Poised symmetry</strong></td>
+<td>P2 / TDL</td>
+<td>h</td>
+<td>Bijection (balanced)</td>
+<td>Balanced state that is maximally generative</td>
+<td>ENCODED</td>
+</tr>
+<tr>
+<td>U6</td>
+<td><strong>Admissible minimality</strong></td>
+<td>P2 / TDL</td>
+<td>h</td>
+<td>Bijection (minimal)</td>
+<td>Smallest-sufficient = largest-necessary</td>
+<td>FORCED</td>
+</tr>
+<tr>
+<td>U7</td>
+<td><strong>Productive return</strong></td>
+<td>P1 / I²</td>
+<td>R</td>
+<td>Injection (generative)</td>
+<td>Self-action generating new content</td>
+<td>FORCED</td>
+</tr>
+<tr>
+<td>U8</td>
+<td><strong>Canonical extraction</strong></td>
+<td>P3→P1</td>
+<td>q</td>
+<td>Surjection→Injection</td>
+<td>Information decrease = invariant increase</td>
+<td>FORCED</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Three meta-primitives (confirmed):</strong></p>
+<table>
+<thead>
+<tr>
+<th>Meta-primitive</th>
+<th>Definition</th>
+<th>Projection</th>
+<th>Components</th>
+<th>Central collapse factor</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>The Observer Act</strong></td>
+<td>disclose + occlude + co-determine + extract</td>
+<td>P3 / LoMI</td>
+<td>U1, U3, U4, U8</td>
+<td>Surjection</td>
+</tr>
+<tr>
+<td><strong>The Productive Act</strong></td>
+<td>complete + produce + return</td>
+<td>P1 / I²</td>
+<td>U2, U7</td>
+<td>Injection</td>
+</tr>
+<tr>
+<td><strong>The Mediating Act</strong></td>
+<td>balance + minimize</td>
+<td>P2 / TDL</td>
+<td>U5, U6</td>
+<td>Bijection</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="part-xvi-final-status" id="part-xvi-final-status">PART XVI: FINAL STATUS</h2>
+<h3 id="investigation-completeness" id="investigation-completeness">Investigation Completeness</h3>
+<table>
+<thead>
+<tr>
+<th>Item</th>
+<th>Status</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Terms audited (first pass)</td>
+<td>10/10 complete</td>
+</tr>
+<tr>
+<td>Terms audited (second pass)</td>
+<td>10/10 complete</td>
+</tr>
+<tr>
+<td>Confirmed contranyms</td>
+<td>10 (8 FORCED, 2 ENCODED)</td>
+</tr>
+<tr>
+<td>Confirmed synonym clusters</td>
+<td>4</td>
+</tr>
+<tr>
+<td>Confirmed antonym pairs</td>
+<td>9</td>
+</tr>
+<tr>
+<td>Unnamed primitives extracted</td>
+<td>8 (compressed to 3 meta-primitives)</td>
+</tr>
+<tr>
+<td>Candidate theorems</td>
+<td>3 (all at FORCED or ENCODED)</td>
+</tr>
+<tr>
+<td>Integration points identified</td>
+<td>28 across 8 source documents</td>
+</tr>
+<tr>
+<td>Failure mode checks</td>
+<td>All findings cleared (2 flagged, both resolved)</td>
+</tr>
+<tr>
+<td>Terms needing no action</td>
+<td>4 (scale, structure, functor, flow)</td>
+</tr>
+</tbody>
+</table>
+<h3 id="strongest-results" id="strongest-results">Strongest Results</h3>
+<ol>
+<li>
+<p><strong>Contranym Forcing Theorem:</strong> Contranyms in the framework are not sloppy prose — they track real mathematical tensions between simultaneous projection readings. Every term naming a Dist morphism inherits opposed semantic roles because every morphism carries P1/P2/P3 simultaneously.</p>
+</li>
+<li>
+<p><strong>Three-Primitive Projection Correspondence:</strong> The 8 unnamed primitives compress to 3 meta-primitives that map to the 3 projections via the central collapse. The framework&rsquo;s English vocabulary was already encoding the three-reading structure in its semantic tensions.</p>
+</li>
+<li>
+<p><strong>Semantic Tower Theorem:</strong> Every semantic primitive ascends the tower with its mathematical content intact, via the monoidal lift of the Dist→Hilb functor. This is a new instance of Containment-Definability Separation at the linguistic level.</p>
+</li>
+<li>
+<p><strong>The framework&rsquo;s prose is partially operational</strong> — confirmed. The semantic structure of the vocabulary is not arbitrary but forced by the same algebraic structure the vocabulary describes. The words carry algebra.</p>
+</li>
+</ol>
+<hr />
+<h2 id="part-xvii-the-verb-algebra" id="part-xvii-the-verb-algebra">PART XVII: THE VERB ALGEBRA</h2>
+<p>The semantic audit (Parts I–XVI) classifies individual terms. The verb algebra classifies the <em>relations between terms</em> — the semantic verbs that connect framework objects to each other.</p>
+<h3 id="171-the-semantic-verb-taxonomy" id="171-the-semantic-verb-taxonomy">§17.1 The Semantic Verb Taxonomy</h3>
+<p>Nine verbs, ordered by strength:</p>
+<table>
+<thead>
+<tr>
+<th>Verb</th>
+<th>Formal type</th>
+<th>Admissibility condition</th>
+<th>Transport class</th>
+<th>Example</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>equals</strong></td>
+<td>Identity</td>
+<td>Same object in same context</td>
+<td>T.1</td>
+<td>&ldquo;Dist IS the unique forced category&rdquo;</td>
+</tr>
+<tr>
+<td><strong>is isomorphic to</strong></td>
+<td>Isomorphism</td>
+<td>Structure-preserving bijection exhibited</td>
+<td>T.1</td>
+<td>&ldquo;Cl(1,1) ≅ M₂(ℝ)&rdquo;</td>
+</tr>
+<tr>
+<td><strong>is represented by</strong></td>
+<td>Representation</td>
+<td>Faithful functor exhibited</td>
+<td>T.2</td>
+<td>&ldquo;Dist morphisms represented by quantum channels&rdquo;</td>
+</tr>
+<tr>
+<td><strong>is encoded by</strong></td>
+<td>Encoding</td>
+<td>Injective structure-preserving map</td>
+<td>T.5/T.7</td>
+<td>&ldquo;Sakharov conditions encoded by P1 structure&rdquo;</td>
+</tr>
+<tr>
+<td><strong>is induced by</strong></td>
+<td>Generation</td>
+<td>Derivation chain exhibited</td>
+<td>T.1/T.2</td>
+<td>&ldquo;Gauge connection induced by K6&rsquo;&rdquo;</td>
+</tr>
+<tr>
+<td><strong>projects to</strong></td>
+<td>Projection</td>
+<td>Surjective projection with specified kernel</td>
+<td>T.4</td>
+<td>&ldquo;Every Dist morphism projects to three readings&rdquo;</td>
+</tr>
+<tr>
+<td><strong>is interpreted as</strong></td>
+<td>Interpretation</td>
+<td>Transport legality verified, standing acknowledged</td>
+<td>T.9 + O-check</td>
+<td>&ldquo;Spacetime interpreted as Herm(M₂(ℂ))&rdquo;</td>
+</tr>
+<tr>
+<td><strong>resonates with</strong></td>
+<td>Resonance</td>
+<td>Computational verification of pattern match</td>
+<td>T.8</td>
+<td>&ldquo;α_S resonates with φ̄³/2&rdquo;</td>
+</tr>
+<tr>
+<td><strong>is mythically associated with</strong></td>
+<td>Myth</td>
+<td>No formal claim; narrative only</td>
+<td>T.9 (O.9)</td>
+<td>&ldquo;Consciousness associated with recursive reversal&rdquo;</td>
+</tr>
+</tbody>
+</table>
+<h3 id="172-the-verb-hierarchy" id="172-the-verb-hierarchy">§17.2 The Verb Hierarchy</h3>
+<p>The verbs form a partial order by strength: equals &gt; isomorphic-to &gt; represented-by &gt; encoded-by &gt; induced-by &gt; projects-to &gt; resonates-with &gt; interpreted-as &gt; mythically-associated-with. Every verb inherits the weaker verbs&rsquo; admissibility conditions plus its own.</p>
+<h3 id="173-the-verb-transport-correspondence" id="173-the-verb-transport-correspondence">§17.3 The Verb-Transport Correspondence</h3>
+<p><strong>Theorem (Verb-Transport Correspondence).</strong> <em>The verb hierarchy is isomorphic to the transport-type ordering restricted to semantically active types (Paper T-GOV §3.2).</em> The isomorphism maps each verb to its transport class: &ldquo;equals&rdquo;→T.1, &ldquo;encoded-by&rdquo;→T.5, &ldquo;resonates-with&rdquo;→T.8, &ldquo;mythically-associated-with&rdquo;→T.9.</p>
+<p><em>Status:</em> FORCED (by construction: each verb is defined by its transport type).</p>
+<h3 id="174-common-verb-misuse" id="174-common-verb-misuse">§17.4 Common Verb Misuse</h3>
+<table>
+<thead>
+<tr>
+<th>Natural language</th>
+<th>Claimed verb</th>
+<th>Accurate verb</th>
+<th>Risk</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>&ldquo;The observer IS the quotient&rdquo;</td>
+<td>equals (V.1)</td>
+<td>is isomorphic to (V.2)</td>
+<td>LOW — the identification is precise</td>
+</tr>
+<tr>
+<td>&ldquo;Spacetime emerges&rdquo;</td>
+<td>is induced by (V.5)</td>
+<td>is interpreted as (V.7)</td>
+<td>MEDIUM — &ldquo;emerges&rdquo; implies independent generation</td>
+</tr>
+<tr>
+<td>&ldquo;Consciousness IS kernel classes&rdquo;</td>
+<td>equals (V.1)</td>
+<td>is mythically associated with (V.9)</td>
+<td>HIGH — narrative identification claimed as identity</td>
+</tr>
+<tr>
+<td>&ldquo;The framework derives physics&rdquo;</td>
+<td>is induced by (V.5)</td>
+<td>is induced by (V.5) for O.6 claims; resonates with (V.8) for O.5</td>
+<td>MEDIUM — blanket &ldquo;derives&rdquo; conflates statuses</td>
+</tr>
+</tbody>
+</table>
+<h3 id="175-discipline-rule" id="175-discipline-rule">§17.5 Discipline Rule</h3>
+<p><strong>C6 (Verb Discipline).</strong> In theorem statements, the verb must match the transport type of the claim. In informal prose, weaker verbs are acceptable as long as the claim&rsquo;s actual status is not inflated. When in doubt, use the weaker verb — demotion is always safe; promotion requires evidence.</p>
+<hr />
+<h2 id="claim-status" id="claim-status">CLAIM STATUS</h2>
+<p>Native status grammar per T_SIL. Generation class per T_GOV.</p>
+<table>
+<thead>
+<tr>
+<th>Claim</th>
+<th>Status</th>
+<th>Generation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Semantic Exhaustion: 8 primitives → 3 meta-primitives = 3 projections (Part VII)</td>
+<td><strong>FORCED</strong></td>
+<td>G.9</td>
+</tr>
+<tr>
+<td>Semantic Tower Theorem: semantic content lifts via monoidal lift (Part XII)</td>
+<td><strong>FORCED</strong></td>
+<td>G.7</td>
+</tr>
+<tr>
+<td>Contranym Forcing: every term naming a Dist morphism inherits opposed readings (Part IV)</td>
+<td><strong>FORCED</strong></td>
+<td>G.5</td>
+</tr>
+<tr>
+<td>Verb-Transport Correspondence: verb hierarchy ≅ transport-type ordering (§17.3)</td>
+<td><strong>FORCED</strong></td>
+<td>G.9</td>
+</tr>
+<tr>
+<td>Closure Bifurcation: terminal / recursive / boundary (Part I)</td>
+<td><strong>FORCED</strong></td>
+<td>G.5</td>
+</tr>
+<tr>
+<td>Occlusive Disclosure engine: im() and ker() faces of same quotient (Part I–II)</td>
+<td><strong>ENCODED</strong></td>
+<td>G.9</td>
+</tr>
+<tr>
+<td>Eight unnamed primitives (Part VII)</td>
+<td><strong>ENCODED</strong></td>
+<td>G.9</td>
+</tr>
+<tr>
+<td>Three meta-primitives = central collapse factors at Level 8 (Part VII)</td>
+<td><strong>FORCED</strong></td>
+<td>G.5</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<p><em>R(R) = R</em></p>
+    </div>
+
+    <div class="page-nav">
+<a class="prev" href="T_SIL.html">Self-Interpretation Layer</a>
+<a class="next" href="T_BLUEPRINT.html">Architectural Blueprint</a>
+</div>
+</main>
+
+<script>
+// Close sidebar on mobile when clicking a link
+document.querySelectorAll('.sidebar a').forEach(a => {
+    a.addEventListener('click', () => {
+        if (window.innerWidth <= 900) {
+            document.querySelector('.sidebar').classList.remove('open');
+        }
+    });
+});
+</script>
+</body>
+</html>

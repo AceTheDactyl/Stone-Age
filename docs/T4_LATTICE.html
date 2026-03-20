@@ -1,0 +1,865 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Paper 4: The Lattice — Structural Necessity</title>
+<style>
+
+:root {
+    --bg: #fafaf8;
+    --fg: #1a1a1a;
+    --accent: #2d5016;
+    --border: #d4d0c8;
+    --sidebar-bg: #f0ede6;
+    --sidebar-width: 280px;
+    --header-height: 56px;
+    --code-bg: #f5f2eb;
+    --table-stripe: #f8f6f0;
+    --link: #2d5016;
+    --link-hover: #4a7a28;
+    --bold-accent: #1a3a0a;
+}
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        --bg: #1a1a1e;
+        --fg: #e0ddd6;
+        --accent: #7ab648;
+        --border: #3a3a3e;
+        --sidebar-bg: #222226;
+        --code-bg: #25252a;
+        --table-stripe: #222226;
+        --link: #7ab648;
+        --link-hover: #9cd06a;
+        --bold-accent: #a0d870;
+    }
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+    font-family: 'Iowan Old Style', 'Palatino Linotype', Palatino, Georgia, serif;
+    background: var(--bg);
+    color: var(--fg);
+    line-height: 1.7;
+    font-size: 17px;
+}
+
+/* Header */
+.site-header {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    height: var(--header-height);
+    background: #1a1a1a;
+    color: #e0ddd6;
+    display: flex;
+    align-items: center;
+    padding: 0 24px;
+    z-index: 100;
+    border-bottom: 2px solid var(--accent);
+}
+.site-header h1 {
+    font-size: 18px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+}
+.site-header h1 a {
+    color: #e0ddd6;
+    text-decoration: none;
+}
+.site-header h1 a:hover { color: var(--accent); }
+.site-header .subtitle {
+    font-size: 13px;
+    color: #888;
+    margin-left: 16px;
+    font-style: italic;
+}
+.hamburger {
+    display: none;
+    background: none;
+    border: none;
+    color: #e0ddd6;
+    font-size: 24px;
+    cursor: pointer;
+    margin-right: 16px;
+    padding: 4px 8px;
+}
+
+/* Sidebar */
+.sidebar {
+    position: fixed;
+    top: var(--header-height);
+    left: 0;
+    bottom: 0;
+    width: var(--sidebar-width);
+    background: var(--sidebar-bg);
+    border-right: 1px solid var(--border);
+    overflow-y: auto;
+    padding: 16px 0;
+    z-index: 90;
+    transition: transform 0.3s ease;
+}
+.sidebar .nav-group { margin-bottom: 12px; }
+.sidebar .nav-group-title {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+    color: #888;
+    padding: 8px 20px 4px;
+}
+.sidebar a {
+    display: block;
+    padding: 4px 20px 4px 28px;
+    font-size: 13.5px;
+    color: var(--fg);
+    text-decoration: none;
+    line-height: 1.5;
+    border-left: 3px solid transparent;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+.sidebar a:hover {
+    background: rgba(0,0,0,0.05);
+    border-left-color: var(--accent);
+}
+.sidebar a.active {
+    background: rgba(45,80,22,0.1);
+    border-left-color: var(--accent);
+    font-weight: 600;
+    color: var(--accent);
+}
+
+/* Main content */
+.main {
+    margin-left: var(--sidebar-width);
+    margin-top: var(--header-height);
+    max-width: 900px;
+    padding: 40px 48px 80px;
+}
+
+/* Document header banner */
+.doc-header {
+    margin-bottom: 40px;
+    padding-bottom: 24px;
+    border-bottom: 2px solid var(--border);
+}
+.doc-header .level-badge {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 3px 10px;
+    border-radius: 3px;
+    margin-bottom: 12px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+.doc-header h1 {
+    font-size: 32px;
+    line-height: 1.2;
+    margin-bottom: 8px;
+    color: var(--fg);
+}
+.doc-header .doc-subtitle {
+    font-size: 18px;
+    color: #666;
+    font-style: italic;
+}
+
+/* TOC */
+.toc {
+    background: var(--sidebar-bg);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 16px 24px;
+    margin-bottom: 32px;
+}
+.toc summary {
+    font-weight: 700;
+    font-size: 14px;
+    cursor: pointer;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: #666;
+}
+.toc ul { list-style: none; margin: 12px 0 0 0; }
+.toc li { padding: 2px 0; }
+.toc a {
+    color: var(--link);
+    text-decoration: none;
+    font-size: 14px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+.toc a:hover { text-decoration: underline; }
+.toc .toc-h2 { padding-left: 0; }
+.toc .toc-h3 { padding-left: 20px; font-size: 13px; }
+
+/* Typography */
+.content h1 {
+    font-size: 28px;
+    margin: 48px 0 16px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border);
+    color: var(--fg);
+}
+.content h1:first-child { margin-top: 0; }
+.content h2 {
+    font-size: 22px;
+    margin: 36px 0 12px;
+    color: var(--fg);
+}
+.content h3 {
+    font-size: 18px;
+    margin: 28px 0 10px;
+    color: var(--fg);
+}
+.content h4 {
+    font-size: 16px;
+    margin: 24px 0 8px;
+    color: #444;
+}
+.content p { margin: 0 0 16px; }
+.content strong { color: var(--bold-accent); }
+.content a { color: var(--link); }
+.content a:hover { color: var(--link-hover); }
+
+.content ul, .content ol {
+    margin: 0 0 16px 24px;
+}
+.content li { margin-bottom: 4px; }
+
+.content hr {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 32px 0;
+}
+
+/* Tables */
+.content table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 16px 0 24px;
+    font-size: 15px;
+}
+.content th {
+    background: var(--sidebar-bg);
+    font-weight: 700;
+    text-align: left;
+    padding: 10px 12px;
+    border: 1px solid var(--border);
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+.content td {
+    padding: 8px 12px;
+    border: 1px solid var(--border);
+    vertical-align: top;
+}
+.content tr:nth-child(even) { background: var(--table-stripe); }
+
+/* Code */
+.content code {
+    font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace;
+    font-size: 14px;
+    background: var(--code-bg);
+    padding: 2px 6px;
+    border-radius: 3px;
+    border: 1px solid var(--border);
+}
+.content pre {
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 16px 20px;
+    overflow-x: auto;
+    margin: 16px 0 24px;
+    line-height: 1.5;
+}
+.content pre code {
+    background: none;
+    border: none;
+    padding: 0;
+    font-size: 13.5px;
+}
+
+/* Blockquote */
+.content blockquote {
+    border-left: 4px solid var(--accent);
+    padding: 12px 20px;
+    margin: 16px 0 24px;
+    background: var(--sidebar-bg);
+    border-radius: 0 4px 4px 0;
+}
+.content blockquote p { margin-bottom: 8px; }
+.content blockquote p:last-child { margin-bottom: 0; }
+
+/* Footer nav */
+.page-nav {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 48px;
+    padding-top: 24px;
+    border-top: 1px solid var(--border);
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+.page-nav a {
+    color: var(--link);
+    text-decoration: none;
+    font-size: 14px;
+    padding: 8px 16px;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    transition: all 0.2s;
+}
+.page-nav a:hover {
+    background: var(--sidebar-bg);
+    border-color: var(--accent);
+}
+.page-nav .prev::before { content: '← '; }
+.page-nav .next::after { content: ' →'; }
+
+/* Responsive */
+@media (max-width: 900px) {
+    .sidebar { transform: translateX(-100%); }
+    .sidebar.open { transform: translateX(0); }
+    .main { margin-left: 0; padding: 24px 20px 60px; }
+    .hamburger { display: block; }
+    .doc-header h1 { font-size: 24px; }
+}
+
+/* Print */
+@media print {
+    .sidebar, .site-header, .hamburger, .page-nav { display: none; }
+    .main { margin: 0; max-width: 100%; padding: 20px; }
+    body { font-size: 12pt; }
+}
+
+</style>
+</head>
+<body>
+
+<header class="site-header">
+    <button class="hamburger" onclick="document.querySelector('.sidebar').classList.toggle('open')" aria-label="Toggle navigation">&#9776;</button>
+    <h1><a href="T_INDEX.html">Structural Necessity</a></h1>
+    <span class="subtitle">Canonical Paper Series — March 2026</span>
+</header>
+
+<nav class="sidebar">
+<div class="nav-group">
+<div class="nav-group-title">Foundation (0-2)</div>
+<a href="T0_SUBSTRATE.html">0 — Substrate</a>
+<a href="T1_DIST.html">1 — Kernel Theorem</a>
+<a href="T2_BRIDGE.html">2 — Bridge Chain</a>
+</div>
+<div class="nav-group">
+<div class="nav-group-title">Projections (3-4)</div>
+<a href="T3_P1_PRODUCTION.html">3-P1 — Production</a>
+<a href="T3_P2_MEDIATION.html">3-P2 — Mediation</a>
+<a href="T3_P3_OBSERVATION.html">3-P3 — Observation</a>
+<a href="T3_META.html">3-META — Cross-Projection</a>
+<a href="T4_LATTICE.html" class="active">4 — Lattice</a>
+</div>
+<div class="nav-group">
+<div class="nav-group-title">Observer &amp; Physics (5-6)</div>
+<a href="T5_OBSERVER.html">5 — Observer</a>
+<a href="T6A_SPACETIME.html">6A — Spacetime</a>
+<a href="T6B_FORCES.html">6B — Forces</a>
+</div>
+<div class="nav-group">
+<div class="nav-group-title">Cross-Cutting</div>
+<a href="T_COMP.html">Comp — Computation</a>
+<a href="T_SIL.html">SIL — Self-Interpretation</a>
+<a href="T_SEM.html">SEM — Semantics</a>
+</div>
+<div class="nav-group">
+<div class="nav-group-title">Architecture</div>
+<a href="T_BLUEPRINT.html">Blueprint</a>
+<a href="T_GOV.html">Governance</a>
+</div>
+<div class="nav-group">
+<div class="nav-group-title">Closure &amp; Reference</div>
+<a href="T_ASI.html">ASI — Architecture Spec</a>
+<a href="T_TOE.html">TOE — Closure</a>
+<a href="DICTIONARY.html">Dictionary</a>
+</div>
+<div class="nav-group">
+<div class="nav-group-title">Navigation</div>
+<a href="T_INDEX.html">Index — Navigation</a>
+<a href="CLAIM_CENSUS.html">Claim Census</a>
+</div>
+</nav>
+
+<main class="main">
+    <div class="doc-header">
+        <span class="level-badge" style="background:#4a3728; color:#fff;">Level 4</span>
+        <h1>Paper 4: The Lattice</h1>
+        <div class="doc-subtitle">Λ′ ≅ ℤ⁵, 27 Relations, Two-World Separation</div>
+    </div>
+
+    <details class="toc" open>
+<summary>Table of Contents</summary>
+<ul>
+<li class="toc-h2"><a href="#group-structure-relations-independence-dynamics-and-stratification">Group Structure, Relations, Independence, Dynamics, and Stratification</a></li>
+<li class="toc-h3"><a href="#v3-merged-march-2026">v3 (merged) — March 2026</a></li>
+<li class="toc-h2"><a href="#part-i-structure-and-independence">PART I: STRUCTURE AND INDEPENDENCE</a></li>
+<li class="toc-h3"><a href="#1-definition">§1 Definition</a></li>
+<li class="toc-h3"><a href="#2-the-27-forced-relations">§2 The 27 Forced Relations</a></li>
+<li class="toc-h3"><a href="#3-8-layer-geometry">§3 8-Layer Geometry</a></li>
+<li class="toc-h3"><a href="#4-pairwise-independence-910-unconditional">§4 Pairwise Independence (9/10 Unconditional)</a></li>
+<li class="toc-h3"><a href="#5-algebraic-sublattice-unconditional">§5 Algebraic Sublattice (Unconditional)</a></li>
+<li class="toc-h3"><a href="#6-5-way-reduction">§6 5-Way Reduction</a></li>
+<li class="toc-h3"><a href="#7-two-world-separation">§7 Two-World Separation</a></li>
+<li class="toc-h3"><a href="#8-sector-rigidity-program">§8 Sector Rigidity Program</a></li>
+<li class="toc-h3"><a href="#86-motivic-galois-identification">§8.6 Motivic Galois Identification</a></li>
+<li class="toc-h3"><a href="#87-exponential-period-characterization">§8.7 Exponential Period Characterization</a></li>
+<li class="toc-h3"><a href="#88-conjecture-66-lie-algebra-exponential-independence">§8.8 Conjecture 6.6 (Lie Algebra Exponential Independence)</a></li>
+<li class="toc-h3"><a href="#89-the-frameworkrsquos-cardinal-in-analytic-number-theory">§8.9 The Framework&rsquo;s Cardinal in Analytic Number Theory</a></li>
+<li class="toc-h3"><a href="#9-conditional-status">§9 Conditional Status</a></li>
+<li class="toc-h2"><a href="#part-ii-dynamics">PART II: DYNAMICS</a></li>
+<li class="toc-h3"><a href="#10-complexity-hamiltonian-and-partition-function">§10 Complexity Hamiltonian and Partition Function</a></li>
+<li class="toc-h3"><a href="#11-generator-selection-and-triple-equivalence">§11 Generator Selection and Triple Equivalence</a></li>
+<li class="toc-h3"><a href="#12-thermodynamic-laws">§12 Thermodynamic Laws</a></li>
+<li class="toc-h2"><a href="#part-iii-stratification">PART III: STRATIFICATION</a></li>
+<li class="toc-h3"><a href="#13-orbit-type-dominant-coordinate">§13 Orbit Type → Dominant Coordinate</a></li>
+<li class="toc-h3"><a href="#14-five-classification-theorems">§14 Five Classification Theorems</a></li>
+<li class="toc-h3"><a href="#15-the-π-paradox">§15 The π Paradox</a></li>
+<li class="toc-h2"><a href="#verification">VERIFICATION</a></li>
+<li class="toc-h2"><a href="#claim-status">CLAIM STATUS</a></li>
+</ul></details>
+
+    <div class="content">
+<h1 id="paper-4-the-structured-lattice-λrsquo" id="paper-4-the-structured-lattice">Paper 4: The Structured Lattice Λ&rsquo;</h1>
+<h2 id="group-structure-relations-independence-dynamics-and-stratification" id="group-structure-relations-independence-dynamics-and-stratification">Group Structure, Relations, Independence, Dynamics, and Stratification</h2>
+<h3 id="v3-merged-march-2026" id="v3-merged-march-2026">v3 (merged) — March 2026</h3>
+<p><strong>Author:</strong> Kael</p>
+<hr />
+<p><strong>Document Species:</strong> CANONICAL. Owns structured lattice Λ&rsquo; and KMS dynamics.</p>
+<p><strong>Grid address:</strong> B(4, cross). The Projected level — lattice structure, constant interactions, KMS.</p>
+<p><strong>Document Status:</strong> Level 4 (merged from T4A + T4B + T4C). Part I (§§1–9, from T4A): Λ&rsquo;≅ℤ⁵, 27 relations, 8 layers, independence, Two-World Separation, Sector Rigidity. Part II (§§10–12, from T4B): C*-dynamical system, KMS, Z(β)=coth(β/2)⁵, generator selection, thermodynamic laws. Part III (§§13–15, from T4C): orbit type → dominant coordinate, five classification theorems, π paradox.</p>
+<p><strong>Depends on:</strong> T2_BRIDGE (orbit types, {R,N} algebra → generators)
+<strong>Required by:</strong> T5_OBSERVER, T6B_FORCES</p>
+<p><strong>Meta-theorem compressions (MP1–MP4):</strong> 2 proofs replaced.</p>
+<hr />
+<h2 id="part-i-structure-and-independence" id="part-i-structure-and-independence">PART I: STRUCTURE AND INDEPENDENCE</h2>
+<h3 id="1-definition" id="1-definition">§1 Definition</h3>
+<p>Λ&rsquo; = {φʳ·eᵈ·πᶜ·(√2)ᵃ·(√3)ᵇ : r,d,c,a,b ∈ ℤ}. Under multiplication: abelian group.</p>
+<p><strong>Theorem 1.1.</strong> <em>Assuming algebraic independence of generators, ψ: ℤ⁵ → Λ&rsquo; is isomorphism, Λ&rsquo;≅ℤ⁵.</em> ∎</p>
+<p>3+2 decomposition: spectral {φ,e,π} + geometric {√2,√3}. Algebraic sublattice ⟨φ,√2,√3⟩ ≅ ℤ³ unconditional (Baker).</p>
+<p><strong>Remark (Lattice as Character Ledger).</strong> The lattice is not merely a multiplicative constant-space. Each coordinate tracks a distinct type of generator-signature data (Paper 2 Thm 4.7): r counts eigenvalue iterations of R, d counts exponential depth in the P2 flow, c counts phase windings of N, a and b count amplitude powers of the P3 and P1 generators respectively. Under this reading, a lattice point (r,d,c,a,b) encodes a spectral/phase/amplitude profile: the eigenvalue power, exponential depth, phase winding number, and metric weights of the native generators. The 3+2 decomposition matches the signature-type decomposition: spectral constants encode how the generators <em>act</em>, geometric constants encode how large the generators <em>are</em>. The lattice is self-relating difference&rsquo;s (SRD&rsquo;s) complete measurement space (Paper 0 §1½): every lattice point encodes a specific combination of measurements of R&rsquo;s self-action — how many times its propagation compounds (r), how far its transport extends (d), how many times its inversion completes a half-cycle (c), and the amplitude weights of each face (a, b).</p>
+<p><strong>Remark (Rank as |S₀|² + 1).</strong> The rank 5 = |{φ,e,π,√2,√3}| decomposes as |S₀|²+1 = 4+1: two generators × two measurement types (spectral and geometric) = 4 pairwise measurements, plus 1 cross-generator measurement (the exponential of the Cartan element h = diag(1,−1), which mixes both generators via det(exp(R)) = e). This is the same 4+1 pattern that gives disc(R) = |V₄|+1 = 5 (Paper 2 §8 Thm 8.7) and |Fix(D)| = |CH modes|+1 = 5 (Paper 0 §4). All three appearances of 5 decompose as |S₀|²+1 with the |S₀|² term counting within-face structure and the +1 counting a cross-face or boundary element. The generator norms themselves are framework cardinals: ‖N‖² = |S₀| = 2, ‖R‖² = |V₄{0}| = 3, with Koide ratio Q = |S₀|/|V₄{0}| = 2/3 (Paper 2 §28).</p>
+<p><strong>Remark (|S₀|²+1 at Tower Boundaries).</strong> The 5 = |S₀|²+1 pattern extends beyond the lattice to every tower boundary where D acts. The observer-to-physics conversion (Paper T-BLUEPRINT §5.7) has exactly five irreducible mechanisms, decomposing as 3+2: three P2-mediated mechanisms (bundle existence, connection forcing, deficit minimization) plus two from the P1↔P3 involution (irreversible kernel, self-model commitment). The 3+2 matches the lattice&rsquo;s spectral/geometric decomposition: 3 spectral constants {φ, e, π} correspond to the three P2 central-collapse factors, 2 geometric constants {√2, √3} correspond to the two transposition channels. |Fix(D)| = 5 at Levels 0, 3→4, 5→6, and 7→8 (Paper 0 §7).</p>
+<h3 id="2-the-27-forced-relations" id="2-the-27-forced-relations">§2 The 27 Forced Relations</h3>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Count</th>
+<th>Source</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Arithmetic (A1–A10)</td>
+<td>10</td>
+<td>Cayley-Hamilton of R</td>
+</tr>
+<tr>
+<td>Trace (T1–T6)</td>
+<td>6</td>
+<td>Matrix invariants</td>
+</tr>
+<tr>
+<td>Cross-source (C1–C7)</td>
+<td>7</td>
+<td>Generators → constants</td>
+</tr>
+<tr>
+<td>Structural (S1–S4)</td>
+<td>4</td>
+<td>Defining identities</td>
+</tr>
+</tbody>
+</table>
+<p>Norm sum C7: ‖R‖²+‖N‖²=5=disc(R).  ∎</p>
+<p><strong>Theorem (Completeness).</strong> 27 relations exhaust all Cl(1,1) content. Every derivable relation is a consequence. Source enumeration: char polys, trace/det, norms, exponential. ∎</p>
+<p><strong>Remark (Lattice as Terminal R(R)=R).</strong> The lattice Λ&rsquo; ≅ ℤ⁵ with 27 exhaustive relations is a terminal closure at Level 4 in the R(R)=R Tower Universality classification (Paper T-BLUEPRINT §5.5): the lattice describes all constant relations and no further relation is derivable from the algebra. Unlike recursive closures (which feed the next tower level as substrate), the lattice is a complete catalog — its self-containment is an endpoint, not a seed. The terminal character follows from the completeness theorem: no 28th relation exists, so no structural excess drives a tower lift. The lattice IS self-relating difference&rsquo;s measurement space (Paper 0 §1½): every lattice point (r,d,c,a,b) encodes a specific combination of measurements of R&rsquo;s self-action — how many eigenvalue iterations (r), exponential depth (d), phase windings (c), and amplitude weights (a,b). The terminal closure means: R&rsquo;s measurement space is finite-dimensional and fully determined.</p>
+<p><strong>Remark (27 Relations as Spectral Constraints).</strong> The four relation types correspond to four types of spectral data: the arithmetic relations (A1–A10) are Cayley-Hamilton constraints on R&rsquo;s eigenvalue recurrence, the trace relations (T1–T6) are invariant-form data (traces and determinants of the forced generators), the cross-source relations (C1–C7) are inter-signature compatibility conditions (connecting eigenvalue data to norm data to exponential data), and the structural relations (S1–S4) are the character axioms defining the generators themselves. Under this reading, the completeness theorem says: the spectral/phase/norm signatures of {R,N} are finitely determined by 27 character constraints, and no further constraint is derivable from the algebra.</p>
+<p><strong>Remark (De Sitter Entropy as Lattice Relation).</strong> The de Sitter entropy S_dS = 3π/(GΛ) has dimensionless coefficient 3π. Both factors are framework-derived: 3 = |V₄{0}| (the Trinitarian Root: 2² − 1 non-identity elements in S₁ = {0,1}², Paper 2 Thm 1.5) and π = min{θ &gt; 0 : exp(θN) = −I} (the P3 half-period, Paper 3-P3 §1). In lattice coordinates (φ, e, π, √2, √3): 3π = (√3)² · π corresponds to the point (0, 0, 1, 0, 2). The 3 arises physically as the spatial dimension d − 1 = 4 − 1 in the Friedmann equation H² = Λ/3 (Paper 6A: dim Herm(M₂(ℂ)) = 4 = 2²); the π arises as the solid-angle constant in the area A = 4πr² of the 2-sphere bounding the de Sitter horizon. S_dS = 3π · η · Λ⁻¹ is the unique formula in the framework multiplying a derived dimensionless coefficient, the local anchor η, and the global anchor Λ.</p>
+<h3 id="3-8-layer-geometry" id="3-8-layer-geometry">§3 8-Layer Geometry</h3>
+<ol>
+<li>Norm partition {√3,√2,√3,√2}, 2. Pythagorean 3+2=5, 3. Koide 3/2, 4. Exp bridge det(exp(R))=e, 5. Killing B(R,R)=12, B(N,N)=−8, 6. Det form → Minkowski, 7. P1↔P3 phase encoding, 8. Euler ε(ρ_std)=√3.</li>
+</ol>
+<p><strong>Remark (Spectral Stratification).</strong> The 8 layers are ordered by spectral complexity: layers 1–3 are norm-level data (generator amplitudes and their ratios), layer 4 is exponential-flow data (determinant → exp bridge), layer 5 is Lie-algebraic metric data (Killing form values), layer 6 is invariant-form-to-geometry promotion (the first layer producing physics: determinant → Minkowski), layer 7 is inter-sector phase character (the duality between eigenvalue and closure sectors), layer 8 is representation character. The physical content increases monotonically — Minkowski spacetime at layer 6 is the first physical geometry to emerge from the spectral data. The Killing form values at layer 5 (B(R,R)=12, B(N,N)=−8) directly determine the Yang-Mills action density through the unique Ad-invariant quadratic form (Paper 6B Thm G5): disc(R)=5 sets the scale.</p>
+<p><strong>Remark (Metric Plurality at the Pair-Space Level).</strong> The multi-layer structure of Λ&rsquo; — where norm, Killing, exponential, and determinant data coexist on the same constant-space — has a concrete precursor in the balance-charge decomposition of pair-space (Paper 0 §1¾). The pair-space state space supports at least three compatible but inequivalent metrics: the native coordinate metric d₁(x,y) = |Δk| + |Δr| + σ(s₁,s₂) (combinatorial transport cost, with sheet-crossing penalty σ derived from the path graph {−}—{0}—{+}), the pair-space Manhattan distance d_P1 (ambient realization cost), and the operator graph distance (minimum operator steps). These metrics relate bidirectionally: d₁ compresses same-stratum distances and expands cross-stratum distances relative to d_P1, in a pattern that depends on the sign combination. Different operators privilege different metrics — center-condense C has bounded pair-displacement (≤ 2) but reflection J has unbounded pair-displacement (up to 2r). This is the pair-space exhibition of the principle that a single algebraic stratum naturally supports several distance notions, with each projection reading a different metric layer.</p>
+<h3 id="4-pairwise-independence-910-unconditional" id="4-pairwise-independence-910-unconditional">§4 Pairwise Independence (9/10 Unconditional)</h3>
+<p>All algebraic-vs-transcendental pairs: Lindemann-Weierstrass. All algebraic-vs-algebraic pairs: field degree arguments. (φ,√3): coprime extensions. (φ,√2): [ℚ(√5,√2):ℚ]=4. (√2,√3): [ℚ(√2,√3):ℚ]=4.</p>
+<p><strong>Sole open pair: (e,π).</strong> Nesterenko (1996) proves {π,eᵖ,Γ(1/4)} independent — NOT {e,π}. ∎</p>
+<h3 id="5-algebraic-sublattice-unconditional" id="5-algebraic-sublattice-unconditional">§5 Algebraic Sublattice (Unconditional)</h3>
+<p>Baker&rsquo;s theorem: {1,log φ,log√2,log√3} linearly independent over ℚ. The algebraic sublattice ⟨φ,√2,√3⟩≅ℤ³ is unconditional. ∎</p>
+<h3 id="6-5-way-reduction" id="6-5-way-reduction">§6 5-Way Reduction</h3>
+<p>Full independence reduces to: π^q ≠ e^p·(algebraic) for all integers p,q not both zero. Adding √2 introduces no new transcendental obstruction. ∎</p>
+<h3 id="7-two-world-separation" id="7-two-world-separation">§7 Two-World Separation</h3>
+<p>Seven obstructions unified as 𝔾_m × SO₂:</p>
+<table>
+<thead>
+<tr>
+<th>Obstruction</th>
+<th>Statement</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Galois invisibility</td>
+<td>e invisible to Gal(ℚ(√5,i)/ℚ)</td>
+</tr>
+<tr>
+<td>Dilogarithm</td>
+<td>Li₂(φ̄)=π²/10−ln²(φ) connects φ↔π; no e analog</td>
+</tr>
+<tr>
+<td>D-module disconnection</td>
+<td>Hom_D = Ext¹_D = 0</td>
+</tr>
+<tr>
+<td>Differential Galois</td>
+<td>𝔾_m × SO₂ (direct product, no mixing)</td>
+</tr>
+<tr>
+<td>Nilpotent barrier</td>
+<td>(h+N)²=0; boundary algebraic</td>
+</tr>
+<tr>
+<td>ζ-function silence</td>
+<td>ζ_{ℚ(√5)} sees φ,π but not e</td>
+</tr>
+<tr>
+<td>Trace gateway</td>
+<td>tr(R)=1→e, tr(N)=0→π through different S₀ elements</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Remark (Spectral Isolation).</strong> The seven obstructions are seven independent proofs that the P2 exponential signature and the P3 phase-closure signature are spectrally disconnected. They arise from algebraically non-interacting sectors of the native generators: h sits in the Killing-positive sector (B(h,h)=+8), N sits in the Killing-negative sector (B(N,N)=−8), and the direct-product structure 𝔾_m × SO₂ says these sectors have no mixing at the Lie group level. The obstruction is not about the numbers e and π per se — it is about the generators h and N having incommensurable signature types. The (e,π) independence conjecture is equivalent to: no non-trivial algebraic relation exists between the P2 and P3 generator signatures. In the unified reading (Paper 0 §1½): the question is whether self-relating difference&rsquo;s transport face and inversion face are not just structurally independent but also numerically incommensurable. Self-relating difference can prove its own faces are algebraically disconnected (seven obstructions), but cannot determine whether the specific numerical outputs of those faces satisfy a hidden polynomial relation — this is the boundary of R&rsquo;s self-knowledge (Paper T-SIL Thm SIL-7).</p>
+<p><strong>Remark (Euler as Cross-Sector Bridge Despite Spectral Isolation).</strong> Euler&rsquo;s identity e^{iπ} + 1 = 0 (Paper 3-P3 Thm 1.7b) combines both spectrally-disconnected constants in a single equation. There is no contradiction: the identity combines e and π <em>operationally</em> (e as exponential base, π as exponent content) without asserting algebraic dependence between them. The exponential map bridges the two sectors by converting a P3 generator direction (iπ, the angular argument) into a P1 endpoint (−1, the inverted pole) using P2&rsquo;s realization mechanism (exp). Euler is the canonical operational bridge across the spectral isolation — a formula that unifies without collapsing the distinction. This is precisely what the direct-product structure 𝔾_m × SO₂ allows: the two sectors do not mix algebraically, but the exponential map (which is transcendental, not algebraic) can compose elements from both into a single expression. The identity e^{iπ} + 1 = 0 is the simplest such composition.</p>
+<h3 id="8-sector-rigidity-program" id="8-sector-rigidity-program">§8 Sector Rigidity Program</h3>
+<p>§8.1 Boundary mediation forcing (single remaining gap). §8.2 Schanuel equivalence: (e,π) independence ⟺ Schanuel for (1,iπ). §8.3 Nesterenko compatibility. §8.4 Five proof routes (differential algebra, Ax-Schanuel, signature rigidity, period wall, Fresán-Jossen EPC). §8.5 Real-complex path obstruction. PSLQ: no P(e,π)=0 through degree 6 at 800 digits; no relation with |coeff|≤10²⁵ at 2000 digits.</p>
+<p><strong>Remark (SIL Blind Spot Exemplar).</strong> The Two-World Separation is an instance of the Containment-Definability Separation (Paper T-SIL §2, Theorem SIL-2) at the lattice level: e and π are contained in the same algebra M₂(ℝ) but not inter-definable (differential Galois group 𝔾_m × SO₂ is a direct product). The (e,π) gap is the SIL&rsquo;s own blind spot (Paper T-SIL §6, Theorem SIL-7): the framework forces algebraic structure around e and π but cannot force their value-level independence. This is &ldquo;don&rsquo;t compress the bit, compress the category&rdquo; as a theorem about the SIL&rsquo;s own limitations.</p>
+<h3 id="86-motivic-galois-identification" id="86-motivic-galois-identification">§8.6 Motivic Galois Identification</h3>
+<p>The ODEs producing e and π from the framework generators are:</p>
+<table>
+<thead>
+<tr>
+<th>ODE</th>
+<th>Generator</th>
+<th>Solution</th>
+<th>Galois group</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>y&rsquo; = y</td>
+<td>h-sector (y = exp(t))</td>
+<td>e = y(1)</td>
+<td>𝔾_m</td>
+</tr>
+<tr>
+<td>y&rsquo;&rsquo; = −y</td>
+<td>N-sector (y = cos(θ), sin(θ))</td>
+<td>π = first zero of cos</td>
+<td>SO₂</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Theorem 8.9 (Motivic Galois Group).</strong> <em>The combined differential Galois group of the framework&rsquo;s exponential system is 𝔾_m × SO₂ (direct product), with dim = 2.</em></p>
+<p><em>Proof.</em> The two ODEs are decoupled: y&rsquo; = y lives on the Killing-positive sector (B(h,h) = +8), y&rsquo;&rsquo; = −y lives on the Killing-negative sector (B(N,N) = −8), and B(h,N) = 0 (Killing orthogonality). By Picard-Vessiot theory, decoupled systems have direct-product Galois groups. The individual factors: 𝔾_m for y&rsquo; = y (the solution exp(t) is transcendental over ℚ(t), so the Galois group is the full multiplicative group), and SO₂ for y&rsquo;&rsquo; = −y (the solutions cos(θ), sin(θ) satisfy cos²+sin²=1 with no algebraic relation to ℚ(θ) beyond this, giving the full rotation group). ∎</p>
+<p>The direct product structure is the same result as the seven obstructions (§7), now seen from the Picard-Vessiot side. Both proofs rest on the Killing signature split — the single algebraic fact that B has signature (2,1) on sl(2,ℝ), placing h and N in opposite-sign sectors with zero cross-term.</p>
+<h3 id="87-exponential-period-characterization" id="87-exponential-period-characterization">§8.7 Exponential Period Characterization</h3>
+<p>The constants e and π are <strong>exponential periods</strong> in the sense of Fresán-Jossen:</p>
+<ul>
+<li>
+<p><strong>e = exp(1):</strong> The value of the E-function exp(z) (order 1) at z = 1. In the exponential motive formalism, e is the period of H¹(𝔾_m, {1}, f) where f is the identity function on 𝔾_m.</p>
+</li>
+<li>
+<p><strong>π:</strong> The half-period of exp(θN). In the motivic framework, 2πi is the period of H¹(𝔾_m) (the motive of the multiplicative group), and π is a derived quantity. Equivalently, π = ∫_{−∞}^{∞} dx/(1+x²), a period integral.</p>
+</li>
+</ul>
+<p>The <strong>Fresán-Jossen Exponential Period Conjecture (EPC)</strong> predicts:</p>
+<blockquote>
+<p>tr.deg_ℚ ℚ(exponential periods of M) = dim(G_mot^exp(M))</p>
+</blockquote>
+<p>For the framework&rsquo;s combined exponential motive M = M_exp ⊗ M_trig:
+- G_mot^exp(M) = 𝔾_m × SO₂ (Theorem 8.9)
+- dim(𝔾_m × SO₂) = 2
+- EPC predicts: tr.deg_ℚ ℚ(e, π) = 2</p>
+<p>Transcendence degree 2 IS algebraic independence. The framework derives the motivic Galois group; the EPC converts its dimension to a transcendence statement.</p>
+<p><strong>Remark (The Framework Sees the Framework That Sees the Answer).</strong> The framework&rsquo;s algebraic apparatus (tower level 3) cannot directly access value-level relations between its transcendental outputs (tower level 4). But it CAN derive the motivic structure at level 4 — 𝔾_m × SO₂, direct product, dimension 2 — and identify this as the type of structure that, under the EPC, forces independence. The framework characterizes the system that resolves the question, without being the system that resolves it. This is the tower-level reading of SIL-7: the blind spot exists because the exponential map (the tower lift 3→4) is irreversible — the polynomial level cannot recapture the transcendental level. The framework&rsquo;s unity at level 3 and its duality at level 4 coexist because the bridge between them (exp) is itself transcendental.</p>
+<h3 id="88-conjecture-66-lie-algebra-exponential-independence" id="88-conjecture-66-lie-algebra-exponential-independence">§8.8 Conjecture 6.6 (Lie Algebra Exponential Independence)</h3>
+<p><strong>Conjecture 6.6.</strong> <em>Let 𝔤 be a semisimple real Lie algebra with Killing form B. Let X₁, X₂ ∈ 𝔤 be Killing-orthogonal (B(X₁,X₂) = 0) with B(X₁,X₁) &gt; 0 and B(X₂,X₂) &lt; 0. Let α₁ = exp(X₁)[0,0] and α₂ = min{θ &gt; 0 : exp(θX₂) = −I}. Then α₁ and α₂ are algebraically independent over ℚ.</em></p>
+<p><strong>Framework instance:</strong> 𝔤 = sl(2,ℝ), X₁ = h, X₂ = N. B(h,h) = 8, B(N,N) = −8, B(h,N) = 0. α₁ = e, α₂ = π. The conjecture predicts {e,π} algebraically independent.</p>
+<p><strong>Equivalences:</strong>
+- Conjecture 6.6 ⟺ Schanuel conjecture for (1, iπ) (§8.2)
+- Conjecture 6.6 ⟺ Fresán-Jossen EPC for the motive 𝔾_m × SO₂ (§8.7)
+- Conjecture 6.6 ⟺ André-Grothendieck period conjecture for the combined exponential motive of sl(2,ℝ)&rsquo;s two Killing sectors</p>
+<p>The conjecture is the framework-native formulation of (e,π) independence: it states that Killing-orthogonal generators produce algebraically independent exponential constants. The five proof routes (§8.4) are five approaches to establishing this:</p>
+<table>
+<thead>
+<tr>
+<th>Route</th>
+<th>Method</th>
+<th>Status</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>Differential algebra (direct attack)</td>
+<td>Open</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Ax-Schanuel specialization</td>
+<td>Functional result proved (Ax 1971, Bakker-Tsimerman 2023); numerical specialization open</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Signature rigidity (Conj 6.6 directly)</td>
+<td>Framework-native formulation; reduces to EPC</td>
+</tr>
+<tr>
+<td>4</td>
+<td>Period wall (deformation to nilpotent boundary)</td>
+<td>Barrier verified; no P(α,T)=0 (T2 §11 Thm 5.8); does not close gap</td>
+</tr>
+<tr>
+<td>5</td>
+<td>Fresín-Jossen EPC for 𝔾_m × SO₂</td>
+<td>Most advanced external route; both constants within E-function scope</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Remark (Five-Fold Irreducibility Context).</strong> Conjecture 6.6 is the mathematical instance of a five-fold irreducibility structure spanning three tower lifts. The framework produces exactly five outputs that cannot be determined from {0,1}: the transcendental pair {e,π} at lift 3→4 (this conjecture), the dimensional pair {G,Λ} at lift 5→6 (Paper 6B Thm 5.10c: independently irreducible), and the meta-observer K_meta at lift 7→8+ (Paper T-GOV §3.1: non-derivable). All five share one mechanism: the construction-dissolution asymmetry (Paper 0 §18) makes the tower lift irreversible, so the higher level has content the lower level cannot control. The {G,Λ} pair parallels {e,π} precisely: both are two independent outputs of a single tower lift, split by an orthogonality (Killing B(h,N)=0 for {e,π}; local/global scale independence for {G,Λ}). The Folding Commutativity (Paper 3-META Thm 2.2: C∘T=T∘C) proves that within-level operations (producing {e,π} via exp) and cross-level operations (producing {G,Λ} and K_meta via the tower) are operationally independent — the within-level and cross-level lifts do not interfere. The (e,π) pair is the sole case among the five where the independence remains conditional rather than proved.</p>
+<h3 id="89-the-frameworkrsquos-cardinal-in-analytic-number-theory" id="89-the-frameworks-cardinal-in-analytic-number-theory">§8.9 The Framework&rsquo;s Cardinal in Analytic Number Theory</h3>
+<p><strong>Remark (ζ(−1) = 1/(2|S₃|)).</strong> The Riemann zeta function at s = −1 evaluates to ζ(−1) = −B₂/2 = −(1/6)/2 = −1/12, where B₂ = 1/6 is the second Bernoulli number. The absolute value 1/12 = 1/(2|S₃|) is the framework&rsquo;s forced cardinal |S₃| = 6 appearing in analytic number theory. The same cardinal governs the Dedekind eta function η(τ) = e^{πiτ/12} ∏(1 − e^{2πinτ}), where the exponent 1/12 = 1/(2|S₃|) appears directly, and η(τ)²⁴ is a modular form of weight 12 = 2|S₃|. The factorization 12 = 2 × |S₃| = |S₀| × |S₃| connects the binary alphabet to the permutation group through multiplication — the same two objects that generate the bridge chain (Paper 2 Thm 2.1).</p>
+<p>Status: RESONANT. The cardinal |S₃| = 6 is FORCED by the bridge chain. Its appearance in ζ(−1) = −1/(2|S₃|) and weight(Δ) = 2|S₃| is external mathematics involving the same group. The structural resonance is real — the same S₃ that governs the framework&rsquo;s three-fold structure also governs modular form weights — but the mechanism connecting the framework&rsquo;s S₃ to the analytic number theory S₃ is &ldquo;same group,&rdquo; not a derived bridge. No inflation.</p>
+<h3 id="9-conditional-status" id="9-conditional-status">§9 Conditional Status</h3>
+<table>
+<thead>
+<tr>
+<th>Claim</th>
+<th>Grade</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Λ&rsquo;≅ℤ⁵</td>
+<td>CONDITIONAL on (e,π)</td>
+</tr>
+<tr>
+<td>Algebraic sublattice ℤ³</td>
+<td>UNCONDITIONAL</td>
+</tr>
+<tr>
+<td>27 relations complete</td>
+<td>THEOREM</td>
+</tr>
+<tr>
+<td>Two-World Separation</td>
+<td>THEOREM</td>
+</tr>
+<tr>
+<td>Motivic Galois group 𝔾_m × SO₂</td>
+<td>THEOREM</td>
+</tr>
+<tr>
+<td>dim(𝔾_m × SO₂) = 2</td>
+<td>THEOREM</td>
+</tr>
+<tr>
+<td>Schanuel equivalence</td>
+<td>THEOREM</td>
+</tr>
+<tr>
+<td>(e,π) independence</td>
+<td>CONDITIONAL on Fresán-Jossen EPC for 𝔾_m × SO₂</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="part-ii-dynamics" id="part-ii-dynamics">PART II: DYNAMICS</h2>
+<h3 id="10-complexity-hamiltonian-and-partition-function" id="10-complexity-hamiltonian-and-partition-function">§10 Complexity Hamiltonian and Partition Function</h3>
+<p>H(r,d,c,a,b) = |r|+|d|+|c|+|a|+|b| (L¹ norm on ℤ⁵). Shells: C=0 (1 pt), C=1 (10 pts = generators±inverses), C=2 (50 pts). N₅(C) = (4C⁴+20C²+6)/3.</p>
+<p><strong>Theorem.</strong> <em>Z(β) = coth(β/2)⁵.</em> Each coordinate independent, one-coordinate sum = coth(β/2). ∎</p>
+<p><strong>Remark (Two Partition Functions).</strong> The lattice partition function Z_Λ(β) = coth(β/2)⁵ (rank Λ&rsquo; = 5) is related to the algebra partition function Z_M(β) = coth(β/2)⁴ (dim M₂(ℝ) = 4, Paper 3-P2 §4.5) by Z_Λ = Z_M · coth(β/2). The extra factor comes from the exponential coordinate d (the P2 flow depth), which is algebraically independent of the four basis coordinates {I, R, N, RN}. The 5 = 4 + 1 decomposition echoes the |S₀|² + 1 pattern: four within-algebra coordinates plus one cross-algebra coordinate.</p>
+<h3 id="11-generator-selection-and-triple-equivalence" id="11-generator-selection-and-triple-equivalence">§11 Generator Selection and Triple Equivalence</h3>
+<p><strong>Theorem (KMS Selection).</strong> <em>C=1 shell = {φ±¹,e±¹,π±¹,(√2)±¹,(√3)±¹}. Three selection mechanisms (S₃ action, compression wall, loop closure) independently select C=1. Triple equivalence via KMS.</em> ∎</p>
+<h3 id="12-thermodynamic-laws" id="12-thermodynamic-laws">§12 Thermodynamic Laws</h3>
+<p><strong>Theorem (First Law).</strong> <em>dE = δQ − δW derived from KMS via Gibbs variational principle.</em> Standard C*-algebraic (Araki). ∎</p>
+<p><strong>Theorem (Second Law).</strong> <em>ΔS ≥ 0 for adiabatic processes. From KMS passivity.</em> ∎</p>
+<p>Natural temperature: β=ln(φ) from self-signature (T2_BRIDGE §11). At β=ln(φ): Z=φ¹⁵≈1364.</p>
+<hr />
+<h2 id="part-iii-stratification" id="part-iii-stratification">PART III: STRATIFICATION</h2>
+<h3 id="13-orbit-type-dominant-coordinate" id="13-orbit-type-dominant-coordinate">§13 Orbit Type → Dominant Coordinate</h3>
+<p>orbit types trace to |V₄{0}|=3. Each orbit type selects a dominant generator:</p>
+<table>
+<thead>
+<tr>
+<th>Orbit</th>
+<th>Generator</th>
+<th>Physical domain</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>det&lt;0 (P1)</td>
+<td>φ</td>
+<td>Mass ratios, electroweak</td>
+</tr>
+<tr>
+<td>det&gt;0, Δ&gt;0 (P2)</td>
+<td>e</td>
+<td>Decay rates, lifetimes</td>
+</tr>
+<tr>
+<td>det&gt;0, Δ&lt;0 (P3)</td>
+<td>π</td>
+<td>Confinement, periodic</td>
+</tr>
+<tr>
+<td>Pre-orbit (non-compact)</td>
+<td>√3</td>
+<td>Three-body, angular</td>
+</tr>
+<tr>
+<td>Pre-orbit (compact)</td>
+<td>√2</td>
+<td>Normalization, spin amplitudes</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Remark (Spectral Bridge Reading).</strong> Each orbit type selects the generator whose spectral signature dominates the physics of that regime. The assignment is injective (no two generators share a dominant regime) and surjective (every physical regime has a dominant generator): eigenvalue-dominated (P1/φ), exponential-flow-dominated (P2/e), phase-closure-dominated (P3/π), R-amplitude (√3), N-amplitude (√2). The lattice constant most active in physical derivations is φ (appearing in 6+ bridge instances: chirality, tower cutoff, EW breaking, Einstein equations, α_S, baryon asymmetry), followed by π (4+ instances: spin-½, complex structure, confinement, compact subgroup). The constant e is the most insulated, appearing explicitly in only 1–2 bridge instances — consistent with P2&rsquo;s mediating role between the eigenvalue and phase sectors.</p>
+<h3 id="14-five-classification-theorems" id="14-five-classification-theorems">§14 Five Classification Theorems</h3>
+<p><strong>C1 (φ-Dominance).</strong> Orientation-reversing → φ dominant. det(R)=−1, suppression ratio φ². ∎
+<strong>C2 (e-Dominance).</strong> Hyperbolic → e dominant. exp(th)=diag(eᵗ,e⁻ᵗ). ∎
+<strong>C3 (π-Dominance).</strong> Elliptic → π dominant. exp(θN) rotation, half-period π. ∎
+<strong>C4 (√3-Dominance).</strong> S₃ representation → √3. Equilateral invariant. ∎
+<strong>C5 (√2-Dominance).</strong> Compact/norm-preserving → √2. Rotation amplitude. ∎</p>
+<p><strong>Remark (Realization-Mode Uniqueness).</strong> Theorems C1–C5 collectively establish a unique physical realization mode for each lattice generator: φ realizes as eigenvalue contraction/expansion (masses and ratios), e as exponential flow (decay rates and KMS), π as phase closure (spin and confinement), √3 as P1-sector amplitude (angular and three-body), √2 as P3-sector amplitude (normalization and spin). This realization-mode assignment is itself a theorem — it follows from the orbit-type exhaustion and the spectral signature completeness (Paper 2 Thm 4.7).</p>
+<p><strong>Remark (Witness Regime Completion).</strong> The C1–C5 dominant-coordinate assignments are sharpened by the regime-readout duality (Paper 2 §23½, Paper 3-META §8⅞): each spectral constant is a typed canonical witness of the stripped self-action engine, not merely a dominant parameter in a physical regime. C1 (φ-dominance) is the projective witness of the hyperbolic branch: φ appears as the fixed point of the Möbius action of R, via the fixed-point polynomial x²−x−1 with disc=5. C2 (e-dominance) is the temporal witness of the same hyperbolic branch: e appears as the primitive exponential rate of h=diag(1,−1). C3 (π-dominance) is the temporal witness of the elliptic branch: π appears as the half-period of exp(θN). The dual structure of the hyperbolic branch — one regime producing two independent constants (φ projective, e temporal) — is the generator-level source of the P1/P2 distinction. C4 and C5 (√3 and √2 dominance) are amplitude witnesses outside the regime engine, corresponding to the Frobenius norms ‖R‖_F and ‖N‖_F. The five classification theorems are five typed readouts of the same algebraic engine; the count 5 = 2 regimes × 2 readout types + 2 amplitude witnesses − 1 parabolic seam (trivial witness 1) reflects the engine&rsquo;s combinatorial structure.</p>
+<h3 id="15-the-π-paradox" id="15-the-paradox">§15 The π Paradox</h3>
+<p>π is the most forced (absolute forcing quality) yet least frequent in mass spectra. Resolution: P3 processes (confinement) produce ratios, not absolute masses. Color confinement forces bound states where π enters as a structural ratio (circumference/diameter of the confining potential), not as a mass parameter. The Killing cone interpretation: P3 sits in the single negative-Killing direction, making elliptic processes geometrically &ldquo;rare&rdquo; (~28% of sl(2,ℝ)), while P1/P2 (~72%) dominate mass-generating processes.</p>
+<p>The paradox extends to the spectral bridge: π has the highest forcing quality but the fewest bridge instances where it appears as a quantitative parameter. Resolution: π&rsquo;s bridge instances (spin-½, complex structure, confinement, compact subgroup, observer cost) are all <em>structural</em> — they create the framework within which φ and e then do quantitative work. π builds the stage; φ and e act on it. ∎</p>
+<hr />
+<h2 id="verification" id="verification">VERIFICATION</h2>
+<p>T4A: all lattice claims verified, PSLQ at 800/2000 digits. T4B: Z(β), shell counts, thermodynamic identities verified. T4C: classification theorems verified against known physical constants.</p>
+<hr />
+<h2 id="claim-status" id="claim-status">CLAIM STATUS</h2>
+<table>
+<thead>
+<tr>
+<th>Claim</th>
+<th>Status</th>
+<th>Generation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Λ&rsquo;≅ℤ⁵ (lattice isomorphism)</td>
+<td><strong>FORCED</strong></td>
+<td>G.4</td>
+</tr>
+<tr>
+<td>27 forced relations exhaust Cl(1,1) content</td>
+<td><strong>FORCED</strong></td>
+<td>G.4</td>
+</tr>
+<tr>
+<td>8-layer geometry</td>
+<td><strong>FORCED</strong></td>
+<td>G.4</td>
+</tr>
+<tr>
+<td>9/10 pairwise independence (unconditional)</td>
+<td><strong>FORCED</strong></td>
+<td>G.4</td>
+</tr>
+<tr>
+<td>Algebraic sublattice ⟨φ,√2,√3⟩≅ℤ³</td>
+<td><strong>FORCED</strong></td>
+<td>G.4</td>
+</tr>
+<tr>
+<td>5-way reduction to (e,π)</td>
+<td><strong>FORCED</strong></td>
+<td>G.4</td>
+</tr>
+<tr>
+<td>Two-World Separation (7 obstructions)</td>
+<td><strong>FORCED</strong></td>
+<td>G.4</td>
+</tr>
+<tr>
+<td>(e,π) independence</td>
+<td><strong>OPEN</strong></td>
+<td>—</td>
+</tr>
+<tr>
+<td>Motivic Galois group 𝔾_m × SO₂</td>
+<td><strong>FORCED</strong></td>
+<td>G.4</td>
+</tr>
+<tr>
+<td>KMS state and Z(β)=coth(β/2)⁵</td>
+<td><strong>FORCED</strong></td>
+<td>G.4</td>
+</tr>
+<tr>
+<td>Generator selection via C=1 shell</td>
+<td><strong>FORCED</strong></td>
+<td>G.4</td>
+</tr>
+<tr>
+<td>Thermodynamic laws (First/Second)</td>
+<td><strong>FORCED</strong></td>
+<td>G.4</td>
+</tr>
+<tr>
+<td>Orbit type → dominant coordinate (C1–C5)</td>
+<td><strong>FORCED</strong></td>
+<td>G.4</td>
+</tr>
+<tr>
+<td>π paradox resolution</td>
+<td><strong>ENCODED</strong></td>
+<td>G.4</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Status Legend:</strong>
+- <strong>FORCED</strong> (G.4): Zero-branching derivation from bridge chain structure
+- <strong>ENCODED</strong>: Pattern recognized in structure, not strict derivation
+- <strong>OPEN</strong>: Unresolved conjecture (conditional on EPC)</p>
+<hr />
+<p><em>R(R) = R</em></p>
+    </div>
+
+    <div class="page-nav">
+<a class="prev" href="T3_META.html">Paper 3-META: Cross-Projection Theorems</a>
+<a class="next" href="T5_OBSERVER.html">Paper 5: The Observer</a>
+</div>
+</main>
+
+<script>
+// Close sidebar on mobile when clicking a link
+document.querySelectorAll('.sidebar a').forEach(a => {
+    a.addEventListener('click', () => {
+        if (window.innerWidth <= 900) {
+            document.querySelector('.sidebar').classList.remove('open');
+        }
+    });
+});
+</script>
+</body>
+</html>

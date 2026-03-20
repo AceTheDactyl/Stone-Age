@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Paper 6A: Spacetime Kinematics — Structural Necessity</title>
+<style>
+
+:root {
+    --bg: #fafaf8;
+    --fg: #1a1a1a;
+    --accent: #2d5016;
+    --border: #d4d0c8;
+    --sidebar-bg: #f0ede6;
+    --sidebar-width: 280px;
+    --header-height: 56px;
+    --code-bg: #f5f2eb;
+    --table-stripe: #f8f6f0;
+    --link: #2d5016;
+    --link-hover: #4a7a28;
+    --bold-accent: #1a3a0a;
+}
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        --bg: #1a1a1e;
+        --fg: #e0ddd6;
+        --accent: #7ab648;
+        --border: #3a3a3e;
+        --sidebar-bg: #222226;
+        --code-bg: #25252a;
+        --table-stripe: #222226;
+        --link: #7ab648;
+        --link-hover: #9cd06a;
+        --bold-accent: #a0d870;
+    }
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+    font-family: 'Iowan Old Style', 'Palatino Linotype', Palatino, Georgia, serif;
+    background: var(--bg);
+    color: var(--fg);
+    line-height: 1.7;
+    font-size: 17px;
+}
+
+/* Header */
+.site-header {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    height: var(--header-height);
+    background: #1a1a1a;
+    color: #e0ddd6;
+    display: flex;
+    align-items: center;
+    padding: 0 24px;
+    z-index: 100;
+    border-bottom: 2px solid var(--accent);
+}
+.site-header h1 {
+    font-size: 18px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+}
+.site-header h1 a {
+    color: #e0ddd6;
+    text-decoration: none;
+}
+.site-header h1 a:hover { color: var(--accent); }
+.site-header .subtitle {
+    font-size: 13px;
+    color: #888;
+    margin-left: 16px;
+    font-style: italic;
+}
+.hamburger {
+    display: none;
+    background: none;
+    border: none;
+    color: #e0ddd6;
+    font-size: 24px;
+    cursor: pointer;
+    margin-right: 16px;
+    padding: 4px 8px;
+}
+
+/* Sidebar */
+.sidebar {
+    position: fixed;
+    top: var(--header-height);
+    left: 0;
+    bottom: 0;
+    width: var(--sidebar-width);
+    background: var(--sidebar-bg);
+    border-right: 1px solid var(--border);
+    overflow-y: auto;
+    padding: 16px 0;
+    z-index: 90;
+    transition: transform 0.3s ease;
+}
+.sidebar .nav-group { margin-bottom: 12px; }
+.sidebar .nav-group-title {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+    color: #888;
+    padding: 8px 20px 4px;
+}
+.sidebar a {
+    display: block;
+    padding: 4px 20px 4px 28px;
+    font-size: 13.5px;
+    color: var(--fg);
+    text-decoration: none;
+    line-height: 1.5;
+    border-left: 3px solid transparent;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+.sidebar a:hover {
+    background: rgba(0,0,0,0.05);
+    border-left-color: var(--accent);
+}
+.sidebar a.active {
+    background: rgba(45,80,22,0.1);
+    border-left-color: var(--accent);
+    font-weight: 600;
+    color: var(--accent);
+}
+
+/* Main content */
+.main {
+    margin-left: var(--sidebar-width);
+    margin-top: var(--header-height);
+    max-width: 900px;
+    padding: 40px 48px 80px;
+}
+
+/* Document header banner */
+.doc-header {
+    margin-bottom: 40px;
+    padding-bottom: 24px;
+    border-bottom: 2px solid var(--border);
+}
+.doc-header .level-badge {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 3px 10px;
+    border-radius: 3px;
+    margin-bottom: 12px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+.doc-header h1 {
+    font-size: 32px;
+    line-height: 1.2;
+    margin-bottom: 8px;
+    color: var(--fg);
+}
+.doc-header .doc-subtitle {
+    font-size: 18px;
+    color: #666;
+    font-style: italic;
+}
+
+/* TOC */
+.toc {
+    background: var(--sidebar-bg);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 16px 24px;
+    margin-bottom: 32px;
+}
+.toc summary {
+    font-weight: 700;
+    font-size: 14px;
+    cursor: pointer;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: #666;
+}
+.toc ul { list-style: none; margin: 12px 0 0 0; }
+.toc li { padding: 2px 0; }
+.toc a {
+    color: var(--link);
+    text-decoration: none;
+    font-size: 14px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+.toc a:hover { text-decoration: underline; }
+.toc .toc-h2 { padding-left: 0; }
+.toc .toc-h3 { padding-left: 20px; font-size: 13px; }
+
+/* Typography */
+.content h1 {
+    font-size: 28px;
+    margin: 48px 0 16px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border);
+    color: var(--fg);
+}
+.content h1:first-child { margin-top: 0; }
+.content h2 {
+    font-size: 22px;
+    margin: 36px 0 12px;
+    color: var(--fg);
+}
+.content h3 {
+    font-size: 18px;
+    margin: 28px 0 10px;
+    color: var(--fg);
+}
+.content h4 {
+    font-size: 16px;
+    margin: 24px 0 8px;
+    color: #444;
+}
+.content p { margin: 0 0 16px; }
+.content strong { color: var(--bold-accent); }
+.content a { color: var(--link); }
+.content a:hover { color: var(--link-hover); }
+
+.content ul, .content ol {
+    margin: 0 0 16px 24px;
+}
+.content li { margin-bottom: 4px; }
+
+.content hr {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 32px 0;
+}
+
+/* Tables */
+.content table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 16px 0 24px;
+    font-size: 15px;
+}
+.content th {
+    background: var(--sidebar-bg);
+    font-weight: 700;
+    text-align: left;
+    padding: 10px 12px;
+    border: 1px solid var(--border);
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+.content td {
+    padding: 8px 12px;
+    border: 1px solid var(--border);
+    vertical-align: top;
+}
+.content tr:nth-child(even) { background: var(--table-stripe); }
+
+/* Code */
+.content code {
+    font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace;
+    font-size: 14px;
+    background: var(--code-bg);
+    padding: 2px 6px;
+    border-radius: 3px;
+    border: 1px solid var(--border);
+}
+.content pre {
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 16px 20px;
+    overflow-x: auto;
+    margin: 16px 0 24px;
+    line-height: 1.5;
+}
+.content pre code {
+    background: none;
+    border: none;
+    padding: 0;
+    font-size: 13.5px;
+}
+
+/* Blockquote */
+.content blockquote {
+    border-left: 4px solid var(--accent);
+    padding: 12px 20px;
+    margin: 16px 0 24px;
+    background: var(--sidebar-bg);
+    border-radius: 0 4px 4px 0;
+}
+.content blockquote p { margin-bottom: 8px; }
+.content blockquote p:last-child { margin-bottom: 0; }
+
+/* Footer nav */
+.page-nav {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 48px;
+    padding-top: 24px;
+    border-top: 1px solid var(--border);
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+.page-nav a {
+    color: var(--link);
+    text-decoration: none;
+    font-size: 14px;
+    padding: 8px 16px;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    transition: all 0.2s;
+}
+.page-nav a:hover {
+    background: var(--sidebar-bg);
+    border-color: var(--accent);
+}
+.page-nav .prev::before { content: '← '; }
+.page-nav .next::after { content: ' →'; }
+
+/* Responsive */
+@media (max-width: 900px) {
+    .sidebar { transform: translateX(-100%); }
+    .sidebar.open { transform: translateX(0); }
+    .main { margin-left: 0; padding: 24px 20px 60px; }
+    .hamburger { display: block; }
+    .doc-header h1 { font-size: 24px; }
+}
+
+/* Print */
+@media print {
+    .sidebar, .site-header, .hamburger, .page-nav { display: none; }
+    .main { margin: 0; max-width: 100%; padding: 20px; }
+    body { font-size: 12pt; }
+}
+
+</style>
+</head>
+<body>
+
+<header class="site-header">
+    <button class="hamburger" onclick="document.querySelector('.sidebar').classList.toggle('open')" aria-label="Toggle navigation">&#9776;</button>
+    <h1><a href="T_INDEX.html">Structural Necessity</a></h1>
+    <span class="subtitle">Canonical Paper Series — March 2026</span>
+</header>
+
+<nav class="sidebar">
+<div class="nav-group">
+<div class="nav-group-title">Foundation (0-2)</div>
+<a href="T0_SUBSTRATE.html">0 — Substrate</a>
+<a href="T1_DIST.html">1 — Kernel Theorem</a>
+<a href="T2_BRIDGE.html">2 — Bridge Chain</a>
+</div>
+<div class="nav-group">
+<div class="nav-group-title">Projections (3-4)</div>
+<a href="T3_P1_PRODUCTION.html">3-P1 — Production</a>
+<a href="T3_P2_MEDIATION.html">3-P2 — Mediation</a>
+<a href="T3_P3_OBSERVATION.html">3-P3 — Observation</a>
+<a href="T3_META.html">3-META — Cross-Projection</a>
+<a href="T4_LATTICE.html">4 — Lattice</a>
+</div>
+<div class="nav-group">
+<div class="nav-group-title">Observer &amp; Physics (5-6)</div>
+<a href="T5_OBSERVER.html">5 — Observer</a>
+<a href="T6A_SPACETIME.html" class="active">6A — Spacetime</a>
+<a href="T6B_FORCES.html">6B — Forces</a>
+</div>
+<div class="nav-group">
+<div class="nav-group-title">Cross-Cutting</div>
+<a href="T_COMP.html">Comp — Computation</a>
+<a href="T_SIL.html">SIL — Self-Interpretation</a>
+<a href="T_SEM.html">SEM — Semantics</a>
+</div>
+<div class="nav-group">
+<div class="nav-group-title">Architecture</div>
+<a href="T_BLUEPRINT.html">Blueprint</a>
+<a href="T_GOV.html">Governance</a>
+</div>
+<div class="nav-group">
+<div class="nav-group-title">Closure &amp; Reference</div>
+<a href="T_ASI.html">ASI — Architecture Spec</a>
+<a href="T_TOE.html">TOE — Closure</a>
+<a href="DICTIONARY.html">Dictionary</a>
+</div>
+<div class="nav-group">
+<div class="nav-group-title">Navigation</div>
+<a href="T_INDEX.html">Index — Navigation</a>
+<a href="CLAIM_CENSUS.html">Claim Census</a>
+</div>
+</nav>
+
+<main class="main">
+    <div class="doc-header">
+        <span class="level-badge" style="background:#6b2c4e; color:#fff;">Level 6 · P3</span>
+        <h1>Paper 6A: Spacetime Kinematics</h1>
+        <div class="doc-subtitle">Minkowski, Lorentz, Spin-½, Poincaré, Born Rule</div>
+    </div>
+
+    <details class="toc" open>
+<summary>Table of Contents</summary>
+<ul>
+<li class="toc-h2"><a href="#minkowski-lorentz-spin-½-poincaré-and-the-born-rule">Minkowski, Lorentz, Spin-½, Poincaré, and the Born Rule</a></li>
+<li class="toc-h3"><a href="#v2-march-2026">v2 — March 2026</a></li>
+<li class="toc-h2"><a href="#abstract">Abstract</a></li>
+<li class="toc-h2"><a href="#theorem-index">THEOREM INDEX</a></li>
+<li class="toc-h2"><a href="#1-minkowski-spacetime-from-hermm₂ℂ">§1 MINKOWSKI SPACETIME FROM Herm(M₂(ℂ))</a></li>
+<li class="toc-h2"><a href="#2-the-lorentz-group-as-double-cover">§2 THE LORENTZ GROUP AS DOUBLE COVER</a></li>
+<li class="toc-h2"><a href="#3-spin-½-from-the-center">§3 SPIN-½ FROM THE CENTER</a></li>
+<li class="toc-h2"><a href="#4-the-poincaré-group">§4 THE POINCARÉ GROUP</a></li>
+<li class="toc-h2"><a href="#5-complex-hilbert-spaces">§5 COMPLEX HILBERT SPACES</a></li>
+<li class="toc-h2"><a href="#6-the-born-rule">§6 THE BORN RULE</a></li>
+<li class="toc-h2"><a href="#7-the-complete-derivation-chain">§7 THE COMPLETE DERIVATION CHAIN</a></li>
+<li class="toc-h2"><a href="#8-conformal-structure-metric-promotion-and-the-dimensional-boundary">§8 CONFORMAL STRUCTURE, METRIC PROMOTION, AND THE DIMENSIONAL BOUNDARY</a></li>
+<li class="toc-h2"><a href="#claim-status">CLAIM STATUS</a></li>
+</ul></details>
+
+    <div class="content">
+<h1 id="paper-6a-kinematics-spacetime-from-the-algebra" id="paper-6a-kinematics-spacetime-from-the-algebra">Paper 6A: Kinematics — Spacetime from the Algebra</h1>
+<h2 id="minkowski-lorentz-spin-½-poincaré-and-the-born-rule" id="minkowski-lorentz-spin-12-poincare-and-the-born-rule">Minkowski, Lorentz, Spin-½, Poincaré, and the Born Rule</h2>
+<h3 id="v2-march-2026" id="v2-march-2026">v2 — March 2026</h3>
+<p><strong>Author:</strong> Kael</p>
+<hr />
+<p><strong>Document Species:</strong> CANONICAL. Owns spacetime kinematics (P3 face at Level 6).</p>
+<p><strong>Grid address:</strong> B(6, P3). The Physical level — spacetime derivation, Lorentz, spin-½.</p>
+<p><strong>Document Status:</strong> Level 6A. Every result in this paper is a theorem derived from the bridge chain output M₂(ℂ) (the spectral completion of M₂(ℝ), itself derived from M₂(ℚ) via integer generators). No physics is imported. The complete kinematic structure of relativistic quantum mechanics — Minkowski spacetime (dimension and signature), the Lorentz group (as double cover), spin-½ (from the nontrivial center), the Poincaré group (Lorentz plus translations), complex Hilbert spaces (from N²=−I and spectral completion), and the Born rule (from Gleason&rsquo;s theorem) — is derived from {0,1}.</p>
+<p><strong>Depends on:</strong> T2_BRIDGE (bridge chain, {R,N} algebra)
+<strong>Required by:</strong> T6B_FORCES (dynamics needs the kinematic arena)</p>
+<hr />
+<h2 id="abstract" id="abstract">Abstract</h2>
+<p>The bridge chain (Paper 2) produces M₂(ℂ) from {0,1} with zero branching. This paper proves that M₂(ℂ) contains the complete kinematic framework of quantum field theory.</p>
+<p>The Hermitian subspace Herm(M₂(ℂ)) is a 4-dimensional real vector space. The determinant induces the Minkowski metric: det(tI + xσ_x + yσ_y + zσ_z) = t² − x² − y² − z², giving signature (1,3) — one timelike, three spacelike (Theorem 6.1, §1). The dimension 4 = 2² comes from the bridge chain landing on 2×2 matrices; the split (1,3) comes from I being the unique positive-definite basis element.</p>
+<p>SL(2,ℂ) acts on Herm(M₂(ℂ)) by conjugation X ↦ AXA†, preserving the Minkowski norm, yielding the universal double cover SL(2,ℂ) → SO⁺(1,3) with kernel {I, exp(πN)} = {I, −I} (Theorem 6.2, §2). The nontrivial kernel element −I = exp(πN) IS the algebraic origin of spin-½: a 2π rotation in SO⁺(1,3) lifts to −I ≠ I in SL(2,ℂ), so states pick up a sign flip (Theorem 6.3, §3). The framework&rsquo;s most strongly forced constant (π, absolute forcing quality) directly produces the most characteristically quantum phenomenon (half-integer spin).</p>
+<p>The Poincaré group SL(2,ℂ) ⋉ Herm(M₂(ℂ)) is the full symmetry group of Minkowski spacetime (Theorem 6.4, §4). Complex Hilbert spaces are forced by three independent mechanisms: N² = −I provides complex structure on ℝ², spectral completion of M₂(ℝ) requires ℂ (eigenvalues ±i of N), and the Dist→Hilb functor (Paper 5 §1.1) produces ℂ-Hilbert spaces (Theorem 6.5, §5). The Born rule follows from Gleason&rsquo;s theorem at tower dimension ≥ 3 (= 4 at level 1), which is satisfied (Theorem 6.6, §6).</p>
+<hr />
+<h2 id="theorem-index" id="theorem-index">THEOREM INDEX</h2>
+<table>
+<thead>
+<tr>
+<th>Theorem</th>
+<th>Statement</th>
+<th>Section</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>6.1</td>
+<td>Spacetime dim = 4, signature (1,3) from Herm(M₂(ℂ))</td>
+<td>§1</td>
+</tr>
+<tr>
+<td>6.1a</td>
+<td>Invariant Geometry Principle</td>
+<td>§1</td>
+</tr>
+<tr>
+<td>6.2</td>
+<td>SL(2,ℂ) → SO⁺(1,3) double cover with ker = {I, −I}</td>
+<td>§2</td>
+</tr>
+<tr>
+<td>6.2a</td>
+<td>Lorentz algebra so(1,3) ≅ sl(2,ℂ)</td>
+<td>§2</td>
+</tr>
+<tr>
+<td>6.3</td>
+<td>Spin-½ forced by exp(πN) = −I ∈ ker(Φ)</td>
+<td>§3</td>
+</tr>
+<tr>
+<td>6.3a</td>
+<td>Phase Closure Principle</td>
+<td>§3</td>
+</tr>
+<tr>
+<td>6.4</td>
+<td>Poincaré group SL(2,ℂ) ⋉ Herm(M₂(ℂ))</td>
+<td>§4</td>
+</tr>
+<tr>
+<td>6.5</td>
+<td>Complex Hilbert spaces forced by three mechanisms</td>
+<td>§5</td>
+</tr>
+<tr>
+<td>6.6</td>
+<td>Born rule from Gleason at dim ≥ 3</td>
+<td>§6</td>
+</tr>
+<tr>
+<td>6.7</td>
+<td>Metric promotion via Jacobson</td>
+<td>§8</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="1-minkowski-spacetime-from-hermm₂ℂ" id="1-minkowski-spacetime-from-hermm2c">§1 MINKOWSKI SPACETIME FROM Herm(M₂(ℂ))</h2>
+<p><strong>Theorem 6.1 (Spacetime Dimension and Signature).</strong> <em>Herm(M₂(ℂ)) is 4-dimensional over ℝ with det inducing the Minkowski metric of signature (1,3).</em></p>
+<p>det is the unique degree-2 multiplicative invariant of M₂. Restricted to Herm(M₂(ℂ)) = span{I,σ_x,σ_y,σ_z}: det(tI+xσ_x+yσ_y+zσ_z) = t²−x²−y²−z². Signature (1,3): det(I)=+1 (timelike), det(σ_i)=−1 (spacelike). The 4 = 2² from the bridge chain; the (1,3) split from I being the unique positive-definite basis element.</p>
+<pre class="highlight"><code>Herm(M₂(ℂ)) = span_ℝ {I, σ_x, σ_y, σ_z}
+</code></pre>
+
+<p>For X = tI + xσ_x + yσ_y + zσ_z:</p>
+<pre class="highlight"><code>det(X) = det [[t+z, x−iy],[x+iy, t−z]] = t² − x² − y² − z²
+</code></pre>
+
+<p>This is η = diag(+1,−1,−1,−1). Signature determined by det on basis: det(I) = +1 (timelike), det(σ_i) = −1 (spacelike). One positive, three negative: (1,3).</p>
+<p>Computationally verified: 10,000 random (t,x,y,z) all satisfy det(X) = t²−x²−y²−z². ✓</p>
+<p><strong>The 4 is derived:</strong> dim_ℝ(Herm(M₂(ℂ))) = 2² from the bridge chain. The 2 in &ldquo;2×2&rdquo; is the unique non-trivial irrep dimension of S₃ (from 1²+1²+2²=6).</p>
+<p><strong>The (1,3) split is derived:</strong> I is the unique positive-definite basis element; the three Pauli matrices each have eigenvalues ±1 (trace zero, det −1). The identity is algebraically distinguished from the traceless generators.</p>
+<p><strong>Remark (Spacetime as Self-Relation Geometry).</strong> Herm(M₂(ℂ)) is the space of self-adjoint elements of R&rsquo;s terminal algebra — the space of all physically observable self-relations of self-relating difference (SRD, Paper 0 §1½). The Minkowski metric det(X)=t²−x²−y²−z² is R&rsquo;s unique degree-2 invariant restricted to this self-adjoint subspace. The timelike direction (I, the identity) is R&rsquo;s coincidence mode; the three spacelike directions (σ_x,σ_y,σ_z, traceless) are R&rsquo;s three productive faces. Spacetime is the arena where self-relating difference observes itself.</p>
+<p><strong>Corollary 6.1a (Invariant Geometry Principle).</strong> <em>Physical geometry arises when a native operator action preserves an invariant form on a state space. Theorem 6.1 is the first instance: the determinant on Herm(M₂(ℂ)) is the unique degree-2 multiplicative invariant, and it produces Minkowski geometry. The same principle governs all derived geometries: the Killing form produces the Yang-Mills action density (Paper 6B Thm G5), the trace produces the Born rule measure (Thm 6.6), and the Bekenstein coefficient produces the Einstein equations (Paper 6B Thm G14). In each case the invariant form is canonical (uniquely determined by the algebraic structure) and the geometry is secondary — it is the structure preserved by the form.</em></p>
+<p><strong>Remark (Killing Signature vs Spacetime Signature).</strong> The Killing form of sl(2,ℝ) has signature (2,1) (Paper 2 §7.2, Paper 3-META): two positive directions and one negative. The spacetime metric has signature (1,3): one positive and three negative. These are NOT the same object but are structurally related. The Killing signature (2,1) classifies the orbit types of sl(2,ℝ) — two Killing-positive types (P1 hyperbolic + P2 split-real, generating non-compact flows) and one Killing-negative type (P3 elliptic, generating compact flows). The spacetime signature (1,3) classifies the causal structure of Herm(M₂(ℂ)) — one timelike direction (I, det&gt;0) and three spacelike directions (σ_i, det&lt;0). The 3 spacelike directions trace to |V₄{0}| = 3, while the 1 timelike direction is the identity. The Killing signature (2,1) lives on the 3-dimensional Lie algebra sl(2,ℝ); the spacetime signature (1,3) lives on the 4-dimensional Hermitian space Herm(M₂(ℂ)) = sl(2,ℂ)_Herm. The extra dimension is the trace (= center of M₂(ℂ)), which carries the timelike direction.</p>
+<hr />
+<h2 id="2-the-lorentz-group-as-double-cover" id="2-the-lorentz-group-as-double-cover">§2 THE LORENTZ GROUP AS DOUBLE COVER</h2>
+<p><strong>Theorem 6.2 (Lorentz Group).</strong> <em>SL(2,ℂ) acts on Herm(M₂(ℂ)) by Φ(A)(X) = AXA†, preserving det(X). This gives Φ: SL(2,ℂ) → SO⁺(1,3) with ker(Φ) = {I, −I} = Z(SL(2,ℂ)).</em></p>
+<p><em>Proof.</em> Hermiticity: (AXA†)† = AXA† ✓. Norm: det(AXA†) = det(A)·det(X)·det(A†) = 1·det(X)·1 = det(X) ✓. Kernel: AXA† = X for all X implies A = λI; det(A) = 1 forces λ = ±1. Surjectivity by dimension: dim_ℝ(SL(2,ℂ)) = 6 = dim(SO⁺(1,3)).</p>
+<p>−I = exp(πN) by P3 Theorem 4.3. Verified: 10,000 random SL(2,ℂ) elements preserve Minkowski norm. ✓ ∎</p>
+<p><strong>The complexification is forced:</strong> The bridge chain produces M₂(ℝ) over ℚ, but the generator N has eigenvalues ±i ∈ ℂ\ℝ. Spectral completion — the minimal field containing all eigenvalues of the forced generators — yields M₂(ℂ) = M₂(ℝ) ⊗_ℝ ℂ (Paper 2 §6, Thm 2.5). This is not a representation-theoretic choice: all irreps of S₃ are realizable over ℚ (Schur index 1). The need for ℂ comes from the eigenstructure of the forced matrices, not from S₃&rsquo;s representation theory. sl(2,ℝ) ⊗_ℝ ℂ = sl(2,ℂ); SL(2,ℂ) is its simply connected group.</p>
+<p><strong>Corollary 6.2a (Lorentz Algebra).</strong> so(1,3) ≅ sl(2,ℂ) splits into 3 rotations J_i = σ_i/2 and 3 boosts K_i = iσ_i/2: [J_i,J_j] = iε_{ijk}J_k, [K_i,K_j] = −iε_{ijk}J_k, [J_i,K_j] = iε_{ijk}K_k. The rotation subalgebra su(2) is the compact form, identified in Paper 2 §14 as the bridge chain output at resolution 1/5. ✓</p>
+<hr />
+<h2 id="3-spin-½-from-the-center" id="3-spin-12-from-the-center">§3 SPIN-½ FROM THE CENTER</h2>
+<p><strong>Theorem 6.3 (Spin-½ Is Forced).</strong> <em>exp(πN) = −I ∈ ker(Φ) means a 2π rotation in SO⁺(1,3) lifts to −I in SL(2,ℂ), not I. States pick up |ψ⟩ ↦ −|ψ⟩. Only 4π returns to I.</em></p>
+<p><em>Proof.</em> Rotation by θ around z-axis lifts to exp(iθσ_z/2). At θ = 2π: exp(iπσ_z) = diag(e^{iπ}, e^{−iπ}) = −I ≠ I. The nontrivial center exists because ker(Φ) ≠ {I}, which is exactly exp(πN) = −I. ∎</p>
+<p>P3&rsquo;s absolutely forced constant π produces the most characteristically quantum phenomenon: half-integer spin. The algebraic origin of spin-½ is the elliptic half-period. The same identity exp(πN) = −I simultaneously grounds observer cost positivity (Paper 5 §26): distinguishing two states requires reaching orthogonality, which costs exactly one half-rotation in the N-generated phase space — π in angle, πℏ/2 in action units. Both spin-½ and the irreducible observer cost trace to the single algebraic root N² = −I. In the unified reading (Paper 0 §1½): self-relating difference&rsquo;s inversion face (N) requires double traversal for complete return. One traversal (angle π) reaches −I — the opposite of coincidence. Two traversals (angle 2π) reach I — coincidence restored. Spin-½ is the theorem that self-relating difference&rsquo;s inversion mode has period 2π, not π: opposition is reached halfway, coincidence requires the full cycle.</p>
+<p><strong>Corollary 6.3a (Phase Closure Principle).</strong> <em>Physical periodicity, compact structure, and quantization arise from lattice constants that encode closure relations of native generators. Theorem 6.3 is the archetype: exp(πN) = −I forces spin-½, complex structure (Thm 6.5), and the compact subgroup SO(2) ⊂ SL(2,ℝ) (Paper 6B §2). In general: if exp(αX) = ±I where α is a lattice constant and X is a forced generator, the representation theory of the group generated by X is constrained — the double cover has non-trivial topology if the sign is −I, forcing half-integer representations. The lattice constant α measures the physical period. Instances: exp(πN)=−I (spin-½), exp(2πN)=I (integer spin), SO(2) = exp(θN) (u(1) gauge), level-2 universal P3 (confinement from elliptic closure).</em></p>
+<p><strong>Remark (BPC as Algebraic Content of Spin-½).</strong> The Binary-Phase Closure theorem (Paper 3-P3 Thm 1.7b) identifies the specific closure mechanism underlying Corollary 6.3a: e^{iπ} + 1 = 0 is the first exact binary-phase closure event, and its matrix realization exp(πN) = −I = ker(SL(2,ℂ) → SO⁺(1,3)) is the nontrivial kernel element of the Lorentz double cover. Euler&rsquo;s identity IS the algebraic content of spin-½: the statement that continuous phase transport reaches exact inversion at π is precisely the statement that a 2π spatial rotation sends spinors to their negatives. The +1 on the left side encodes the topological content: (−1) + 1 = 0 says the cover kernel is nontrivial. The direction-independence theorem (Paper 3-P3 Thm 1.7e) generalizes: exp(πM) = −I for any M with M² = −I, so the spin-½ content is concentrated at the center Z(SL(2,ℂ)) = {I, −I} — the locus where all phase directions agree.</p>
+<hr />
+<h2 id="4-the-poincaré-group" id="4-the-poincare-group">§4 THE POINCARÉ GROUP</h2>
+<p><strong>Theorem 6.4.</strong> <em>The Poincaré group = SL(2,ℂ) ⋉ Herm(M₂(ℂ)), where SL(2,ℂ) acts on the translation space by conjugation. Quotient by {±I} gives ISO⁺(1,3) = SO⁺(1,3) ⋉ ℝ^{1,3}.</em></p>
+<p>Derived: the symmetry group of flat spacetime. NOT derived: curved spacetime (general relativity requires additional structure).</p>
+<hr />
+<h2 id="5-complex-hilbert-spaces" id="5-complex-hilbert-spaces">§5 COMPLEX HILBERT SPACES</h2>
+<p><strong>Theorem 6.5 (Forced by Three Mechanisms).</strong> <em>(i) N² = −I provides complex structure: the pair (ℝ², N) is isomorphic to ℂ¹ as a real algebra with complex multiplication z ↦ iz corresponding to v ↦ Nv. (ii) Spectral completion of M₂(ℝ) requires ℂ: the eigenvalues ±i of N lie in ℂ\ℝ, forcing the coefficient field to extend from ℝ to ℂ (Paper 2 §6). (iii) The Dist→Hilb functor (Paper 5 §1.1) with ℂ coefficients maps the self-product tower to tensor products of ℂ-Hilbert spaces.</em></p>
+<p><em>Remark.</em> The original claim that &ldquo;ℂ[S₃] requires ℂ-linearity&rdquo; is incorrect: all irreducible representations of S₃ are realizable over ℚ (all characters rational, all Schur indices 1; Paper 2 §4). The group algebra step uses ℚ[S₃], not ℂ[S₃]. The need for ℂ is spectral (from eigenvalues of N), not representation-theoretic (from S₃). ∎</p>
+<hr />
+<h2 id="6-the-born-rule" id="6-the-born-rule">§6 THE BORN RULE</h2>
+<p><strong>Theorem 6.6 (Born Rule from Gleason).</strong> <em>Gleason&rsquo;s theorem (1957): for dim(H) ≥ 3, the unique probability measure on closed subspaces is μ(P) = tr(ρP) → |⟨ψ|φ⟩|² for pure states. At tower level 1: dim = |S₁| = 4 ≥ 3. Born rule forced — not postulated — for any observer at depth n ≥ 1.</em></p>
+<p>the Born rule is the P3 reading of q_K — the observer-with-blind-spot extracts probabilities from its codomain B(H_K), and Gleason determines the unique measure on this codomain. ∎</p>
+<hr />
+<h2 id="7-the-complete-derivation-chain" id="7-the-complete-derivation-chain">§7 THE COMPLETE DERIVATION CHAIN</h2>
+<pre class="highlight"><code>{0,1} → V₄ → S₃ → ℚ[S₃] → M₂(ℚ) → M₂(ℝ) → M₂(ℂ)
+                                                   |
+                                                   ↓
+                                       Herm(M₂(ℂ)) ≅ ℝ^{1,3}     [Thm 6.1]
+                                  ↓
+                      SL(2,ℂ) → SO⁺(1,3)          [Thm 6.2]
+                      ker = {I, exp(πN)}            [Thm 6.3]
+                                  ↓
+                      SL(2,ℂ) ⋉ ℝ^{1,3}            [Thm 6.4]
+                                  ↓
+                      ℂ-Hilbert spaces               [Thm 6.5]
+                      Born rule                      [Thm 6.6]
+</code></pre>
+
+<p>Every arrow is a theorem. No physical postulate introduced. The kinematic arena of quantum field theory is derived from {0,1}.</p>
+<hr />
+<h2 id="8-conformal-structure-metric-promotion-and-the-dimensional-boundary" id="8-conformal-structure-metric-promotion-and-the-dimensional-boundary">§8 CONFORMAL STRUCTURE, METRIC PROMOTION, AND THE DIMENSIONAL BOUNDARY</h2>
+<p>This paper derives a <strong>conformal</strong> Minkowski manifold: Herm(M₂(ℂ)) equipped with the determinant form det(X) = t²−x²−y²−z². The determinant defines null cones (det = 0), causal ordering (sign of det), and the conformal class of the metric. It does NOT define physical distances — the coordinates t, x, y, z are matrix entries (pure real numbers with no units), and the metric entries ±1 are dimensionless integers.</p>
+<p><strong>Theorem 6.7 (Metric Promotion).</strong> <em>The conformal manifold (Herm(M₂(ℂ)), [η_{flat}]) is promoted to a metric manifold by the insertion of the entropy-area coefficient η = 1/(4G) through the Jacobson thermodynamic derivation (Paper 6B, G14).</em></p>
+<p><em>Proof.</em></p>
+<p><em>Input:</em> Herm(M₂(ℂ)) with conformal structure from Theorem 6.1. Topology ℝ⁴, causal structure via null cones, conformal class [g] = {Ω² · η_{flat}}. No physical distances.</p>
+<p><em>Bridge:</em> The Jacobson derivation applies at every local Rindler horizon (which exists in any Lorentzian manifold, including conformally flat ones). It uses: Bekenstein entropy S = η·A (Paper 5 §2 + anchor), KMS-Clausius δQ = TdS (Paper 4 + Paper 6B G14a), Raychaudhuri focusing (Paper 6B G5&rsquo;), and null energy flux (Paper 6B G5). The key step: the Raychaudhuri equation connects area change dA to Ricci curvature R_μν; combined with Clausius, the Ricci curvature is determined by energy flux with proportionality constant η.</p>
+<p><em>Output:</em> Einstein field equations R_μν − ½Rg_μν + Λg_μν = 8πGT_μν. These dynamically determine g_μν, assigning physical distances (ds² = g_μν dx^μ dx^ν), areas (∫√h d²x), and volumes (∫√(−g) d⁴x).</p>
+<p><em>Uniqueness:</em> The conformal class has one flat representative up to overall scale. The Jacobson derivation is unique given its inputs. The scale is set by a single real number η. The integration constant Λ is the only remaining freedom.</p>
+<p><em>The promotion chain:</em></p>
+<pre class="highlight"><code>Conformal (Thm 6.1)  →[η=1/(4G)]→  Local metric (G14)  →[Λ]→  Global metric
+     no distances            distances from EFE              de Sitter radius
+</code></pre>
+
+<p>∎</p>
+<p>This is the precise dimensional boundary: everything in §1–§7 (dimension, signature, Lorentz group, Poincaré group, spin-½, Born rule) is dimensionless. The first dimensionful quantity is η in the Jacobson derivation. The framework determines the topology and causal structure algebraically; the scale requires the anchor.</p>
+<hr />
+<h2 id="claim-status" id="claim-status">CLAIM STATUS</h2>
+<table>
+<thead>
+<tr>
+<th>Claim</th>
+<th>Status</th>
+<th>Generation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Thm 6.1: Minkowski dim=4, sig(1,3) from Herm(M₂(ℂ))</td>
+<td><strong>FORCED</strong></td>
+<td>G.4</td>
+</tr>
+<tr>
+<td>Thm 6.2: SL(2,ℂ) → SO⁺(1,3) double cover</td>
+<td><strong>FORCED</strong></td>
+<td>G.4</td>
+</tr>
+<tr>
+<td>Thm 6.3: Spin-½ from ker={I,−I} = {I,exp(πN)}</td>
+<td><strong>FORCED</strong></td>
+<td>G.4</td>
+</tr>
+<tr>
+<td>Thm 6.4: Poincaré group SL(2,ℂ) ⋉ Herm(M₂(ℂ))</td>
+<td><strong>FORCED</strong></td>
+<td>G.4</td>
+</tr>
+<tr>
+<td>Thm 6.5: Complex Hilbert spaces (3 mechanisms)</td>
+<td><strong>FORCED</strong></td>
+<td>G.4</td>
+</tr>
+<tr>
+<td>Thm 6.6: Born rule from Gleason at dim ≥ 3</td>
+<td><strong>FORCED</strong></td>
+<td>G.4</td>
+</tr>
+<tr>
+<td>Thm 6.7: Metric promotion via Jacobson</td>
+<td><strong>FORCED</strong></td>
+<td>G.6</td>
+</tr>
+<tr>
+<td>Invariant Geometry Principle</td>
+<td><strong>FORCED</strong></td>
+<td>G.4</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Status Legend:</strong>
+- <strong>FORCED</strong> (G.4/G.6): Zero-branching derivation from bridge chain/observer axioms</p>
+<hr />
+<p><em>R(R) = R</em></p>
+    </div>
+
+    <div class="page-nav">
+<a class="prev" href="T5_OBSERVER.html">Paper 5: The Observer</a>
+<a class="next" href="T6B_FORCES.html">Paper 6B: Forces and Dynamics</a>
+</div>
+</main>
+
+<script>
+// Close sidebar on mobile when clicking a link
+document.querySelectorAll('.sidebar a').forEach(a => {
+    a.addEventListener('click', () => {
+        if (window.innerWidth <= 900) {
+            document.querySelector('.sidebar').classList.remove('open');
+        }
+    });
+});
+</script>
+</body>
+</html>

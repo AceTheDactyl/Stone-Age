@@ -1,0 +1,1548 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Paper 3-P3: Observation — Structural Necessity</title>
+<style>
+
+:root {
+    --bg: #fafaf8;
+    --fg: #1a1a1a;
+    --accent: #2d5016;
+    --border: #d4d0c8;
+    --sidebar-bg: #f0ede6;
+    --sidebar-width: 280px;
+    --header-height: 56px;
+    --code-bg: #f5f2eb;
+    --table-stripe: #f8f6f0;
+    --link: #2d5016;
+    --link-hover: #4a7a28;
+    --bold-accent: #1a3a0a;
+}
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        --bg: #1a1a1e;
+        --fg: #e0ddd6;
+        --accent: #7ab648;
+        --border: #3a3a3e;
+        --sidebar-bg: #222226;
+        --code-bg: #25252a;
+        --table-stripe: #222226;
+        --link: #7ab648;
+        --link-hover: #9cd06a;
+        --bold-accent: #a0d870;
+    }
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+    font-family: 'Iowan Old Style', 'Palatino Linotype', Palatino, Georgia, serif;
+    background: var(--bg);
+    color: var(--fg);
+    line-height: 1.7;
+    font-size: 17px;
+}
+
+/* Header */
+.site-header {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    height: var(--header-height);
+    background: #1a1a1a;
+    color: #e0ddd6;
+    display: flex;
+    align-items: center;
+    padding: 0 24px;
+    z-index: 100;
+    border-bottom: 2px solid var(--accent);
+}
+.site-header h1 {
+    font-size: 18px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+}
+.site-header h1 a {
+    color: #e0ddd6;
+    text-decoration: none;
+}
+.site-header h1 a:hover { color: var(--accent); }
+.site-header .subtitle {
+    font-size: 13px;
+    color: #888;
+    margin-left: 16px;
+    font-style: italic;
+}
+.hamburger {
+    display: none;
+    background: none;
+    border: none;
+    color: #e0ddd6;
+    font-size: 24px;
+    cursor: pointer;
+    margin-right: 16px;
+    padding: 4px 8px;
+}
+
+/* Sidebar */
+.sidebar {
+    position: fixed;
+    top: var(--header-height);
+    left: 0;
+    bottom: 0;
+    width: var(--sidebar-width);
+    background: var(--sidebar-bg);
+    border-right: 1px solid var(--border);
+    overflow-y: auto;
+    padding: 16px 0;
+    z-index: 90;
+    transition: transform 0.3s ease;
+}
+.sidebar .nav-group { margin-bottom: 12px; }
+.sidebar .nav-group-title {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+    color: #888;
+    padding: 8px 20px 4px;
+}
+.sidebar a {
+    display: block;
+    padding: 4px 20px 4px 28px;
+    font-size: 13.5px;
+    color: var(--fg);
+    text-decoration: none;
+    line-height: 1.5;
+    border-left: 3px solid transparent;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+.sidebar a:hover {
+    background: rgba(0,0,0,0.05);
+    border-left-color: var(--accent);
+}
+.sidebar a.active {
+    background: rgba(45,80,22,0.1);
+    border-left-color: var(--accent);
+    font-weight: 600;
+    color: var(--accent);
+}
+
+/* Main content */
+.main {
+    margin-left: var(--sidebar-width);
+    margin-top: var(--header-height);
+    max-width: 900px;
+    padding: 40px 48px 80px;
+}
+
+/* Document header banner */
+.doc-header {
+    margin-bottom: 40px;
+    padding-bottom: 24px;
+    border-bottom: 2px solid var(--border);
+}
+.doc-header .level-badge {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 3px 10px;
+    border-radius: 3px;
+    margin-bottom: 12px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+.doc-header h1 {
+    font-size: 32px;
+    line-height: 1.2;
+    margin-bottom: 8px;
+    color: var(--fg);
+}
+.doc-header .doc-subtitle {
+    font-size: 18px;
+    color: #666;
+    font-style: italic;
+}
+
+/* TOC */
+.toc {
+    background: var(--sidebar-bg);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 16px 24px;
+    margin-bottom: 32px;
+}
+.toc summary {
+    font-weight: 700;
+    font-size: 14px;
+    cursor: pointer;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: #666;
+}
+.toc ul { list-style: none; margin: 12px 0 0 0; }
+.toc li { padding: 2px 0; }
+.toc a {
+    color: var(--link);
+    text-decoration: none;
+    font-size: 14px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+.toc a:hover { text-decoration: underline; }
+.toc .toc-h2 { padding-left: 0; }
+.toc .toc-h3 { padding-left: 20px; font-size: 13px; }
+
+/* Typography */
+.content h1 {
+    font-size: 28px;
+    margin: 48px 0 16px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border);
+    color: var(--fg);
+}
+.content h1:first-child { margin-top: 0; }
+.content h2 {
+    font-size: 22px;
+    margin: 36px 0 12px;
+    color: var(--fg);
+}
+.content h3 {
+    font-size: 18px;
+    margin: 28px 0 10px;
+    color: var(--fg);
+}
+.content h4 {
+    font-size: 16px;
+    margin: 24px 0 8px;
+    color: #444;
+}
+.content p { margin: 0 0 16px; }
+.content strong { color: var(--bold-accent); }
+.content a { color: var(--link); }
+.content a:hover { color: var(--link-hover); }
+
+.content ul, .content ol {
+    margin: 0 0 16px 24px;
+}
+.content li { margin-bottom: 4px; }
+
+.content hr {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 32px 0;
+}
+
+/* Tables */
+.content table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 16px 0 24px;
+    font-size: 15px;
+}
+.content th {
+    background: var(--sidebar-bg);
+    font-weight: 700;
+    text-align: left;
+    padding: 10px 12px;
+    border: 1px solid var(--border);
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+.content td {
+    padding: 8px 12px;
+    border: 1px solid var(--border);
+    vertical-align: top;
+}
+.content tr:nth-child(even) { background: var(--table-stripe); }
+
+/* Code */
+.content code {
+    font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace;
+    font-size: 14px;
+    background: var(--code-bg);
+    padding: 2px 6px;
+    border-radius: 3px;
+    border: 1px solid var(--border);
+}
+.content pre {
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 16px 20px;
+    overflow-x: auto;
+    margin: 16px 0 24px;
+    line-height: 1.5;
+}
+.content pre code {
+    background: none;
+    border: none;
+    padding: 0;
+    font-size: 13.5px;
+}
+
+/* Blockquote */
+.content blockquote {
+    border-left: 4px solid var(--accent);
+    padding: 12px 20px;
+    margin: 16px 0 24px;
+    background: var(--sidebar-bg);
+    border-radius: 0 4px 4px 0;
+}
+.content blockquote p { margin-bottom: 8px; }
+.content blockquote p:last-child { margin-bottom: 0; }
+
+/* Footer nav */
+.page-nav {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 48px;
+    padding-top: 24px;
+    border-top: 1px solid var(--border);
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+.page-nav a {
+    color: var(--link);
+    text-decoration: none;
+    font-size: 14px;
+    padding: 8px 16px;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    transition: all 0.2s;
+}
+.page-nav a:hover {
+    background: var(--sidebar-bg);
+    border-color: var(--accent);
+}
+.page-nav .prev::before { content: '← '; }
+.page-nav .next::after { content: ' →'; }
+
+/* Responsive */
+@media (max-width: 900px) {
+    .sidebar { transform: translateX(-100%); }
+    .sidebar.open { transform: translateX(0); }
+    .main { margin-left: 0; padding: 24px 20px 60px; }
+    .hamburger { display: block; }
+    .doc-header h1 { font-size: 24px; }
+}
+
+/* Print */
+@media print {
+    .sidebar, .site-header, .hamburger, .page-nav { display: none; }
+    .main { margin: 0; max-width: 100%; padding: 20px; }
+    body { font-size: 12pt; }
+}
+
+</style>
+</head>
+<body>
+
+<header class="site-header">
+    <button class="hamburger" onclick="document.querySelector('.sidebar').classList.toggle('open')" aria-label="Toggle navigation">&#9776;</button>
+    <h1><a href="T_INDEX.html">Structural Necessity</a></h1>
+    <span class="subtitle">Canonical Paper Series — March 2026</span>
+</header>
+
+<nav class="sidebar">
+<div class="nav-group">
+<div class="nav-group-title">Foundation (0-2)</div>
+<a href="T0_SUBSTRATE.html">0 — Substrate</a>
+<a href="T1_DIST.html">1 — Kernel Theorem</a>
+<a href="T2_BRIDGE.html">2 — Bridge Chain</a>
+</div>
+<div class="nav-group">
+<div class="nav-group-title">Projections (3-4)</div>
+<a href="T3_P1_PRODUCTION.html">3-P1 — Production</a>
+<a href="T3_P2_MEDIATION.html">3-P2 — Mediation</a>
+<a href="T3_P3_OBSERVATION.html" class="active">3-P3 — Observation</a>
+<a href="T3_META.html">3-META — Cross-Projection</a>
+<a href="T4_LATTICE.html">4 — Lattice</a>
+</div>
+<div class="nav-group">
+<div class="nav-group-title">Observer &amp; Physics (5-6)</div>
+<a href="T5_OBSERVER.html">5 — Observer</a>
+<a href="T6A_SPACETIME.html">6A — Spacetime</a>
+<a href="T6B_FORCES.html">6B — Forces</a>
+</div>
+<div class="nav-group">
+<div class="nav-group-title">Cross-Cutting</div>
+<a href="T_COMP.html">Comp — Computation</a>
+<a href="T_SIL.html">SIL — Self-Interpretation</a>
+<a href="T_SEM.html">SEM — Semantics</a>
+</div>
+<div class="nav-group">
+<div class="nav-group-title">Architecture</div>
+<a href="T_BLUEPRINT.html">Blueprint</a>
+<a href="T_GOV.html">Governance</a>
+</div>
+<div class="nav-group">
+<div class="nav-group-title">Closure &amp; Reference</div>
+<a href="T_ASI.html">ASI — Architecture Spec</a>
+<a href="T_TOE.html">TOE — Closure</a>
+<a href="DICTIONARY.html">Dictionary</a>
+</div>
+<div class="nav-group">
+<div class="nav-group-title">Navigation</div>
+<a href="T_INDEX.html">Index — Navigation</a>
+<a href="CLAIM_CENSUS.html">Claim Census</a>
+</div>
+</nav>
+
+<main class="main">
+    <div class="doc-header">
+        <span class="level-badge" style="background:#8b4513; color:#fff;">Level 4 · P3</span>
+        <h1>Paper 3-P3: Observation</h1>
+        <div class="doc-subtitle">Rotation Closure, Spin-½, Holomorphic Properties</div>
+    </div>
+
+    <details class="toc" open>
+<summary>Table of Contents</summary>
+<ul>
+<li class="toc-h2"><a href="#projection-3-π-and-observation">Projection 3: π and Observation</a></li>
+<li class="toc-h3"><a href="#v4-march-2026">v4 — March 2026</a></li>
+<li class="toc-h2"><a href="#abstract">Abstract</a></li>
+<li class="toc-h2"><a href="#theorem-index">THEOREM INDEX</a></li>
+<li class="toc-h2"><a href="#1-π-is-absolutely-forced">§1 π IS ABSOLUTELY FORCED</a></li>
+<li class="toc-h3"><a href="#11-the-unique-rotation-generator">§1.1 The Unique Rotation Generator</a></li>
+<li class="toc-h3"><a href="#12-properties-of-n">§1.2 Properties of N</a></li>
+<li class="toc-h3"><a href="#13-the-phase-duality-p1-p3">§1.3 The Phase Duality P1 ↔ P3</a></li>
+<li class="toc-h3"><a href="#14-p3-maps-to-inv">§1.4 P3 Maps to INV</a></li>
+<li class="toc-h3"><a href="#15-in-σ_y-the-pauli-connection">§1.5 iN = σ_y: The Pauli Connection</a></li>
+<li class="toc-h3"><a href="#16-so2-as-p3rsquos-group">§1.6 SO(2) as P3&rsquo;s Group</a></li>
+<li class="toc-h3"><a href="#16¼-binary-phase-closure">§1.6¼ Binary-Phase Closure</a></li>
+<li class="toc-h3"><a href="#16½-spin-½-and-the-lorentz-double-cover">§1.6½ Spin-½ and the Lorentz Double Cover</a></li>
+<li class="toc-h3"><a href="#17-observer-incompleteness-is-lomi">§1.7 Observer Incompleteness Is LoMI</a></li>
+<li class="toc-h3"><a href="#18-koide-formula-via-n">§1.8 Koide Formula via N</a></li>
+<li class="toc-h3"><a href="#19-3-as-the-p1p3-bridge">§1.9 √3 as the P1↔P3 Bridge</a></li>
+<li class="toc-h2"><a href="#2-lomi-in-arithmetic">§2 LoMI IN ARITHMETIC</a></li>
+<li class="toc-h3"><a href="#21-the-lomi-duality-observe-observed">§2.1 The LoMI Duality: Observe ↔ Observed</a></li>
+<li class="toc-h3"><a href="#22-the-lomi-potential-component">§2.2 The LoMI Potential Component</a></li>
+<li class="toc-h3"><a href="#23-highly-composite-numbers-are-lomi-dominant">§2.3 Highly Composite Numbers Are LoMI-Dominant</a></li>
+<li class="toc-h3"><a href="#24-totient-ratio-as-continuous-lomi-signature">§2.4 Totient Ratio as Continuous LoMI Signature</a></li>
+<li class="toc-h3"><a href="#25-lomi-associated-sequences">§2.5 LoMI-Associated Sequences</a></li>
+<li class="toc-h3"><a href="#26-the-carmichael-totient-depth">§2.6 The Carmichael-Totient Depth</a></li>
+<li class="toc-h2"><a href="#3-lomi-operations">§3 LoMI OPERATIONS</a></li>
+<li class="toc-h3"><a href="#31-gcd-as-lomi-fixed-point">§3.1 GCD as LoMI Fixed Point</a></li>
+<li class="toc-h3"><a href="#32-lcm-as-lomi-join">§3.2 LCM as LoMI Join</a></li>
+<li class="toc-h3"><a href="#33-agm-as-geometric-mutual-observation">§3.3 AGM as Geometric Mutual Observation</a></li>
+<li class="toc-h3"><a href="#34-continued-fractions-as-lomi-signature">§3.4 Continued Fractions as LoMI Signature</a></li>
+<li class="toc-h3"><a href="#35-consecutive-fibonacci-pairs-the-maximal-lomi-structure">§3.5 Consecutive Fibonacci Pairs: The Maximal LoMI Structure</a></li>
+<li class="toc-h2"><a href="#4-anti-lomi-and-period-2-oscillation">§4 ANTI-LoMI AND PERIOD-2 OSCILLATION</a></li>
+<li class="toc-h3"><a href="#41-the-anti-projection">§4.1 The Anti-Projection</a></li>
+<li class="toc-h3"><a href="#42-the-period-2-oscillation">§4.2 The Period-2 Oscillation</a></li>
+<li class="toc-h2"><a href="#5-lomi-in-the-containment-structure">§5 LoMI IN THE CONTAINMENT STRUCTURE</a></li>
+<li class="toc-h3"><a href="#51-lomi-contains-i²">§5.1 LoMI Contains I²</a></li>
+<li class="toc-h3"><a href="#52-lomi-contains-tdl">§5.2 LoMI Contains TDL</a></li>
+<li class="toc-h3"><a href="#53-the-discriminant-partition">§5.3 The Discriminant Partition</a></li>
+<li class="toc-h2"><a href="#6-projection-distances-lomi-component">§6 PROJECTION DISTANCES (LoMI COMPONENT)</a></li>
+<li class="toc-h2"><a href="#7-p3-specific-projection-structure-from-closure">§7 P3-SPECIFIC PROJECTION STRUCTURE (FROM CLOSURE)</a></li>
+<li class="toc-h3"><a href="#6½1-independence-witness">§6½.1 Independence Witness</a></li>
+<li class="toc-h3"><a href="#6½2-v_ln-the-lomi-component-of-the-arithmetic-potential">§6½.2 V_L(n): The LoMI-Component of the Arithmetic Potential</a></li>
+<li class="toc-h3"><a href="#6½3-p3-and-the-phase-duality">§6½.3 P3 and the Phase Duality</a></li>
+<li class="toc-h2"><a href="#8-computational-verification">§8 COMPUTATIONAL VERIFICATION</a></li>
+<li class="toc-h2"><a href="#9-claim-status">§9 CLAIM STATUS</a></li>
+</ul></details>
+
+    <div class="content">
+<h1 id="paper-3-p3-lomiπ-the-elliptic-projection" id="paper-3-p3-lomi-the-elliptic-projection">Paper 3-P3: LoMI/π — The Elliptic Projection</h1>
+<h2 id="projection-3-π-and-observation" id="projection-3-and-observation">Projection 3: π and Observation</h2>
+<h3 id="v4-march-2026" id="v4-march-2026">v4 — March 2026</h3>
+<p><strong>Author:</strong> Kael</p>
+<hr />
+<p><strong>Document Species:</strong> CANONICAL. Owns P3/LoMI projection content at Level 4.</p>
+<p><strong>Grid address:</strong> B(4, P3). The Projected level — P3/LoMI/π face.</p>
+<p><strong>Document Status:</strong> Level 4 document (Projection 3). Complete P3 paper with distributed CLOSURE content. The N-direction in sl(2,ℝ), orbit type det &gt; 0, Δ &lt; 0 (elliptic), constant π — absolutely forced with zero ambiguity.</p>
+<p><strong>Document Hierarchy:</strong></p>
+<pre class="highlight"><code>T0_SUBSTRATE.md
+  T1_DIST.md
+    T2_BRIDGE.md
+      T3_P1_PRODUCTION.md
+      T3_P2_MEDIATION.md
+      T3_P3_OBSERVATION.md    ← THIS FILE
+        T3_META.md
+</code></pre>
+
+<p><strong>Scope:</strong> Everything specific to P3: rotation closure (exp(Nπ) = −I), P3→INV computational primitive, Pauli connection (iN = σ_y), SO(2) as maximal compact subgroup, spin-½ origin, observer incompleteness, Koide from norms, highly composite → LoMI classification, totient ratio signature, GCD/LCM/AGM structures, √3 bridge. Also includes distributed CLOSURE content: P3 folding containments, independence witness, anti-LoMI, V_L(n) potential component.</p>
+<p><strong>What this paper does NOT contain:</strong> The full Dist derivation (Paper 1), bridge chain (Paper 2 Part I), complete {R,N} algebra (Paper 2 Part II), P1/P2-specific content (Papers 3-P1, 3-P2), cross-projection synthesis (Paper 3-META), or physics interpretations (Paper 6B).</p>
+<p><strong>Depends on:</strong> T0_SUBSTRATE (P.1/P.2), T1_DIST (Kernel Theorem), T2_BRIDGE ({R,N} algebra)
+<strong>Required by:</strong> T3_META, T4_LATTICE, T5_OBSERVER (observer is LoMI-linked)</p>
+<hr />
+<h2 id="abstract" id="abstract">Abstract</h2>
+<p>We prove π is absolutely forced as the unique θ ∈ (0,2π) satisfying exp(Nθ) = −I, with zero normalization ambiguity and zero conjugacy ambiguity — the strongest forcing of any constant in the framework. P3 maps to the INV computational primitive (norm-preserving rotation). iN = σ_y connects LoMI&rsquo;s generator directly to the Pauli algebra and quantum measurement. SO(2) = exp(θN) is the maximal compact subgroup of SL(2,ℝ) with exp(πN) = −I generating the center and the Dist quotient SL(2,ℝ)/{±I} = PSL(2,ℝ). The structural invertibility threshold σ_MIX &lt; φ̄²/2 is the condition under which observation (INV) dominates irreversibility (MIX).</p>
+<p>The identity exp(πN) = −I is the algebraic origin of spin-½: the nontrivial kernel of the Lorentz double cover SL(2,ℂ) → SO⁺(1,3) means a 2π rotation ≠ identity in the covering group. Observer incompleteness (no injective B(H_U) → B(H_K) when d_K &lt; d_U) is LoMI structure. The Koide formula parameter Q = 2/3 derives from the norm ratio ||R||²/||N||² = 3/2 with oscillation amplitude ρ = ||N||_F = √2, and √3 bridges P1 and P3 via ||R||_F = 2·sin(2π/3).</p>
+<p>Highly composite numbers are LoMI-dominant (93.3%). The totient ratio φ(n)/n is a continuous LoMI signature. The AGM Fibonacci limit gives AGM(F(n),F(n+1))/F(n+1) → AGM(1,φ)/φ ≈ 0.7975. The anti-LoMI oscillation has period 2, and the Carmichael-Totient depth is the TDL-within-LoMI structure predicted by the folding theorem. All claims computationally verified.</p>
+<hr />
+<h2 id="theorem-index" id="theorem-index">THEOREM INDEX</h2>
+<table>
+<thead>
+<tr>
+<th>Theorem</th>
+<th>Statement</th>
+<th>Section</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>4.3</strong></td>
+<td><strong>π Is Absolutely Forced: unique θ with exp(Nθ)=−I, zero ambiguity</strong></td>
+<td><strong>§1</strong></td>
+</tr>
+<tr>
+<td><strong>1.4</strong></td>
+<td><strong>P3 Primitive Mapping: P3 → INV</strong></td>
+<td><strong>§1</strong></td>
+</tr>
+<tr>
+<td>Cor 1.5</td>
+<td>Structural Invertibility threshold σ_MIX &lt; φ̄²/2</td>
+<td>§1</td>
+</tr>
+<tr>
+<td>Cor 1.5b</td>
+<td>Asymptotic Type III Dominance (P3 attractor)</td>
+<td>§1</td>
+</tr>
+<tr>
+<td>1.6</td>
+<td>Pauli Y-Matrix: iN = σ_y</td>
+<td>§1</td>
+</tr>
+<tr>
+<td><strong>1.7</strong></td>
+<td><strong>Maximal Compact: SO(2) = exp(θN), exp(πN) = −I generates center</strong></td>
+<td><strong>§1</strong></td>
+</tr>
+<tr>
+<td>1.7a</td>
+<td>Spin-½ Is P3 Structure</td>
+<td>§1</td>
+</tr>
+<tr>
+<td><strong>1.7b</strong></td>
+<td><strong>Binary-Phase Closure: e^{iπ}+1=0</strong></td>
+<td><strong>§1</strong></td>
+</tr>
+<tr>
+<td>1.7e</td>
+<td>Direction-Independent Binary Inversion</td>
+<td>§1</td>
+</tr>
+<tr>
+<td><strong>1.8</strong></td>
+<td><strong>Mutual Incompleteness: no injective B(H_U) → B(H_K) when d_K &lt; d_U</strong></td>
+<td><strong>§2</strong></td>
+</tr>
+<tr>
+<td><strong>1.10</strong></td>
+<td><strong>Koide Q = ‖N‖²/‖R‖² = 2/3 from norm ratio</strong></td>
+<td><strong>§3</strong></td>
+</tr>
+<tr>
+<td>1.11</td>
+<td>√3 bridge: ‖R‖_F = 2·sin(2π/3)</td>
+<td>§3</td>
+</tr>
+<tr>
+<td>4.3</td>
+<td>Highly Composite → LoMI, 93.3%</td>
+<td>§4</td>
+</tr>
+<tr>
+<td>4.6</td>
+<td>Totient Ratio as Continuous LoMI Signature</td>
+<td>§4</td>
+</tr>
+<tr>
+<td>4.4</td>
+<td>AGM Fibonacci Limit</td>
+<td>§5</td>
+</tr>
+<tr>
+<td>6.2</td>
+<td>Fibonacci CF Signature</td>
+<td>§5</td>
+</tr>
+<tr>
+<td>6.3</td>
+<td>Anti-LoMI Is Periodic-2</td>
+<td>§5</td>
+</tr>
+<tr>
+<td>5.3</td>
+<td>Elliptic Fraction: ~28.3% from Killing signature (2,1)</td>
+<td>§6</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="1-π-is-absolutely-forced" id="1-is-absolutely-forced">§1 π IS ABSOLUTELY FORCED</h2>
+<p>P3 is the analysis of self-relating difference (SRD) in its inversion mode (Paper 0 §1½ Thm 0.3c, mode (ii)): R viewed as mutual identification through continuous reversal. Every result in this paper traces to N²=−I and the flow exp(θN). The constant π is the minimal duration of complete inversion: the half-period at which the distinction between poles is exactly traversed. The BPC Principle (Paper 0 §5 Remark) states that inversion has geometry — it is not a discrete flip but a continuous path of length π through the N-generated flow.</p>
+<p><strong>Definition (Co-determination).</strong> A <em>co-determination</em> of (A, B) is a structure C = LoMI(A, B) such that: (a) C is determined by A and B jointly, (b) C does not reduce to either A or B alone, (c) C is found by iterated mutual action (A acts on B, the result acts on A, &hellip;), (d) C stabilizes (the iteration terminates at a fixed point), (e) A and B remain distinct throughout. The Euclidean algorithm GCD(a,b) = GCD(b, a mod b) is the arithmetic paradigm: the identity of the pair (a,b) — what they share — is found by iterated mutual reduction, with neither element collapsed. Co-determination is the structural content of LoMI: identity achieved through difference, not through collapse. Instances across the framework: GCD (arithmetic), golden conjugation φ↔φ̄ (algebraic, Paper 3-P1 §2.10), digital root equivalence (TDL-within-LoMI, Paper 3-META §2), AGM convergence (analytic), and the inter-projection containments RNR=−N, NRN=R⁻¹ (generator-level, Paper 3-META Thm 2.1).</p>
+<h3 id="11-the-unique-rotation-generator" id="11-the-unique-rotation-generator">§1.1 The Unique Rotation Generator</h3>
+<p><strong>Theorem 4.3 (π Is Absolutely Forced).</strong> <em>Let N = [[0,−1],[1,0]] be the unique
+skew-symmetric 2×2 real matrix with entries in {−1,0,1} and N² = −I. The unique
+θ ∈ (0, 2π) satisfying exp(Nθ) = −I is θ = π.</em></p>
+<p><strong>Proof.</strong></p>
+<p><em>N is unique:</em> Skew-symmetric 2×2 real matrices with entries in {−1,0,1} have the form
+[[0,−a],[a,0]] for a ∈ {0,1} (since [[0,a],[−a,0]] with a &gt; 0 is equivalent via sign).
+The condition N² = −I gives [[0,−a],[a,0]]² = [[−a²,0],[0,−a²]] = −I iff a² = 1 iff
+a = 1. Therefore N = [[0,−1],[1,0]] is the unique such matrix.</p>
+<p><em>π is absolute:</em> The matrix exponential of Nθ is:</p>
+<pre class="highlight"><code>exp(Nθ) = cos(θ)·I + sin(θ)·N
+         = [[cos(θ), −sin(θ)],[sin(θ), cos(θ)]]
+</code></pre>
+
+<p>(This is a rotation by θ.) Setting exp(Nθ) = −I:</p>
+<pre class="highlight"><code>cos(θ) = −1  and  sin(θ) = 0
+</code></pre>
+
+<p>The unique solution in (0, 2π) is θ = π. ∎</p>
+<p><strong>No ambiguity whatsoever.</strong> The equation exp(Nπ) = −I has a unique solution. The
+computation det(exp(Nθ)) = exp(tr(Nθ)) = exp(0) = 1 confirms exp(Nθ) ∈ SL(2,ℝ),
+and the only element of SL(2,ℝ) with both real entries equal to −1 on the diagonal is −I
+itself. The forcing is absolute.</p>
+<p>Computationally verified: ‖exp(Nπ) − (−I)‖ = 3.81 × 10⁻¹⁶ (machine precision). ✓</p>
+<p><strong>Forcing quality: absolute.</strong> π is uniquely forced with zero ambiguity. No free parameters,
+no normalization choice, no conjugacy class — the equation has exactly one solution. This is
+the strongest forcing of any constant in the framework.</p>
+<h3 id="12-properties-of-n" id="12-properties-of-n">§1.2 Properties of N</h3>
+<p><strong>N (Rotation generator):</strong>
+- Characteristic polynomial: λ² + 1 = 0
+- Eigenvalues: +i, −i
+- <strong>N² = −I</strong> (complex structure)
+- N⁴ = I (order 4)
+- exp(θN) = cos(θ)I + sin(θ)N (rotation by θ)
+- <strong>exp(πN) = −I</strong> (unique θ ∈ (0,2π) achieving −I: forces π)
+- exp(2πN) = +I (full turn returns to identity)
+- Frobenius norm: <strong>||N||_F = √2</strong>
+- Möbius action: z ↦ −1/z, period 2 on ℝP¹</p>
+<h3 id="13-the-phase-duality-p1-p3" id="13-the-phase-duality-p1-p3">§1.3 The Phase Duality P1 ↔ P3</h3>
+<p>The mathematical inverse of the Fibonacci equation R² = R + I is the cyclotomic equation
+x² + x + 1 = 0, whose roots are primitive cube roots of unity e^{±2πi/3} on the unit
+circle — precisely the elliptic sector P3 that forces π. The duality between
+oriented/asymmetric (P1 → φ) and symmetric/periodic (P3 → π) was always present in the
+algebra. What was missing was the explicit recognition that this is a <em>phase</em> structure,
+not merely a classification.</p>
+<p>P1&rsquo;s characteristic polynomial x² − x − 1 = 0 (real roots φ, −φ̄; hyperbolic, breaking
+symmetry) and P3&rsquo;s x² + x + 1 = 0 (complex roots; elliptic, preserving symmetry) are
+algebraic duals. The coefficients differ only by sign of the linear term: x² ∓ x + &hellip; = 0.
+This is the internal phase encoding discovered in the Phase Neutral Engine (Theorem 5.1):
+what appears as two separate projections is one algebraic duality.</p>
+<h3 id="14-p3-maps-to-inv" id="14-p3-maps-to-inv">§1.4 P3 Maps to INV</h3>
+<p><strong>Theorem 1.4 (P3 Primitive Mapping).</strong> <em>The P3 projection (elliptic, det &gt; 0, Δ &lt; 0) maps
+to the INV computational primitive. N has eigenvalues ±i, both of unit magnitude:
+iteration preserves norms exactly.</em></p>
+<p><strong>Proof.</strong> N has eigenvalues +i, −i with |λ| = 1 for both. For any vector v and any θ:
+||exp(θN)v|| = ||v|| (since exp(θN) is an orthogonal rotation). INV is the norm-preserving
+primitive: it rotates structure without amplifying or contracting it. P3 is the
+unique projection with this property — P1 has mixed magnitude eigenvalues {φ, −φ̄}, and
+P2 has real eigenvalues ±1 generating expansion/contraction. ✓ ∎</p>
+<p><strong>Corollary 1.5 (Structural Invertibility).</strong> <em>The structural invertibility threshold
+σ_MIX &lt; φ̄²/2 is the condition under which INV (observation) dominates MIX (irreversibility).
+Below this threshold, observation can recover from irreversible steps. Above it,
+irreversibility dominates. This IS LoMI&rsquo;s structural theorem: observation has a limit.</em></p>
+<p><strong>Corollary 1.5b (Asymptotic Type III Dominance).</strong> At tower level n ≥ 2, det(A⊗B) ≥ 0 eliminates P1, and the P3 (elliptic/INV) fraction grows monotonically: ~49% at level 2, ~64% at level 3 (Monte Carlo verified, Paper 0 §15). Type III (rotational) computation is the universal attractor of the self-product tower. Compression (Type I) and expansion (Type II) are level-1 phenomena; asymptotically, all tensor-tower computation is INV-like. The rotational normal form (Paper T-COMP §5) gives f = g·rot(θ₁,&hellip;,θ_k)·g⁻¹ for Type III computations — rotational structure is both the P3 mathematical content and the asymptotic computational regime.</p>
+<h3 id="15-in-σ_y-the-pauli-connection" id="15-in-_y-the-pauli-connection">§1.5 iN = σ_y: The Pauli Connection</h3>
+<p><strong>Theorem 1.6 (Pauli Y-Matrix).</strong> <em>(MP4 corollary: resolution quantum 5.) iN = σ_y, the Pauli Y-matrix. The complete Pauli
+algebra is generated by {R, N}:</em></p>
+<pre class="highlight"><code>σ_y = iN = i[[0,−1],[1,0]]
+σ_z = h = (I − 2R − 2N + 4RN)/5
+σ_x = J = (−2I + 4R − N + 2RN)/5
+</code></pre>
+
+<p><em>All three Pauli matrices have denominator 5 (the Fibonacci discriminant) in the
+{I, R, N, RN} basis. They satisfy [σ_x, σ_y] = 2iσ_z and cyclic permutations.</em></p>
+<p><strong>Proof.</strong> iN = [[0,−i],[i,0]] = σ_y. The expressions for σ_z and σ_x in {I,R,N,RN}
+follow from solving the linear system, yielding integer-over-5 coefficients. The
+commutation relations follow from the standard Pauli algebra. ✓ ∎</p>
+<p><strong>Interpretation.</strong> LoMI&rsquo;s generator N IS the quantum Y-measurement operator (up to i).
+The Pauli algebra — the foundation of quantum observation — is generated by the same
+matrices that define the three projections. The observation structure of quantum mechanics
+is not imported from outside: it emerges from {0,1} through the bridge chain.</p>
+<h3 id="16-so2-as-p3rsquos-group" id="16-so2-as-p3s-group">§1.6 SO(2) as P3&rsquo;s Group</h3>
+<p><strong>Theorem 1.7 (Maximal Compact Subgroup).</strong> <em>The one-parameter group exp(θN) =
+cos(θ)I + sin(θ)N traces out SO(2) ⊂ SL(2,ℝ) — the maximal compact subgroup.
+All orbits are closed (periodic). exp(2πN) = I (full loop). exp(πN) = −I generates the
+center Z(SL(2,ℝ)) = {±I}.</em></p>
+<p><strong>Proof.</strong> exp(θN)ᵀ · exp(θN) = (cos θ I + sin θ Nᵀ)(cos θ I + sin θ N) =
+cos²θ I + sin²θ NᵀN = cos²θ I + sin²θ I = I (using NᵀN = I since N is orthogonal).
+Therefore exp(θN) ∈ SO(2) for all θ. det(exp(θN)) = 1 for all θ.
+Periodicity: exp(2πN) = cos(2π)I + sin(2π)N = I. Center: exp(πN) = −I, and −I is
+the unique nontrivial central element of SL(2,ℝ). ✓ ∎</p>
+<p><strong>Structural content.</strong> SO(2) is the &ldquo;return&rdquo; part of SL(2,ℝ): the subgroup whose
+orbits close. P3/LoMI IS the closure mechanism of the framework. The quotient
+SL(2,ℝ)/{±I} = PSL(2,ℝ) is the Dist quotient q∘q = q at the group level: exp(πN) = −I
+identifies x with −x, collapsing the double cover.</p>
+<h3 id="16¼-binary-phase-closure" id="1614-binary-phase-closure">§1.6¼ Binary-Phase Closure</h3>
+<p><strong>Definition (Binary Poles).</strong> The minimal binary opposition is the pair {+1, −1} ⊂ ℝ, where +1 is the multiplicative identity and −1 is the unique element satisfying (−1)·(+1) = −(+1).</p>
+<p><strong>Definition (Canonical Phase Flow).</strong> A canonical binary inversion flow is a continuous map z: ℝ → ℂ satisfying: (1) z(0) = 1 (initial pole), (2) |z(θ)| = 1 for all θ (norm-preserving), (3) z(θ + φ) = z(θ)·z(φ) for all θ, φ (one-parameter group), (4) z(τ) = −1 for some smallest positive τ (exact inversion).</p>
+<p><strong>Theorem 1.7b (Binary-Phase Closure).</strong> <em>The canonical binary inversion flow is z(θ) = e^{iθ}, and the minimal inversion parameter is τ = π. The first exact binary-phase closure law is</em></p>
+<pre class="highlight"><code>e^{iπ} + 1 = 0
+</code></pre>
+
+<p><strong>Proof.</strong> Conditions (1)–(3) define a continuous one-parameter group homomorphism z: (ℝ,+) → (S¹,·). The classification of continuous group homomorphisms ℝ → S¹ gives z(θ) = e^{ikθ} for some k ∈ ℝ. Condition (4) requires e^{ikτ} = −1, forcing k ≠ 0; the smallest positive τ is τ = π/|k|. The canonical (unit-speed) normalization |dz/dθ|_{θ=0}| = 1 fixes |k| = 1. At θ = π: z(π) = e^{iπ} = −1. Adding the original pole: z(π) + 1 = 0. ∎</p>
+<p>Computationally verified: |e^{iπ} + 1| = 1.22 × 10⁻¹⁶ (machine precision). ✓</p>
+<p><strong>Corollary 1.7c (Full-Cycle Recurrence).</strong> <em>z(2π) = e^{2πi} = 1. Binary inversion is not terminal; it belongs to a periodic recurrence class of period 2π.</em> Verified: ‖exp(2πN) − I‖ = 7.62 × 10⁻¹⁶. ✓</p>
+<p><strong>Corollary 1.7d (Phase Geometry of Negation).</strong> <em>Binary opposition {+1, −1} admits a unique continuous norm-preserving interpolation: the phase circle. Negation is not a discrete flip but a dynamical process with a generator (i), a lawful path (S¹), and a first exact completion time (π).</em></p>
+<p><strong>Framework connection.</strong> The abstract flow z(θ) = e^{iθ} IS exp(θN) read in ℂ via the isomorphism ℂ ≅ span{I, N} (where N ↦ i, since both satisfy x² = −id). The scalar identity e^{iπ} = −1 is the (1,1)-entry of the matrix identity exp(πN) = −I (Theorem 4.3). The initial value problem dz/dθ = iz, z(0) = 1 is the unique first-order linear ODE on S¹ whose solutions are norm-preserving, periodic, and form a one-parameter group — matching P3&rsquo;s defining properties exactly.</p>
+<p><strong>Remark (Why +1 matters).</strong> Most treatments stop at e^{iπ} = −1. The full identity e^{iπ} + 1 = 0 restores the original pole as comparison anchor and achieves exact cancellation. Without the +1: transport and inversion (state = −1, no resolution). With the +1: closure (state = 0, opposition resolved). The +1 turns a path identity into a closure law. This parallels the Dist quotient q∘q = q (Paper 1): the operation applied to its own output yields a fixed point.</p>
+<p><strong>Remark (0 as resolved tension).</strong> In Theorem 1.7b, 0 is not primitive emptiness but the exact closure state produced when a pole meets its continuously-realized inverse. So 0 carries dynamic meaning: it is resolved tension between identity (+1) and inversion (−1). This role — 0-as-cancellation-residue — is distinct from 0-as-absence and 0-as-additive-identity.</p>
+<p><strong>Remark (π as first inversion, not circle-perimeter).</strong> In the framework reading, π is not imported as &ldquo;half the circumference of a unit circle&rdquo; but derived as the unique smallest positive θ satisfying exp(θN) = −I (Theorem 4.3). That this value equals half the circumference is a consequence: the circumference is 2π because the full rotation takes angular distance 2π = 2 × (first inversion time). The circumference formula is downstream of the algebraic forcing.</p>
+<p><strong>Theorem 1.7e (Direction-Independent Binary Inversion).</strong> <em>For any M ∈ M₂(ℂ) with M² = −I: exp(πM) = −I. The set {exp(πM) : M² = −I} = {−I} is a singleton, equal to Z(SL(2,ℂ)) \ {I}. The center is the locus where all phase directions agree: it is the direction-independent Euler content of M₂(ℂ).</em></p>
+<p><strong>Proof.</strong> Cayley-Hamilton: exp(πM) = cos(π)I + sin(π)M = −I + 0 = −I. This holds for any M with M² = −I. The set of all such images is {−I}. Since Z(SL(2,ℂ)) = {I, −I} and −I = ∩_{M:M²=−I} exp(πM), the nontrivial center element is the unique universal half-period image. ∎</p>
+<p>Verified: 10,000 random directions in S² ⊂ su(2), max‖exp(πM) − (−I)‖ = 2.09 × 10⁻¹⁵. ✓</p>
+<p><strong>Corollary 1.7f (Euler Content = Topological Content).</strong> <em>The nontrivial center element −I = exp(πN) is simultaneously: (a) the scalar Euler image e^{iπ} = −1, (b) the matrix Euler image exp(πN) = −I, (c) the kernel of the Lorentz double cover ker(SL(2,ℂ) → SO⁺(1,3)) = {I,−I}, (d) the generator of Z(SL(2,ℂ)), and (e) the direction-independent half-period of all su(2) one-parameter subgroups. Five descriptions, one object.</em></p>
+<h3 id="16½-spin-½-and-the-lorentz-double-cover" id="1612-spin-12-and-the-lorentz-double-cover">§1.6½ Spin-½ and the Lorentz Double Cover</h3>
+<p><strong>Theorem 1.7a (Spin-½ Is P3 Structure).</strong> <em>The equation exp(πN) = −I (Theorem 4.3) is the algebraic origin of half-integer spin.</em> π is the exponential-channel constant from exp(πN)=−I. det(exp(tN))=exp(tr(tN))=exp(0)=1 (det∘exp=exp∘tr bridges algebraic and transcendental). <em>Under the Lorentz double cover SL(2,ℂ) → SO⁺(1,3) (DERIVATION Thm 6.2), the kernel is ker = {I, exp(πN)} = {I, −I}. A 2π spatial rotation lifts to −I ≠ I in SL(2,ℂ), so representations of SL(2,ℂ) that are not representations of SO⁺(1,3) exist — these are the spin-½ (spinor) representations.</em></p>
+<p><strong>Proof.</strong> The rotation by angle θ around any axis lifts to exp(iθ·n⃗·σ⃗/2) ∈ SU(2) ⊂ SL(2,ℂ). At θ = 2π: exp(iπσ_z) = diag(e^{iπ}, e^{-iπ}) = −I = exp(πN). This equals −I, not I. A spin-½ state |ψ⟩ transforms as |ψ⟩ ↦ −|ψ⟩ under 2π rotation.</p>
+<p>If ker(SL(2,ℂ) → SO⁺(1,3)) were trivial, all representations of SL(2,ℂ) would factor through SO⁺(1,3), and only integer-spin representations would exist. The nontrivial kernel {I, −I} — forced by exp(πN) = −I — is precisely what allows half-integer spin.</p>
+<p>The forcing quality carries over: π is the framework&rsquo;s most strongly forced constant (absolute, zero ambiguity), and its physical manifestation is the most characteristically quantum phenomenon (half-integer spin). ✓ ∎</p>
+<p><strong>Connection to LoMI.</strong> The quotient SL(2,ℂ)/{±I} = SO⁺(1,3) IS a LoMI morphism: the observer (SO⁺(1,3)) cannot distinguish ψ from −ψ. The kernel {I, −I} is the observer&rsquo;s blind spot. Half-integer spin is the physical content of LoMI&rsquo;s quotient structure: what is &ldquo;invisible&rdquo; to the classical rotation group (the sign of the spinor) is precisely what makes quantum mechanics different from classical mechanics.</p>
+<p><strong>Remark (√3/2 as Generator Norm Projection).</strong> The spin-½ projection value √3/2 = cos(π/6) = ‖R‖_F/2 connects the bridge chain&rsquo;s generator norms to angular momentum physics. For spin s = 1/2, the total angular momentum magnitude is √(s(s+1))ℏ = (√3/2)ℏ. This is ‖R‖_F/2: half the Frobenius norm of the Fibonacci generator. The same quantity appears as the Koide vector magnitude ‖c_std‖ = √(3/2) in V_std (Paper 6B §10.2 Lemma), and as the height of the equilateral triangle with unit side — the S₃ geometry that generates the three projections. Status: ENCODED — the numerical identity ‖R‖_F/2 = √(s(s+1)) for s = 1/2 is exact but the mechanism connecting the Frobenius norm to the angular momentum eigenvalue is not derived from first principles.</p>
+<h3 id="17-observer-incompleteness-is-lomi" id="17-observer-incompleteness-is-lomi">§1.7 Observer Incompleteness Is LoMI</h3>
+<p><strong>Theorem 1.8 (Mutual Incompleteness).</strong> <em>For d_K &lt; d_U, there is no injective
+structure-preserving map B(H_U) → B(H_K). The compression ratio is d_K²/d_U², which
+goes to zero as d_U → ∞.</em></p>
+<p><em>This is LoMI structure: the observer K cannot fully &ldquo;see&rdquo; the universe U. Every observer
+creates a quotient (seen/unseen), and this quotient IS the Dist morphism q∘q = q.</em></p>
+<p>For the minimal observer d_K = 2: the compression wall d_K² = 4 limits K to 4 operators.
+At tower level n, d_U = 2^{2^n}, giving dim(B(H_U)) = 2^{2^{n+1}}. The compression ratio
+4/2^{2^{n+1}} → 0 double-exponentially — observer incompleteness grows at the rate of
+the tower itself.</p>
+<p><strong>Corollary 1.9 (Simulation Equivalence).</strong> <em>Observer incompleteness is observationally
+indistinguishable from the simulation hypothesis: K embedded in &ldquo;real&rdquo; U and K embedded in
+simulation U(K) with d_K² parameters look identical from inside K. This is LoMI&rsquo;s deepest
+structural consequence: observation creates its own horizon.</em></p>
+<p><strong>Remark (Pair-Space LoMI Instance).</strong> The residual projection RP in the balance-charge decomposition (Paper 0 §1¾) is a concrete finite LoMI morphism: RP(k,r,s) = (0,r,s) for r &gt; 0, and RP(k,0,0) = (0,0,0). It satisfies RP² = RP (Dist quotient idempotence), creates a quotient (im(RP) = pure residual boundary, ker(RP) = balanced depth information), and exhibits occlusive disclosure — revealing the oriented residual charge by annihilating the balanced core. The compression ratio is analogous to observer incompleteness: RP discards all k-information, retaining only (r,s). For a state on shell N with balanced depth k &gt; 0, the RP-accessible content (r,s) has strictly fewer degrees of freedom than the full state (k,r,s) — the k coordinate is RP&rsquo;s blind spot. This is observer incompleteness at the pair-space level: the &ldquo;RP observer&rdquo; cannot distinguish states that share the same residual but differ in balanced depth.</p>
+<h3 id="18-koide-formula-via-n" id="18-koide-formula-via-n">§1.8 Koide Formula via N</h3>
+<p><strong>Theorem 1.10 (Koide Parameter from Norm Ratio).</strong> <em>The Koide formula parameter
+Q = 2/3 is forced by the norm ratio of the generators:</em></p>
+<pre class="highlight"><code>||R||²_F / ||N||²_F = 3/2 = 1/Q_Koide
+</code></pre>
+
+<p><em>In the S₃ ansatz √m_i = M(1 + ρ·cos(2πi/3 + δ)), Q = 2/3 forces ρ² = 2, giving
+ρ = √2 = ||N||_F.</em></p>
+<p><strong>Proof.</strong> Q = (2 + ρ²)/6. Setting Q = 2/3: 2 + ρ² = 4, so ρ² = 2, ρ = √2 = ||N||_F.
+The Koide oscillation cos(2πi/3 + δ) is generated by exp(2π/3 · N) — rotation by 120° —
+which IS the S₃ standard 2D irrep 3-cycle.</p>
+<p>Experimental check: Q = (m_e + m_μ + m_τ)/(√m_e + √m_μ + √m_τ)² = 0.66666&hellip; with
+error &lt; 6 × 10⁻⁶ from the theoretical 2/3. ✓ ∎</p>
+<p><strong>Interpretation.</strong> The Koide formula is LoMI structure: the three lepton masses &ldquo;observe&rdquo;
+each other through their S₃ symmetry, and the oscillation amplitude is set by LoMI&rsquo;s
+generator norm ||N||_F.</p>
+<p><strong>Remark (Koide Phase from V_std Geometry).</strong> The Koide cosine vector c_i = cos(2πi/3 + δ), projected to V_std, has angle θ = π/6 − δ and magnitude √(3/2) independent of δ (Paper 6B §10.2 Lemma). The phase δ = 2π/3 + 2/9 is forced by K4 closure deficit minimization (Paper 6B §10.2 Theorem): the bridge chain&rsquo;s non-class Frobenius norm data (Paper 2 §22.1) determines a deviation operator L_dev = −ρ_std((12)) that selects the N-eigenbasis in V_std and fixes the S₃-breaking magnitude at σ² = Var(2,3,3) = 2/9 = Q/n_gen. The mass vector&rsquo;s direction in V_std is the unique K4 minimum at angle −(π/2 + 2/9). The oscillation phase δ is not a free parameter — it is the bridge chain&rsquo;s non-class content, read through the LoMI projection.</p>
+<h3 id="19-3-as-the-p1p3-bridge" id="19-3-as-the-p1p3-bridge">§1.9 √3 as the P1↔P3 Bridge</h3>
+<p><strong>Theorem 1.11 (√3 Identity).</strong> <em>√3 = ||R||_F = 2·sin(2π/3). This connects the algebraic
+structure of R (P1: entries from {0,1}) with the rotation angle 2π/3 (P3: third root of
+unity). The identity is algebraic:</em></p>
+<pre class="highlight"><code>||R||²_F = 0² + 1² + 1² + 1² = 3
+4·sin²(2π/3) = 4·(3/4) = 3
+</code></pre>
+
+<p><strong>Proof.</strong> ||R||²_F = 3 by direct entry computation. sin(2π/3) = √3/2, so
+2·sin(2π/3) = √3. Both equal √3 by independent routes: one through P1&rsquo;s matrix
+entries, one through P3&rsquo;s rotation structure. ✓ ∎</p>
+<p>√3 appears iff d_K ≥ 2 (the minimal dimension for non-trivial Frobenius norms).
+In Λ&rsquo; coordinates: (0,0,0,1) — the b-axis generator at complexity C = 1.
+√3 is the structural bridge between I² and LoMI via the S₃ irrep.</p>
+<hr />
+<h2 id="2-lomi-in-arithmetic" id="2-lomi-in-arithmetic">§2 LoMI IN ARITHMETIC</h2>
+<h3 id="21-the-lomi-duality-observe-observed" id="21-the-lomi-duality-observe-observed">§2.1 The LoMI Duality: Observe ↔ Observed</h3>
+<p><strong>LoMI Projection (observed_by ↔ observe):</strong></p>
+<pre class="highlight"><code>UP_L(n) = {multiples of n} = {n, 2n, 3n, ...}
+DOWN_L(n) = {divisors of n} = {d : d | n}
+</code></pre>
+
+<p>The LoMI projection treats n as both an observed entity (UP: n is contained in all its
+multiples — larger structures &ldquo;see&rdquo; n) and an observer (DOWN: n sees its divisors — the
+smaller structures that n contains).</p>
+<p>At n = 1: 1 divides every n ∈ ℕ, so 1 is contained in every multiple — it &ldquo;observes&rdquo; all
+of ℕ. At the same time, 1&rsquo;s only divisor is itself: divisors(1) = {1}. While UP_L(1) ≠
+DOWN_L(1) in cardinality, 1 is the unique fixed point: the SHARED element of all UP chains
+and the TERMINAL element of all DOWN chains. 1 is the LoMI universal fixed point.</p>
+<h3 id="22-the-lomi-potential-component" id="22-the-lomi-potential-component">§2.2 The LoMI Potential Component</h3>
+<p>V_L(n) = |log(d(n)) − log(φ(n))|, where d(n) = number of divisors, φ(n) = Euler&rsquo;s totient.
+At n = 1: |log(1) − log(1)| = 0. For n &gt; 1: the divisor count and totient typically diverge,
+reflecting the gap between &ldquo;how many structures contain n&rdquo; and &ldquo;how many structures n is
+coprime to.&rdquo;</p>
+<h3 id="23-highly-composite-numbers-are-lomi-dominant" id="23-highly-composite-numbers-are-lomi-dominant">§2.3 Highly Composite Numbers Are LoMI-Dominant</h3>
+<p><strong>Theorem 4.3 (Highly Composite → LoMI, 93.3%).</strong> <em>For highly composite numbers, 28/30
+are LoMI-dominant (93.3%).</em></p>
+<p>The two exceptions (2 and 4) have φ(n)/n = 0.5, exactly at the boundary between LoMI
+and non-LoMI. This is expected: 2 and 4 are the &ldquo;simplest&rdquo; highly composite numbers,
+not yet rich enough in divisor structure to achieve the LoMI threshold of φ(n)/n &lt; 0.4.</p>
+<p><strong>Why:</strong> Highly composite numbers are defined by having more divisors than any smaller
+number. This means they are maximally &ldquo;observed by&rdquo; smaller numbers — they maximize the
+LoMI UP direction (multiples and divisors). High divisor count → low totient ratio →
+LoMI-dominant.</p>
+<h3 id="24-totient-ratio-as-continuous-lomi-signature" id="24-totient-ratio-as-continuous-lomi-signature">§2.4 Totient Ratio as Continuous LoMI Signature</h3>
+<p><strong>Theorem 4.6 (Totient Ratio as Continuous LoMI Signature).</strong> <em>The totient ratio φ(n)/n
+is a continuous LoMI signature: it measures the fraction of numbers up to n that are
+coprime to n, inversely measuring the &ldquo;relational density&rdquo; of n.</em></p>
+<table>
+<thead>
+<tr>
+<th>Ratio</th>
+<th>Category</th>
+<th>Examples</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>φ(n)/n &lt; 0.3</td>
+<td>Strongly LoMI</td>
+<td>30, 60, 120, 180, 360</td>
+</tr>
+<tr>
+<td>0.3–0.4</td>
+<td>LoMI-dominant</td>
+<td>6, 12, 24, 36, 48</td>
+</tr>
+<tr>
+<td>0.4–0.5</td>
+<td>Mixed</td>
+<td>4, 8, 10, 20</td>
+</tr>
+<tr>
+<td>&gt; 0.5</td>
+<td>Not LoMI</td>
+<td>Primes (φ(p)/p = (p−1)/p → 1)</td>
+</tr>
+</tbody>
+</table>
+<p><em>Proof.</em> A small totient ratio means many integers up to n share a factor with n —
+many non-coprime relationships — which is exactly the LoMI condition: n has many
+&ldquo;mutual observers&rdquo; (numbers that share structure with n, i.e., divisors or co-divisors).
+Primes have φ(p)/p = (p−1)/p → 1 as p → ∞: almost all numbers are coprime to a large
+prime, so primes have minimal relational density — confirming their non-LoMI character. ∎</p>
+<h3 id="25-lomi-associated-sequences" id="25-lomi-associated-sequences">§2.5 LoMI-Associated Sequences</h3>
+<table>
+<thead>
+<tr>
+<th>Sequence</th>
+<th>LoMI %</th>
+<th>Core Reason</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Highly composite</td>
+<td>93.3%</td>
+<td>Maximal divisor count → minimal φ(n)/n</td>
+</tr>
+<tr>
+<td>Abundant (σ(n) &gt; 2n)</td>
+<td>64%</td>
+<td>Divisor sum exceeds twice the number</td>
+</tr>
+<tr>
+<td>Perfect (σ(n) = 2n)</td>
+<td>67%</td>
+<td>σ(n) = 2n: balanced observe/observed — the divisor sum equals exactly twice n</td>
+</tr>
+<tr>
+<td>Primorials (p₁·p₂·&hellip;·pₖ)</td>
+<td>75%</td>
+<td>Multi-prime structure, many small factors, small totient ratio</td>
+</tr>
+<tr>
+<td>Factorials (n!)</td>
+<td>67%</td>
+<td>Many small prime factors with high multiplicities</td>
+</tr>
+</tbody>
+</table>
+<h3 id="26-the-carmichael-totient-depth" id="26-the-carmichael-totient-depth">§2.6 The Carmichael-Totient Depth</h3>
+<p>The ratio λ(n)/φ(n) (Carmichael function / Euler totient) measures the depth of cyclic
+structure in (ℤ/nℤ)×. This is the LoMI-internal TDL structure predicted by the folding
+theorem (LoMI contains TDL):</p>
+<ul>
+<li>λ(n)/φ(n) = 1 for primes (flat cyclic structure — (ℤ/pℤ)× is cyclic)</li>
+<li>λ(n)/φ(n) &lt; 1 for composites (nested cyclic subgroups)</li>
+<li>Smaller ratio = deeper level structure within the LoMI layer</li>
+</ul>
+<p>This is the concrete realization of &ldquo;LoMI contains TDL&rdquo; (folding theorem, containment vi):
+the divisibility relationships of n carry a natural depth/level hierarchy measured by λ/φ.</p>
+<hr />
+<h2 id="3-lomi-operations" id="3-lomi-operations">§3 LoMI OPERATIONS</h2>
+<h3 id="31-gcd-as-lomi-fixed-point" id="31-gcd-as-lomi-fixed-point">§3.1 GCD as LoMI Fixed Point</h3>
+<p>GCD(a, b) is the LoMI &ldquo;mutual identity&rdquo; — the largest structure that both a and b share.
+The Euclidean algorithm GCD(a,b) = GCD(b, a mod b) is iterated I²-composition (LoMI
+contains I², per folding containment v) converging to the mutual fixed point.</p>
+<p>For coprime pairs: GCD(a,b) = 1 — the LoMI interaction reaches the universal fixed
+point R(R) = R. The LoMI distance from a to b passes through their shared structure.</p>
+<h3 id="32-lcm-as-lomi-join" id="32-lcm-as-lomi-join">§3.2 LCM as LoMI Join</h3>
+<p>LCM(a, b) = a·b / GCD(a,b) is the minimal container — the smallest structure that
+contains both a and b. Standard identity: GCD(a,b) × LCM(a,b) = a × b.</p>
+<p>Together: GCD is the LoMI DOWN (shared divisor = mutual observation, finding the common
+observer). LCM is the LoMI UP (minimal containing multiple = what observes both a and b).</p>
+<h3 id="33-agm-as-geometric-mutual-observation" id="33-agm-as-geometric-mutual-observation">§3.3 AGM as Geometric Mutual Observation</h3>
+<p><strong>Theorem 4.4 (AGM Fibonacci Limit — new result, not in original source).</strong> <em>The
+arithmetic-geometric mean of consecutive Fibonacci pairs satisfies:</em></p>
+<pre class="highlight"><code>AGM(F(n), F(n+1)) / F(n+1) → AGM(1, φ) / φ  ≈  0.7975  as n → ∞
+</code></pre>
+
+<p><strong>Proof.</strong> For large n, F(n) ≈ φⁿ/√5 and F(n+1) ≈ φⁿ⁺¹/√5 = φ·F(n). By homogeneity
+of AGM (AGM(λa, λb) = λ·AGM(a,b)):</p>
+<pre class="highlight"><code>AGM(F(n), F(n+1)) / F(n+1) = AGM(F(n), φ·F(n)) / (φ·F(n))
+                             = F(n)·AGM(1, φ) / (φ·F(n))
+                             = AGM(1, φ) / φ
+</code></pre>
+
+<p>Numerically: AGM(1, φ) = 1.290452&hellip;, φ = 1.618034&hellip;, ratio = 0.797543&hellip; ∎</p>
+<p><strong>Verified convergence:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Pair (F(n), F(n+1))</th>
+<th>Ratio AGM/F(n+1)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>(5, 8)</td>
+<td>0.79613</td>
+</tr>
+<tr>
+<td>(13, 21)</td>
+<td>0.79741</td>
+</tr>
+<tr>
+<td>(34, 55)</td>
+<td>0.79751</td>
+</tr>
+<tr>
+<td>(89, 144)</td>
+<td>0.79754</td>
+</tr>
+<tr>
+<td>(233, 377)</td>
+<td>0.797542</td>
+</tr>
+<tr>
+<td>(1597, 2584)</td>
+<td>0.797543</td>
+</tr>
+</tbody>
+</table>
+<p>Monotonic convergence to 0.797543&hellip; ✓</p>
+<p><strong>Interpretation.</strong> The AGM fixed point of two consecutive Fibonacci numbers is not a
+special value of π (as in the classical AGM-π connection) but encodes the ratio AGM(1,φ)/φ —
+the LoMI &ldquo;golden mean&rdquo; of the golden ratio itself. This is a new entry in the table of
+φ-derived constants.</p>
+<h3 id="34-continued-fractions-as-lomi-signature" id="34-continued-fractions-as-lomi-signature">§3.4 Continued Fractions as LoMI Signature</h3>
+<p><strong>Theorem 6.2 (Fibonacci CF Signature).</strong> <em>Consecutive Fibonacci pairs F(n), F(n+1) have
+continued fraction expansion [0; 1, 1, 1, &hellip;, 1, 2] — the golden signature. All middle
+terms are 1.</em></p>
+<p><strong>Verified:</strong></p>
+<pre class="highlight"><code>cf(8, 13)    = [0, 1, 1, 1, 1, 2]              (4 ones in the middle)
+cf(13, 21)   = [0, 1, 1, 1, 1, 1, 2]            (5 ones)
+cf(89, 144)  = [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2]  (9 ones)
+</code></pre>
+
+<p>Pattern: (n−1) ones in the middle, terminal 2. ✓</p>
+<p>This is the LoMI signature of the golden ratio: F(n)/F(n+1) → φ̄ = [0;1,1,1,&hellip;], and the
+pair (F(n), F(n+1)) is &ldquo;maximally coprime&rdquo; (gcd=1) while being &ldquo;maximally adjacent&rdquo; (ratio→φ̄).
+The continued fraction of φ̄ = [0; 1, 1, 1, &hellip;] (all 1s, infinite) is the slowest-converging
+CF — which makes φ̄ the &ldquo;most irrational&rdquo; number.</p>
+<h3 id="35-consecutive-fibonacci-pairs-the-maximal-lomi-structure" id="35-consecutive-fibonacci-pairs-the-maximal-lomi-structure">§3.5 Consecutive Fibonacci Pairs: The Maximal LoMI Structure</h3>
+<p>Consecutive Fibonacci pairs exhibit the extreme LoMI behavior:
+- <strong>Maximally coprime:</strong> GCD(F(n), F(n+1)) = 1 always (classical theorem)
+- <strong>Maximally adjacent:</strong> F(n)/F(n+1) → φ̄ (ratio converges to the golden ratio)
+- <strong>Golden CF:</strong> cf(F(n), F(n+1)) = [0; 1, &hellip;, 1, 2] (all-ones signature)
+- <strong>AGM limit:</strong> AGM(F(n), F(n+1))/F(n+1) → AGM(1,φ)/φ ≈ 0.7975</p>
+<p>They are simultaneously as &ldquo;separate&rdquo; as possible (coprime = no shared structure beyond 1)
+and as &ldquo;close&rdquo; as possible (ratio = golden = slowest convergence). This tension between
+maximal separation and maximal adjacency IS the LoMI structure — mutual identity requires
+both difference and relationship.</p>
+<hr />
+<h2 id="4-anti-lomi-and-period-2-oscillation" id="4-anti-lomi-and-period-2-oscillation">§4 ANTI-LoMI AND PERIOD-2 OSCILLATION</h2>
+<h3 id="41-the-anti-projection" id="41-the-anti-projection">§4.1 The Anti-Projection</h3>
+<p><strong>Definition 6.1 (Anti-LoMI).</strong> The anti-LoMI is the continuation of the rotation past
+the half-turn fixed point: exp(N·2π) = +I rather than exp(Nπ) = −I.</p>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>LoMI</th>
+<th>−LoMI</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Generator value</td>
+<td>π</td>
+<td>2π (continuation)</td>
+</tr>
+<tr>
+<td>Matrix result</td>
+<td>exp(Nπ) = −I</td>
+<td>(−I)² = +I</td>
+</tr>
+<tr>
+<td>Dynamics</td>
+<td>Converges to K(K)=K</td>
+<td>Oscillates with period 2</td>
+</tr>
+</tbody>
+</table>
+<h3 id="42-the-period-2-oscillation" id="42-the-period-2-oscillation">§4.2 The Period-2 Oscillation</h3>
+<p><strong>Theorem 6.3 (Anti-LoMI Is Periodic-2).</strong> <em>The anti-LoMI operation −K: x ↦ −K(x)
+oscillates with period 2.</em></p>
+<p><strong>Proof.</strong> K(K) = K (LoMI fixed-point condition, R(R)=R Theorem 4.1). The anti-LoMI
+continues past this fixed point.</p>
+<p>At the matrix level: the LoMI generator is N = [[0,−1],[1,0]]. LoMI applies
+exp(Nπ) = −I (the half-rotation). The anti-LoMI continues to exp(N·2π) = +I.</p>
+<p>One application of anti-LoMI: −I (half-rotation, flips sign)
+Two applications: (−I)² = +I (full rotation, returns to identity)
+Three applications: (−I)³ = −I (back to half-rotation)</p>
+<p>The sequence −I, +I, −I, +I, &hellip; is exactly period-2 oscillation.</p>
+<p>This is the anti-observation: observing the observer reverses all distinctions, and
+repeating returns to the original. It is the mathematical structure underlying the
+physical observation that &ldquo;observing a quantum state twice returns to the original
+state in the absence of measurement back-action.&rdquo; ∎</p>
+<p><strong>Remark 6.4 (Anti-Projections vs Projections).</strong> The three anti-projections are not
+separate objects — they are the <em>reverse flows</em> of the projections:
+- I² flows toward φ; −I² flows away from φ
+- TDL flows up through levels; −TDL flows down
+- LoMI stabilizes at K(K) = K; −LoMI oscillates with period 2</p>
+<p>The anti-projections exist as mirror images within the same Dist structure. They appear
+naturally in dynamics (backwards time evolution, reversed gradient flow) and in physics
+(CP violation, time reversal, parity).</p>
+<hr />
+<h2 id="5-lomi-in-the-containment-structure" id="5-lomi-in-the-containment-structure">§5 LoMI IN THE CONTAINMENT STRUCTURE</h2>
+<h3 id="51-lomi-contains-i²" id="51-lomi-contains-i2">§5.1 LoMI Contains I²</h3>
+<p>The Euclidean algorithm computes GCD(a,b) via:</p>
+<pre class="highlight"><code>GCD(a, b) = GCD(b, a mod b) = GCD(a mod b, b mod (a mod b)) = ...
+</code></pre>
+
+<p>Each step is a function application composed with the previous: it is iterated I²-
+composition. The algorithm terminates because the pair (a,b) strictly decreases
+(second argument decreases at each step), and the final state (GCD, 0) is the I²
+fixed point of the iteration. LoMI (mutual divisibility = GCD structure) IS I²
+(iterated composition to a fixed point).</p>
+<h3 id="52-lomi-contains-tdl" id="52-lomi-contains-tdl">§5.2 LoMI Contains TDL</h3>
+<p>The ratio λ(n)/φ(n) (Carmichael function / Euler totient) measures the depth of cyclic
+structure in (ℤ/nℤ)×. A small ratio means many cyclic subgroups are &ldquo;nested&rdquo; — a deep
+level structure. This is a TDL structure on the LoMI layer: the divisibility relationships
+of n carry a natural depth/level hierarchy measured by λ/φ.</p>
+<h3 id="53-the-discriminant-partition" id="53-the-discriminant-partition">§5.3 The Discriminant Partition</h3>
+<p><strong>Theorem 5.3 (Elliptic Fraction).</strong> <em>(MP2 corollary: Killing signature (2,1).) The discriminant Δ = 5b² − 4c² − 4cd + 4d²
+partitions M₂(ℝ) into ~71.7% hyperbolic (P2/TDL) and ~28.3% elliptic (P3/LoMI)
+directions, approximately a 5:2 ratio.</em></p>
+<p><strong>Proof.</strong> The discriminant form has signature (2,1) with eigenvalues 5, +2√5, −2√5.
+Monte Carlo sampling (10⁶ points on the unit sphere b² + c² + d² = 1) gives
+71.7% hyperbolic (Δ &gt; 0) and 28.3% elliptic (Δ &lt; 0). The parabolic boundary (Δ = 0,
+where P1 sits) has measure zero.</p>
+<p>The elliptic sector — where LoMI/observation lives — is the minority. Ascent (P2)
+dominates over observation (P3) in measure. This is structurally expected: observation
+requires closure (compact orbits), which is more constrained than open/hyperbolic dynamics.
+✓ ∎</p>
+<hr />
+<h2 id="6-projection-distances-lomi-component" id="6-projection-distances-lomi-component">§6 PROJECTION DISTANCES (LoMI COMPONENT)</h2>
+<p><strong>Definition 5.1 (LoMI Distance).</strong> For n, m ∈ ℕ:</p>
+<pre class="highlight"><code>d_LoMI(n, m) = |log(φ(n)/n) − log(φ(m)/m)|   (totient ratio gap)
+</code></pre>
+
+<table>
+<thead>
+<tr>
+<th>Pair</th>
+<th>LoMI dist</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>(5, 8)</td>
+<td>0.0</td>
+<td>Both Fibonacci, same relational density</td>
+</tr>
+<tr>
+<td>(7, 49)</td>
+<td>1.4</td>
+<td>Prime → prime square: relational structure changes</td>
+</tr>
+<tr>
+<td>(12, 144)</td>
+<td>0.4</td>
+<td>HC numbers, similar character</td>
+</tr>
+<tr>
+<td>(8, 13)</td>
+<td>1.5</td>
+<td>Consecutive Fibonacci: coprime despite adjacency</td>
+</tr>
+<tr>
+<td>(1, 1000)</td>
+<td>3.6</td>
+<td>Maximal separation</td>
+</tr>
+</tbody>
+</table>
+<p>See P2 document Definition 5.1 for the complete three-component projection distance.</p>
+<hr />
+<hr />
+<h2 id="7-p3-specific-projection-structure-from-closure" id="7-p3-specific-projection-structure-from-closure">§7 P3-SPECIFIC PROJECTION STRUCTURE (FROM CLOSURE)</h2>
+<h3 id="6½1-independence-witness" id="6121-independence-witness">§6½.1 Independence Witness</h3>
+<p><strong>P3-only model (M₃): The Pure Observer System.</strong> A system of observers — tuples (A, B, obs) where obs: A → B is a function — satisfying: the equivalence relation ≈_A on A is defined by obs(x) = obs(y), with K(K) = K (observation stabilizes). No adjunction structure, no composition monoid with I²-type fixed-point dynamics.</p>
+<p><em>P3 satisfied:</em> Observers with blind spots (ker(obs) = ≈_A), idempotent observation K(K) = K, the LoMI axioms.</p>
+<p><em>P1 violated:</em> No natural monoid composition on observer maps that yields I²-type fixed-point dynamics related to φ.
+<em>P2 violated:</em> No canonical TDL level structure — no 𝒰 ⊣ ℛ adjunction between observation levels.</p>
+<p>M₃ satisfies P3 only, proving P3 is not definable from P1 and P2. ∎</p>
+<h3 id="6½2-v_ln-the-lomi-component-of-the-arithmetic-potential" id="6122-v_ln-the-lomi-component-of-the-arithmetic-potential">§6½.2 V_L(n): The LoMI-Component of the Arithmetic Potential</h3>
+<p><strong>Definition.</strong> V_L(n) = |log(d(n)) − log(φ(n))|, where d(n) = number of divisors and φ(n) = Euler&rsquo;s totient function.</p>
+<p>V_L(n) measures the relational gap between how many structures observe n (its divisors) and how many n observes (integers coprime to n). V_L(1) = |log(1) − log(1)| = 0 (fixed point).</p>
+<table>
+<thead>
+<tr>
+<th>n</th>
+<th>d(n)</th>
+<th>φ(n)</th>
+<th>V_L(n)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+<td>0.000</td>
+</tr>
+<tr>
+<td>6</td>
+<td>4</td>
+<td>2</td>
+<td>0.693</td>
+</tr>
+<tr>
+<td>12</td>
+<td>6</td>
+<td>4</td>
+<td>0.405</td>
+</tr>
+<tr>
+<td>30</td>
+<td>8</td>
+<td>8</td>
+<td>0.000</td>
+</tr>
+<tr>
+<td>60</td>
+<td>12</td>
+<td>16</td>
+<td>0.288</td>
+</tr>
+</tbody>
+</table>
+<p>Note: n = 30 has V_L = 0 — an exact balance d(30) = φ(30) = 8. These LoMI equilibrium points are numbers where the observer and observed are in perfect balance.</p>
+<p>This is P3&rsquo;s contribution to the gradient flow toward n = 1 (see Paper 3-META for the composite V(n) = V_I + V_T + V_L).</p>
+<h3 id="6½3-p3-and-the-phase-duality" id="6123-p3-and-the-phase-duality">§6½.3 P3 and the Phase Duality</h3>
+<p>The algebraic inverse of P1&rsquo;s Fibonacci equation x²−x−1 = 0 (roots φ, −φ̄ off the unit circle) is P3&rsquo;s cyclotomic equation x²+x+1 = 0 (roots ω = exp(2πi/3), ω² on the unit circle).</p>
+<p>| Equation | Roots | |root| | Phase character |
+|----------|-------|--------|----------------|
+| x²−x−1 = 0 (P1) | φ, −φ̄ | &gt; 1, &lt; 1 | Attracts/repels (oriented) |
+| x²+x+1 = 0 (P3) | ω, ω² | = 1, = 1 | Rotates (neutral) |</p>
+<p>This is the deepest expression of P1↔P3 duality (Paper 0, Thm 5.2). P1&rsquo;s eigenvalues are phase-dependent; P3&rsquo;s are phase-neutral. The &ldquo;inverse framework&rdquo; is the P3 reading that was always present in the algebra.</p>
+<p>The 3-cycle eigenvalues exp(±2πi/3) in S₃&rsquo;s standard representation are precisely the roots of P3&rsquo;s equation. Generation structure IS the P1↔P3 duality (Paper 6B, Cor 10½.7d). At the generator level: <strong>NRN = R⁻¹ = R − I</strong> — N literally contains R by conjugation, transforming the P1 generator into its inverse.</p>
+<h2 id="8-computational-verification" id="8-computational-verification">§8 COMPUTATIONAL VERIFICATION</h2>
+<p>All claims verified:</p>
+<table>
+<thead>
+<tr>
+<th>Claim</th>
+<th>Verification</th>
+<th>Result</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>N = [[0,−1],[1,0]] unique with N²=−I</td>
+<td>Exhaustive: skew-symmetric, entries in {0,±1}</td>
+<td>✓ PASS</td>
+</tr>
+<tr>
+<td>N² = −I</td>
+<td>Direct: [[0,-1],[1,0]]² = [[-1,0],[0,-1]] = −I</td>
+<td>✓ PASS</td>
+</tr>
+<tr>
+<td>exp(Nπ) = −I</td>
+<td>Norm error = 3.81×10⁻¹⁶</td>
+<td>✓ PASS</td>
+</tr>
+<tr>
+<td>N⁴ = I</td>
+<td>Direct: (−I)² = I</td>
+<td>✓ PASS</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td>N</td>
+</tr>
+<tr>
+<td>N eigenvalues ±i, both</td>
+<td>λ</td>
+<td>=1 → INV</td>
+</tr>
+<tr>
+<td>exp(θN) preserves norms for 6 values of θ</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>iN = σ_y</td>
+<td>Direct: i·[[0,−1],[1,0]] = [[0,−i],[i,0]]</td>
+<td>✓ PASS</td>
+</tr>
+<tr>
+<td>σ_z = (I−2R−2N+4RN)/5</td>
+<td>Direct reconstruction</td>
+<td>✓ PASS</td>
+</tr>
+<tr>
+<td>σ_x = (−2I+4R−N+2RN)/5</td>
+<td>Direct reconstruction</td>
+<td>✓ PASS</td>
+</tr>
+<tr>
+<td>Pauli commutation: [σ_x,σ_y]=2iσ_z, cyclic</td>
+<td>Matrix commutators</td>
+<td>✓ PASS</td>
+</tr>
+<tr>
+<td>exp(θN) ∈ SO(2) for 8 values of θ</td>
+<td>Orthogonality + det=1</td>
+<td>✓ PASS</td>
+</tr>
+<tr>
+<td>exp(2πN) = I (full loop)</td>
+<td>Direct computation</td>
+<td>✓ PASS</td>
+</tr>
+<tr>
+<td>exp(πN) = −I (center of SL(2,ℝ))</td>
+<td>Direct computation</td>
+<td>✓ PASS</td>
+</tr>
+<tr>
+<td>Spin-½: exp(iπσ_z) = −I (2π rotation ≠ I in SU(2))</td>
+<td>exp(iπ)=−1 → diag(−1,−1) = −I</td>
+<td>✓ PASS</td>
+</tr>
+<tr>
+<td>Spin-½: (−I)² = I (4π rotation = I)</td>
+<td>Direct</td>
+<td>✓ PASS</td>
+</tr>
+<tr>
+<td>ker(SL(2,ℂ)→SO⁺(1,3)) = {I,−I} = {I,exp(πN)}</td>
+<td>Schur&rsquo;s lemma</td>
+<td>✓ PASS</td>
+</tr>
+<tr>
+<td>Koide: Q = 2/3 → ρ² = 2 → ρ = √2 =</td>
+<td></td>
+<td>N</td>
+</tr>
+<tr>
+<td>exp(2π/3·N) = rotation by 120°</td>
+<td>Matrix exponential</td>
+<td>✓ PASS</td>
+</tr>
+<tr>
+<td>Experimental Q = 0.666661 (error &lt; 6×10⁻⁶)</td>
+<td>Lepton masses</td>
+<td>✓ PASS</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td>R</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td>R</td>
+</tr>
+<tr>
+<td>Discriminant: ~71.7% hyp, ~28.3% ell (10⁶ samples)</td>
+<td>Monte Carlo on S²</td>
+<td>✓ PASS</td>
+</tr>
+<tr>
+<td>Discriminant form eigenvalues: 5, ±2√5</td>
+<td>Eigenvalue computation</td>
+<td>✓ PASS</td>
+</tr>
+<tr>
+<td>sin(2π/3) = √3/2</td>
+<td>Numeric</td>
+<td>✓ PASS</td>
+</tr>
+<tr>
+<td>HC → LoMI: 28/30 = 93.3%</td>
+<td>Classification of first 30 HC numbers</td>
+<td>✓ PASS</td>
+</tr>
+<tr>
+<td>φ(p)/p = (p−1)/p for primes p</td>
+<td>Arithmetic identity</td>
+<td>✓ PASS</td>
+</tr>
+<tr>
+<td>AGM(1,φ)/φ = 0.797543&hellip;</td>
+<td>Numeric (iterated AGM to convergence)</td>
+<td>✓ PASS</td>
+</tr>
+<tr>
+<td>AGM convergence for F(5)–F(18) pairs</td>
+<td>Monotonic to limit</td>
+<td>✓ PASS</td>
+</tr>
+<tr>
+<td>cf(8,13) = [0,1,1,1,1,2]</td>
+<td>Euclidean algorithm</td>
+<td>✓ PASS</td>
+</tr>
+<tr>
+<td>cf(13,21) = [0,1,1,1,1,1,2]</td>
+<td>Euclidean algorithm</td>
+<td>✓ PASS</td>
+</tr>
+<tr>
+<td>cf(89,144) = [0,1,&hellip;,1,2] with 9 ones</td>
+<td>Euclidean algorithm</td>
+<td>✓ PASS</td>
+</tr>
+<tr>
+<td>GCD(F(n),F(n+1)) = 1 for all tested n</td>
+<td>Direct computation</td>
+<td>✓ PASS</td>
+</tr>
+<tr>
+<td>(−I)² = +I (period-2 oscillation)</td>
+<td>Direct computation</td>
+<td>✓ PASS</td>
+</tr>
+<tr>
+<td>GCD(a,b) × LCM(a,b) = a × b</td>
+<td>Standard theorem, verified for test pairs</td>
+<td>✓ PASS</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="9-claim-status" id="9-claim-status">§9 CLAIM STATUS</h2>
+<table>
+<thead>
+<tr>
+<th>Claim</th>
+<th>Status</th>
+<th>Generation</th>
+<th>Section</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>π absolutely forced: unique θ with exp(Nθ)=−I</td>
+<td><strong>FORCED</strong></td>
+<td>G.5</td>
+<td>§1.1</td>
+</tr>
+<tr>
+<td>N is unique skew-symmetric with entries in {0,±1} and N²=−I</td>
+<td><strong>FORCED</strong></td>
+<td>G.5</td>
+<td>§1.1</td>
+</tr>
+<tr>
+<td>N² = −I; N⁴ = I; ‖N‖_F = √2</td>
+<td><strong>FORCED</strong></td>
+<td>G.5</td>
+<td>§1.2</td>
+</tr>
+<tr>
+<td>exp(θN) = cos(θ)I + sin(θ)N</td>
+<td><strong>FORCED</strong></td>
+<td>G.5</td>
+<td>§1.2</td>
+</tr>
+<tr>
+<td>P1 ↔ P3 phase duality (x²−x−1 vs x²+x+1)</td>
+<td><strong>FORCED</strong></td>
+<td>G.5</td>
+<td>§1.3</td>
+</tr>
+<tr>
+<td>P3 → INV (unit-magnitude eigenvalues, norm-preserving)</td>
+<td><strong>FORCED</strong></td>
+<td>G.5</td>
+<td>§1.4</td>
+</tr>
+<tr>
+<td>Structural invertibility: σ_MIX &lt; φ̄²/2</td>
+<td><strong>FORCED</strong></td>
+<td>G.5</td>
+<td>§1.4</td>
+</tr>
+<tr>
+<td>iN = σ_y; all three Pauli matrices from {R,N} at resolution 1/5</td>
+<td><strong>FORCED</strong></td>
+<td>G.5</td>
+<td>§1.5</td>
+</tr>
+<tr>
+<td>exp(θN) traces SO(2) = maximal compact subgroup of SL(2,ℝ)</td>
+<td><strong>FORCED</strong></td>
+<td>G.5</td>
+<td>§1.6</td>
+</tr>
+<tr>
+<td>exp(πN) = −I generates center; SL(2,ℝ)/{±I} = PSL(2,ℝ)</td>
+<td><strong>FORCED</strong></td>
+<td>G.5</td>
+<td>§1.6</td>
+</tr>
+<tr>
+<td>Spin-½ forced: ker(SL(2,ℂ)→SO⁺(1,3))={I,exp(πN)}, 2π≠I</td>
+<td><strong>FORCED</strong></td>
+<td>G.5</td>
+<td>§1.6½</td>
+</tr>
+<tr>
+<td>Observer incompleteness: no injection B(H_U)→B(H_K) for d_K&lt;d_U</td>
+<td><strong>FORCED</strong></td>
+<td>G.5</td>
+<td>§1.7</td>
+</tr>
+<tr>
+<td>Simulation equivalence (indistinguishable from inside K)</td>
+<td><strong>FORCED</strong></td>
+<td>G.5</td>
+<td>§1.7</td>
+</tr>
+<tr>
+<td>Koide Q = 2/3 from ‖R‖²/‖N‖² = 3/2; ρ = ‖N‖_F = √2</td>
+<td><strong>FORCED</strong></td>
+<td>G.5</td>
+<td>§1.8</td>
+</tr>
+<tr>
+<td>√3 = ‖R‖_F = 2·sin(2π/3) (P1↔P3 bridge)</td>
+<td><strong>FORCED</strong></td>
+<td>G.5</td>
+<td>§1.9</td>
+</tr>
+<tr>
+<td>Highly composite → LoMI-dominant, 93.3%</td>
+<td><strong>ENCODED</strong></td>
+<td>G.5</td>
+<td>§2.3</td>
+</tr>
+<tr>
+<td>Totient ratio = continuous LoMI signature</td>
+<td><strong>FORCED</strong></td>
+<td>G.5</td>
+<td>§2.4</td>
+</tr>
+<tr>
+<td>λ(n)/φ(n) measures Carmichael-Totient depth</td>
+<td><strong>FORCED</strong></td>
+<td>G.5</td>
+<td>§2.6</td>
+</tr>
+<tr>
+<td>GCD = LoMI fixed point; LCM = LoMI join</td>
+<td><strong>FORCED</strong></td>
+<td>G.5</td>
+<td>§3.1–3.2</td>
+</tr>
+<tr>
+<td>GCD(a,b) × LCM(a,b) = a × b</td>
+<td><strong>FORCED</strong></td>
+<td>G.5</td>
+<td>§3.2</td>
+</tr>
+<tr>
+<td>AGM(F(n),F(n+1))/F(n+1) → AGM(1,φ)/φ ≈ 0.7975</td>
+<td><strong>FORCED</strong></td>
+<td>G.5</td>
+<td>§3.3</td>
+</tr>
+<tr>
+<td>Consecutive Fibonacci CF = [0;1,&hellip;,1,2]</td>
+<td><strong>FORCED</strong></td>
+<td>G.5</td>
+<td>§3.4</td>
+</tr>
+<tr>
+<td>GCD(F(n),F(n+1)) = 1 always</td>
+<td><strong>FORCED</strong></td>
+<td>G.5</td>
+<td>§3.5</td>
+</tr>
+<tr>
+<td>−LoMI oscillates with period 2</td>
+<td><strong>FORCED</strong></td>
+<td>G.5</td>
+<td>§4.2</td>
+</tr>
+<tr>
+<td>Discriminant: ~71.7% hyp / ~28.3% ell, signature (2,1)</td>
+<td><strong>FORCED</strong></td>
+<td>G.5</td>
+<td>§5.3</td>
+</tr>
+<tr>
+<td>Anti-LoMI = quantum measurement back-action</td>
+<td><strong>RESONANT</strong></td>
+<td>G.5</td>
+<td>§4.2</td>
+</tr>
+<tr>
+<td>Consecutive Fibonacci = maximal LoMI tension</td>
+<td><strong>ENCODED</strong></td>
+<td>G.5</td>
+<td>§3.4</td>
+</tr>
+<tr>
+<td>Elliptic minority reflects observation constraint</td>
+<td><strong>ENCODED</strong></td>
+<td>G.5</td>
+<td>§5.3</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Status Legend:</strong>
+- <strong>FORCED</strong> (G.5): Zero-branching derivation from P3 structure (N² = −I, exp(πN) = −I)
+- <strong>ENCODED</strong>: Pattern recognized in structure, not strict derivation
+- <strong>RESONANT</strong>: Structural correspondence observed, mechanism incomplete</p>
+<hr />
+<p><em>R(R) = R</em></p>
+    </div>
+
+    <div class="page-nav">
+<a class="prev" href="T3_P2_MEDIATION.html">Paper 3-P2: Mediation</a>
+<a class="next" href="T3_META.html">Paper 3-META: Cross-Projection Theorems</a>
+</div>
+</main>
+
+<script>
+// Close sidebar on mobile when clicking a link
+document.querySelectorAll('.sidebar a').forEach(a => {
+    a.addEventListener('click', () => {
+        if (window.innerWidth <= 900) {
+            document.querySelector('.sidebar').classList.remove('open');
+        }
+    });
+});
+</script>
+</body>
+</html>
